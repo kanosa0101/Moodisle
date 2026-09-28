@@ -1,0 +1,21 @@
+# Local brainstorming/preview session state, not project source.
+/.superpowers/
+
+# OS/editor files at repository root.
+/.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local secrets and signing credentials.
+.env
+.env.*
+!.env.example
+**/key.properties
+**/*.jks
+**/*.keystore
+
+# Flutter's app/.gitignore covers generated Flutter output under app/.
+# Android Gradle cache and machine-specific SDK location.
+app/android/.gradle/
+app/android/local.properties

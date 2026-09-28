@@ -1,0 +1,2904 @@
+{
+ "generatedBy": "tool/asset_pipeline.py",
+ "count": 322,
+ "assets": [
+  {
+   "path": "bosses/chaotic_current_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 380754,
+   "sha256": "93cbe6b7c3ad4c60b2ffb0431397bc69b6ae729a10dc9abf6037f6cdfd7941f4"
+  },
+  {
+   "path": "bosses/heavy_twilight_mist_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 164090,
+   "sha256": "8e142a59a51d5b11c8deaa3c149acedc63dfaf267a428a83f5ae40ddbc12ff66"
+  },
+  {
+   "path": "bosses/lost_fog_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 380533,
+   "sha256": "cad10374c6dc587b803d3e58309eac67050b478ab0cd762716383767b93aa39d"
+  },
+  {
+   "path": "bosses/misplaced_star_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 362596,
+   "sha256": "53d919480098fcc28b2acde07501dc232bff12ca92bc71f2b70a7b65ce1c5547"
+  },
+  {
+   "path": "bosses/scattered_wind_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 343313,
+   "sha256": "94e30667ce492dfaa4bcabb8332997f8a448cb819544c70541ac41351393c416"
+  },
+  {
+   "path": "bosses/shocking_storm_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 340799,
+   "sha256": "39abd70b9845c420bb81bfd35fe41c15fd306cb3dc4cc449efba264ce63508fc"
+  },
+  {
+   "path": "bosses/shy_sunset_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 335288,
+   "sha256": "6eb4d2d927c7ee0864ff8cd0ebcb2186de26a582081bae66487d4a814f1831dd"
+  },
+  {
+   "path": "bosses/spiral_cloud_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 320478,
+   "sha256": "b623a0663f25a86dcdb2dcfcde662f96a35c4a8b61ff5a82284f369f38d58247"
+  },
+  {
+   "path": "bosses/stagnant_rain_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 333704,
+   "sha256": "021f3021b8b818b30e6464bb509fd7ca3415ebc4092c1852a093b6db2a0c91ae"
+  },
+  {
+   "path": "bosses/strict_frost_knot.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 394290,
+   "sha256": "12383fc5698917c43fe2ee833cd4c2e209f3438c9c18ba866649cf7cda057282"
+  },
+  {
+   "path": "canon/01_zappy.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1646794,
+   "sha256": "6e9e6e07c7204364a8cc27b57e4cbea7dfc54e6f3fa53cc669a93427dbaa4267"
+  },
+  {
+   "path": "canon/02_drippy.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1528929,
+   "sha256": "62aae658b2287d8fc6c4abfadb5d08baf13cba117870f46c685fd7c8faab0a0e"
+  },
+  {
+   "path": "canon/03_misty.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1320688,
+   "sha256": "59e5becb5e6666dc05baab88bbb6d6a53924438c630291649e7a190735892df2"
+  },
+  {
+   "path": "canon/04_hazy.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1335047,
+   "sha256": "a051d61501f3e5d06773eec5cfbd88071f6a6174707721ecf8d391ec775e653d"
+  },
+  {
+   "path": "canon/05_nimbus.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1756167,
+   "sha256": "949bbde48aa33555fd8b272826deaffa4fc418aa7cfff2b78f31e506c125e941"
+  },
+  {
+   "path": "canon/06_swirly.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1700661,
+   "sha256": "f88f31c2a9ad0caf75ef4cdb41045d2ef168985b0532cacfd3c2cdafdeefe7c5"
+  },
+  {
+   "path": "canon/07_breezy.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1448520,
+   "sha256": "3e9d9b53614cda0bab3b0d969e2b7d23fff2df8cabb86fe22f65b946ecab88e2"
+  },
+  {
+   "path": "canon/08_frosty.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1609870,
+   "sha256": "4effc8fa29e99bfad0a3bf5ee5a3a4b697404427c4a307fb8616d044c9751a96"
+  },
+  {
+   "path": "canon/09_starry.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1300458,
+   "sha256": "89689f0532b44985509cfa5db4984f6b5419db24afd9189a2ab604683e2a96d0"
+  },
+  {
+   "path": "canon/10_rosy.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1508364,
+   "sha256": "15dd236737f79ffa9306d5e8ab5e5550bf912c9bb3fc8550ccb7c3622685ed5e"
+  },
+  {
+   "path": "island/map_autumn_day.png",
+   "size": [
+    1536,
+    1024
+   ],
+   "bytes": 2066051,
+   "sha256": "44ab633e4099e1d1846f224500a3cf1097daa5290f102543e04c3b1fab3f5bee"
+  },
+  {
+   "path": "island/map_autumn_night.png",
+   "size": [
+    1536,
+    1024
+   ],
+   "bytes": 2247330,
+   "sha256": "17b967a6e369cfbe710966dbfe44cc6df44128c233b6f8b2c1f1a436776cb0c5"
+  },
+  {
+   "path": "island/map_spring_day.png",
+   "size": [
+    1536,
+    1024
+   ],
+   "bytes": 2563829,
+   "sha256": "53a5f36892e71cbe999b6578552387b73a72bc2a212856bf5158e500ac1bbb42"
+  },
+  {
+   "path": "island/map_spring_night.png",
+   "size": [
+    1536,
+    1024
+   ],
+   "bytes": 2024656,
+   "sha256": "e127b04f73cb85b420306f72bb5e6a043fb8cc80f9d2ef52fc3aa72b5208de22"
+  },
+  {
+   "path": "island/map_summer_day.png",
+   "size": [
+    1536,
+    1024
+   ],
+   "bytes": 2119718,
+   "sha256": "ac6d5211b84289e2e3fd62729c0bce214df045ace1e23d2aab9ccd32ae1ac38f"
+  },
+  {
+   "path": "island/map_summer_night.png",
+   "size": [
+    1536,
+    1024
+   ],
+   "bytes": 2312473,
+   "sha256": "91e9aeed0c67d938c3023d6807c29ee156db8e551a3152697e4baf9d06effe22"
+  },
+  {
+   "path": "island/map_winter_day.png",
+   "size": [
+    1536,
+    1024
+   ],
+   "bytes": 2104931,
+   "sha256": "4854977889f4c8558471933bfb72b9a7c5054e3fd4e723c8159d8737dca6ed2a"
+  },
+  {
+   "path": "island/map_winter_night.png",
+   "size": [
+    1536,
+    1024
+   ],
+   "bytes": 2329339,
+   "sha256": "45e5494b0eae2abd66045d9ddab4d4949dbf0d6df4ff7ecf32f6bca063dff1ef"
+  },
+  {
+   "path": "items/icons/cloud_mica.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 93551,
+   "sha256": "3c73081b8a75861f0ce4ad5cb67239b10ec708f730159a3413279c3698d0a74b"
+  },
+  {
+   "path": "items/icons/envelope.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 79007,
+   "sha256": "8e92580461260be5c178c61b249c0b92ce6f8e1672b95a4a1316e7c56ca299b0"
+  },
+  {
+   "path": "items/icons/heart_knot_shard.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 75754,
+   "sha256": "66e7cf022bdb36166ebed8551d7d83692944a6898c4ae360f3b5f0ea7b018854"
+  },
+  {
+   "path": "items/icons/lantern.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 69945,
+   "sha256": "50c8fb94f0d0676b3e5972856f455c9ab80d8cdfe03a464aecf1f12310d7d82b"
+  },
+  {
+   "path": "items/icons/mist_dew.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 66567,
+   "sha256": "ef11b92fd3f80d58c8b24685b6ff099e57e6f8760f3a33dac390f7ddaa96d038"
+  },
+  {
+   "path": "items/icons/morning_dew.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 73613,
+   "sha256": "40cbc093650e53b2ec9c732fff2fe080d068f57378bf71eb85d9ffabc6b6ff09"
+  },
+  {
+   "path": "items/icons/rainbow_crystal.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 86368,
+   "sha256": "0138629505247d6602d1d02457e363db5aacbcbd5fb5762d3c6dd141e2df57b2"
+  },
+  {
+   "path": "items/icons/star_badge.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 93244,
+   "sha256": "d6af5b83c663e6f1907681ed95360ddff9fb4e40805d0b74d6114a016fb9f5f9"
+  },
+  {
+   "path": "items/icons/stardust.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 83239,
+   "sha256": "f56ec85cde24d17f200fd3bfb7ed8eb6cda5585bd553c397376911617c38ae72"
+  },
+  {
+   "path": "items/icons/sun_crystal.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 97649,
+   "sha256": "0ca47b3e574eb4598a922f3e6ee16fc62c98de726b00279e931ea84a5280c2af"
+  },
+  {
+   "path": "items/icons/tailwind.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 64449,
+   "sha256": "041075e19044dc92b04f04196c2dbc6dde9890579016eed692619185c87a4058"
+  },
+  {
+   "path": "items/icons/warm_front.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 53585,
+   "sha256": "f876cebd6e5c027ecdd5cfda555ab0d5756e646def90bc47453246e26cd362c5"
+  },
+  {
+   "path": "landmarks/beach_lighthouse.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 213365,
+   "sha256": "f2c72f519c4334237064b2fd86bd3f60a58101bccd916a785997751b3aaa2936"
+  },
+  {
+   "path": "landmarks/beach_shell_cluster.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 237093,
+   "sha256": "ab42e2272d0268d06bfd994ba5b6871f72338968ed8316ff59add86b1d41ea8a"
+  },
+  {
+   "path": "landmarks/fog_forest_lamp_post.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 163239,
+   "sha256": "bfe630174114414e31e75df6ce0353bb533d4b631624f9935f93b01cc320ec4f"
+  },
+  {
+   "path": "landmarks/fog_forest_round_tree.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 227004,
+   "sha256": "070bf97dc73c07dc50877f129c0baf38555aec428e8d9a27ed6b1dcf796c531f"
+  },
+  {
+   "path": "landmarks/rain_lake_lotus_boat.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 216601,
+   "sha256": "a0b7d01a2d0f6dd0bff1b08985bc51166bebb426f26a35aba75fea8ed01e526c"
+  },
+  {
+   "path": "landmarks/rain_lake_wooden_pier.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 229413,
+   "sha256": "acc9368f86ebd03e83e2649fffc18d50292706023ae827fe0c308d8da8590830"
+  },
+  {
+   "path": "landmarks/sunny_meadow_flower_hill.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 248396,
+   "sha256": "a84319080614ddf70ad213683b62c8f3296b9f9578f95ea080ed053d70d68304"
+  },
+  {
+   "path": "landmarks/sunny_meadow_picnic_cloth.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 243792,
+   "sha256": "99b342d8c8199727c2f95b020ec4f48a36b6efd17151db6af297c4c98ae241c0"
+  },
+  {
+   "path": "landmarks/wind_cliff_pinwheel.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 176720,
+   "sha256": "a875705636b4ff55b0617f8b8ec5cc1af8701f286fb11a2d243907d5388ba798"
+  },
+  {
+   "path": "landmarks/wind_cliff_swing.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 221233,
+   "sha256": "93d9d8dece99139593d7922ada2e3c51f1dd17c3518c7392a05c6ea0ee6921aa"
+  },
+  {
+   "path": "maze/foes/anxious.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 80787,
+   "sha256": "56b2991162f63acd27c7f48ccc22ea96fba1ac7e86725b4bda96cde14b3e88d9"
+  },
+  {
+   "path": "maze/foes/burnout.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 77066,
+   "sha256": "d59e6475834115136975ada8e77532ab94bd5abfc08daeea66f649aad730e060"
+  },
+  {
+   "path": "maze/foes/chaos.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 79019,
+   "sha256": "9f4b56ed28ff84146bcb72e671c3e09c8e32883305bf0b137a5beb3b46924ebe"
+  },
+  {
+   "path": "maze/foes/distract.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 74638,
+   "sha256": "ac4dff20fc72de4029aa9314d409b8c992bfc02879db68ea2291053015d63573"
+  },
+  {
+   "path": "maze/foes/emo.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 69067,
+   "sha256": "ca9322b6c8958e795deba51d0b7c0908192a38ae200c9e8c1f0e9545ab2571ff"
+  },
+  {
+   "path": "maze/foes/fomo.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 75406,
+   "sha256": "d1e2f6def40329438fcc2322776e266b5f33569ab2f0c4c9e334db25fb70b322"
+  },
+  {
+   "path": "maze/foes/neikao.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 68891,
+   "sha256": "e4633030682c1f303ac60c82a0f7f921cce7fbc068f574f98de07457ecf0fa52"
+  },
+  {
+   "path": "maze/foes/perfect.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 71408,
+   "sha256": "a447ffca848bcfcbba7190b1e4d97b450ec532b58d14f3cc798ca1effb50e7ad"
+  },
+  {
+   "path": "maze/foes/shy.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 83966,
+   "sha256": "a2cbd721bbec2ebee2f6882471f418b0143a96bbcb91c1f4319cb29f35f3c38e"
+  },
+  {
+   "path": "maze/foes/sloth.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 78586,
+   "sha256": "ba4b50280b06ab17a4ee1af79a1585c910075edf3ad07347479a8972ed0e4adc"
+  },
+  {
+   "path": "maze/tile_door.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 73310,
+   "sha256": "ec25fa3c508d7d41a32cdc5d48c36294b78d9215a4eee9a9745dda98d0e43920"
+  },
+  {
+   "path": "maze/tile_exit.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 74458,
+   "sha256": "a0771a7f471f65554af6bc7beadcc54d606392b83d87be6c02b04e06f908670f"
+  },
+  {
+   "path": "maze/tile_floor.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 101667,
+   "sha256": "3d22009bb1ca012e0be12867d7fc393c7505f3572bfb147f8be23f52a6ff606e"
+  },
+  {
+   "path": "maze/tile_key.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 47586,
+   "sha256": "5b57865815e0313601786fc11b8b0234eb38bf4b1cf61d3f596fb8b07503012a"
+  },
+  {
+   "path": "maze/tile_lantern.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 45296,
+   "sha256": "c91a5dd274d6cdc698a839d4a131e763ea2271e6817d972c6a23553e8d6fd05b"
+  },
+  {
+   "path": "maze/tile_portal.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 72036,
+   "sha256": "117d79c566d2aa3846821c2f6b4cfd487d6a51dae49cf54bc5269c8f88a2e899"
+  },
+  {
+   "path": "maze/tile_shrine.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 76887,
+   "sha256": "138d0b61258fa73f1d867ae5beab2d510e1df68cee54d0900be8da0e6c36390e"
+  },
+  {
+   "path": "maze/tile_start.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 27182,
+   "sha256": "4251d040bd550f4fb186b7d9a5b9bf57bc1db8f594ec45f06b0821d675cbda35"
+  },
+  {
+   "path": "maze/tile_trap.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 75460,
+   "sha256": "ce380fa162dc29c96c52e7b47b651bd6f0fdd61d57b46da346783eea8f824968"
+  },
+  {
+   "path": "maze/tile_wall.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 95783,
+   "sha256": "fa8d7de1c365ca7a8c9c77b5d5a8e0d8b4bce5cbed5f876bf523c2b7367b7b4b"
+  },
+  {
+   "path": "maze/tile_warp.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 72589,
+   "sha256": "551577a32b684b42b484f089bcdc49e15d861ea9bfac4a140bdea96e77a4d754"
+  },
+  {
+   "path": "pets/anxious/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 341420,
+   "sha256": "b6f042e529124645f92d02acb8753fad20217239f3be20cfec48c506e5456b6c"
+  },
+  {
+   "path": "pets/anxious/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 354693,
+   "sha256": "56ad82f23a6a9c81fb8618b19076416108e45fc92719497240fe9e9b9cca78cd"
+  },
+  {
+   "path": "pets/anxious/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 327501,
+   "sha256": "22b360d8026ac220a4495cfbc33e9a3b82f1c6e29c6aaac546e52c51be283181"
+  },
+  {
+   "path": "pets/anxious/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 281431,
+   "sha256": "d6967684258d55ce4bdcb3af4564284fe8ff6b3607124ac0146c7b78b1abc32a"
+  },
+  {
+   "path": "pets/anxious/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 288885,
+   "sha256": "bf1c1be7233b2a9898aa5472cb323b49f858c604e39235fb37335143d5cccad7"
+  },
+  {
+   "path": "pets/anxious/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 256746,
+   "sha256": "71b5ca9cc52ef9b768f957af0415908d58b38e7ea1e4c86e16c53d3aae67806f"
+  },
+  {
+   "path": "pets/anxious/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 259388,
+   "sha256": "fe1311af8cfbc5ab77eeb7deec062cb6c4903f4c7ebe43c9417c4dc1449c4529"
+  },
+  {
+   "path": "pets/anxious/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 299501,
+   "sha256": "d8020195c0d4c7ef728493d7670f8fc502d6f8cae6a43b7b9f11871f79c9966d"
+  },
+  {
+   "path": "pets/anxious/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 303855,
+   "sha256": "5914e4b5eb78417475ffd107cd01dceb4663ff46dc38e9db94b18bf9f1b8d636"
+  },
+  {
+   "path": "pets/anxious/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 286251,
+   "sha256": "dc0952565da390e72bf10eff94a8746a41cc2ae138d341585838d431ef8c669a"
+  },
+  {
+   "path": "pets/anxious/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 289046,
+   "sha256": "7ad77f9a7d835d7d5edff99d762dd67cb7e4c44e52871772bfc4a4a8e89b9a2b"
+  },
+  {
+   "path": "pets/anxious/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 365404,
+   "sha256": "aa6abf67687b77b018e48a67ddcf1955efeec9697d63464554cfbb13b9585e56"
+  },
+  {
+   "path": "pets/anxious/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 351661,
+   "sha256": "5272be248db97ff8a1ce3494afe813b5775060635660b3300104db8ef83d854a"
+  },
+  {
+   "path": "pets/anxious/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 337122,
+   "sha256": "e51afa0a4cdf593ba42b039b9caee91a430a63a41b93445b256e5fce82ec3786"
+  },
+  {
+   "path": "pets/anxious/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 339942,
+   "sha256": "c01c5064329d88f0a9e22471a62cc21518843cacb4770aff97a2ea7a982a6f09"
+  },
+  {
+   "path": "pets/anxious/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 333830,
+   "sha256": "17d7c834f58b28e08615df4408c87ce3351422a03ec1e1bcc4bdf2c8c94e9465"
+  },
+  {
+   "path": "pets/anxious/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 316636,
+   "sha256": "2df3d45340f5a835216f00f898e580781d2a6e785b6f372a752436208c0113a8"
+  },
+  {
+   "path": "pets/anxious/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 301007,
+   "sha256": "434368eb45bbffdf07f2c07dd5285f7af319641fed263ef85ef72e28e3b2502f"
+  },
+  {
+   "path": "pets/anxious/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 304064,
+   "sha256": "3da16a7886e39950a11c955eaa0e2e34c9f1568aa7b075914f76a43a4a874773"
+  },
+  {
+   "path": "pets/burnout/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 283377,
+   "sha256": "e469660595d5c13a681aafdb9c03756f7a66704d94440e3239cf0ffebc1ff9a2"
+  },
+  {
+   "path": "pets/burnout/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 287968,
+   "sha256": "3d6bbd05854dd75586825096ff8c430f3c461a0a82faf4ed74025700a4e76e65"
+  },
+  {
+   "path": "pets/burnout/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 273645,
+   "sha256": "a0c7715c6928cc3aceeabcb8b99d11e8f84367e196027ec3ce5370d7ceeab631"
+  },
+  {
+   "path": "pets/burnout/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 229456,
+   "sha256": "8c89d59cc5d0ed859ada8347791b90e2a9bc138a70b8793a0d404002b77f0712"
+  },
+  {
+   "path": "pets/burnout/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 258800,
+   "sha256": "2bd0630b51d6db5030db49436be68f7cf3e12731ec032f756101058e862b2075"
+  },
+  {
+   "path": "pets/burnout/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 167624,
+   "sha256": "f24e317ceb03633df2f935c0597329338ed23a8ffc764eda5e1a399796c00179"
+  },
+  {
+   "path": "pets/burnout/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 167769,
+   "sha256": "4fdda95f2136492df8cf0c1f83e32d0df7260772cd40861652c7c9f02ab0da30"
+  },
+  {
+   "path": "pets/burnout/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 279359,
+   "sha256": "8d015e1d072fc9c2838bc2d5ba904bbcc724a34e3c496556887482c0146982ef"
+  },
+  {
+   "path": "pets/burnout/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 288796,
+   "sha256": "490ad8e7380a0836eae69d5bd7cbdd2c9a5b07489ad9741efd0eabcd9147b396"
+  },
+  {
+   "path": "pets/burnout/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 182035,
+   "sha256": "1d706f2c189fbeee02e5b08bb5c76d95ad6f82e596cc7a130d22157e2ffe9859"
+  },
+  {
+   "path": "pets/burnout/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 181572,
+   "sha256": "36df6b0f855552bb2431ff1a72c12b6f9b9a815170ab2fcc18188251f203e0a6"
+  },
+  {
+   "path": "pets/burnout/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 305912,
+   "sha256": "a2d517854e3cac1154e2b3449f6551655247b1ba62d6355302df4a88ace47bc1"
+  },
+  {
+   "path": "pets/burnout/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 313733,
+   "sha256": "1c20e23f645f336d5d4d31211f9cf837387b0a0e72125d77c0986afabce94cf9"
+  },
+  {
+   "path": "pets/burnout/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 240450,
+   "sha256": "39980aa4103b61d89c02790abce1e28cfe57ca49bcc3be89e22fb3e7efadbf8e"
+  },
+  {
+   "path": "pets/burnout/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 239202,
+   "sha256": "a05b04b6395dcd8ad99cbd6132daf70bfeba6e8d2d8b9a3a049259f33f6f3033"
+  },
+  {
+   "path": "pets/burnout/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 277436,
+   "sha256": "be65906b31ba2b5eccaf51eebb5a6a76acd951706f80510f87c422f1f698b4d0"
+  },
+  {
+   "path": "pets/burnout/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 304539,
+   "sha256": "828200a95c3420e271c8e212f1ab04079dc3e92ecb7a774136a75a1e88f00953"
+  },
+  {
+   "path": "pets/burnout/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 223485,
+   "sha256": "fb5f31e5a5081123a4a5a0d1da85c1e1c686ac8449664b699a2a148bc50f6935"
+  },
+  {
+   "path": "pets/burnout/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 222598,
+   "sha256": "d8d4810fcd48be9960a170471a01122e728d95d8477a5ec167b386822e169463"
+  },
+  {
+   "path": "pets/chaos/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 340973,
+   "sha256": "d45aa591982517a5b04293ddcde4183e258dd2f1b486078095b8c0cce8183253"
+  },
+  {
+   "path": "pets/chaos/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 349134,
+   "sha256": "71a3e3d70fae4ea4734e7bb2dc45210473dcad6d9a99b5a4622cb03216a95f41"
+  },
+  {
+   "path": "pets/chaos/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 348567,
+   "sha256": "ba9ef0fd34b758115c285861c35cc849d7bc55bc71d8df26b9e2a481975cf6db"
+  },
+  {
+   "path": "pets/chaos/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 259304,
+   "sha256": "5891342d76a312ca15ce48d96387777c65f3fbeb76288ef76cdcb3b13e07fd4f"
+  },
+  {
+   "path": "pets/chaos/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 303795,
+   "sha256": "f35e3ddae7b2aff5f926798442151bd17987c1e7a309aeadb39f88263cff685b"
+  },
+  {
+   "path": "pets/chaos/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 268630,
+   "sha256": "947fd231e8ad92177d544a35338701abee29c980bc48bc01bb8c9fa97a847336"
+  },
+  {
+   "path": "pets/chaos/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 271521,
+   "sha256": "a5349577086561ceca9eaadef0a92f5fff703df0b4b28300604eca5ca73c61fb"
+  },
+  {
+   "path": "pets/chaos/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 270754,
+   "sha256": "e6d1dd68efae3f54cf4d730453892dea285c1af7c25cbc5584ddf83598d85082"
+  },
+  {
+   "path": "pets/chaos/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 277027,
+   "sha256": "312571604d1f63f00a368a7b1c83332451eeb1d3bb139a798f4501395f676e26"
+  },
+  {
+   "path": "pets/chaos/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 269637,
+   "sha256": "040f783b1d17468ae846ae2cbdb3461fddf6dbb6a504493fe6454a96fa4e8bfc"
+  },
+  {
+   "path": "pets/chaos/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 272563,
+   "sha256": "0bf2fa3b3c8afd9c1fcecb23d0a9e08a3e68552f712d7076423c09554ff555c4"
+  },
+  {
+   "path": "pets/chaos/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 320502,
+   "sha256": "edd6205e350c5fe40e54d15b89ca354e0d37f71e44d6cbaa5835f212a315343a"
+  },
+  {
+   "path": "pets/chaos/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 390336,
+   "sha256": "f0a1c14f87a60cf9b7259f65b18e6eb03673d3391a4afacbc58ba398a9b9a67c"
+  },
+  {
+   "path": "pets/chaos/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 349578,
+   "sha256": "b976b2215c745089a9fec56b703421e1e417ffa91c98b8be243984a059b87932"
+  },
+  {
+   "path": "pets/chaos/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 352977,
+   "sha256": "58238ae8d5622a3e447d2fdb286824257449d466af0106b674c6c5ce34c2a219"
+  },
+  {
+   "path": "pets/chaos/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 331912,
+   "sha256": "441df129c51cddaf00437d8a6cf9d6da68ab21449c96dc3e1b759c29ea0025f8"
+  },
+  {
+   "path": "pets/chaos/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 371675,
+   "sha256": "d3b940ce0e58012c25bc3107c69a7f60157215f64f3ea6f85d539d507334b8a5"
+  },
+  {
+   "path": "pets/chaos/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 319467,
+   "sha256": "a8f4a964c082baeedf0f490dce3ae7e9f36cda3a38a8cd18cf21bb3c8c608152"
+  },
+  {
+   "path": "pets/chaos/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 322237,
+   "sha256": "2f40beda411fba88378c55214bdd159303f0b9268725920bbdc740bf654e68c2"
+  },
+  {
+   "path": "pets/distract/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 294375,
+   "sha256": "cf84aa74b8fedc71a8031c298719825ae1eea7b7855888834b489023ef0f73cc"
+  },
+  {
+   "path": "pets/distract/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 298233,
+   "sha256": "5ac27349c7d0cd55e10098b01826f7f553cf5d0aed63a956bac75be148240092"
+  },
+  {
+   "path": "pets/distract/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 296937,
+   "sha256": "6d4642d1c45189acb5349f76c392d9a748b2e9dfcc6fb1468d6eb58791ba8be6"
+  },
+  {
+   "path": "pets/distract/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 219801,
+   "sha256": "81c7a1cd440c31e13d9204b19e0c877f648c4c127429196ae47efae98ee193fa"
+  },
+  {
+   "path": "pets/distract/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 209955,
+   "sha256": "349343257f1a5629174549c72c18312437d74a1963595003a5895ee4d4bccc2c"
+  },
+  {
+   "path": "pets/distract/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 238256,
+   "sha256": "f9014c10a7da671d88d571787bff605785f154336923fe3c4e8ae81ac27cdb0b"
+  },
+  {
+   "path": "pets/distract/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 237979,
+   "sha256": "00301b4d84f050df080a6b05507e4574c9a45a380a05d10bc35defc51423f4d1"
+  },
+  {
+   "path": "pets/distract/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 240904,
+   "sha256": "042e216d1bf25c30bac25441f9963ef23e45458325475df4e083cce54a727e5b"
+  },
+  {
+   "path": "pets/distract/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 197191,
+   "sha256": "37302bb62569fa80d73108e78a29c00352f23818e528cde3ba8d25514252b56b"
+  },
+  {
+   "path": "pets/distract/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 280012,
+   "sha256": "8b9ff980df2b3f8ba9473c04e9c5040d877f9209e18f1f1e75339bac37f51981"
+  },
+  {
+   "path": "pets/distract/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 279785,
+   "sha256": "723c226f3dc427307b85680f49dfbf6a58a62eccf5d215eb6904d087c9131e46"
+  },
+  {
+   "path": "pets/distract/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 274946,
+   "sha256": "b07ad9dc087b3b419d2cea45e591c3ca1c5a5090a081a1a3944bcd5a497570b8"
+  },
+  {
+   "path": "pets/distract/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 249802,
+   "sha256": "e6f9fd2d2fbf962b9d2c6d82b33fe9cd1386d49115306f7386bff7ddfa597282"
+  },
+  {
+   "path": "pets/distract/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 291908,
+   "sha256": "37dfa864790bf5b9b25e538160bf00cb7213c2ff95fad423415811f1a30461a0"
+  },
+  {
+   "path": "pets/distract/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 291376,
+   "sha256": "eb4503340bd32f40a2a23ab43253fae12dbf972e273e055a4b40b1c1fde646ee"
+  },
+  {
+   "path": "pets/distract/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 235572,
+   "sha256": "e667b7c44d7f7506dc6249d9ba15729896523dd89ec1f52394c127a904adf6cd"
+  },
+  {
+   "path": "pets/distract/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 233419,
+   "sha256": "6346e06afcf373fae67d789d8b7bbcfe2e8b57a57c716b005d3be9b1601efdfe"
+  },
+  {
+   "path": "pets/distract/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 284114,
+   "sha256": "c8acd5d3e846a730fdda5fefacd56a033c11908cd993deb7ea94f91b9e88a027"
+  },
+  {
+   "path": "pets/distract/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 283471,
+   "sha256": "31a35bb70d0d8acfc4749c91351f738f5f703ac16da12a0acef9697d9414142b"
+  },
+  {
+   "path": "pets/emo/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 313309,
+   "sha256": "8947737222a860bbc65a2ad712e971867dbdbba5c1be4f4f2d3b32776dfc00b8"
+  },
+  {
+   "path": "pets/emo/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 321661,
+   "sha256": "cef67d6eb56acc74c9b1f5acc01583cbb33a2ca3aa0c8de0f9a9e57127570a22"
+  },
+  {
+   "path": "pets/emo/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 314200,
+   "sha256": "7ed32efba06a9a8df85ae7a1fd958af78fab5f62c65172a4ad331604d5390415"
+  },
+  {
+   "path": "pets/emo/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 256040,
+   "sha256": "57cadf25f376e4fee07303718919786812c3bb3a6f8054e599b310984b71e190"
+  },
+  {
+   "path": "pets/emo/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 274582,
+   "sha256": "c4a5d5c5156a0f32f65d03c7c5ab5da1a874287d58351a9cc109a0084c93f4aa"
+  },
+  {
+   "path": "pets/emo/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 279210,
+   "sha256": "6d98b8c154b0b62d862a95cf69af0fa9133c296c96b6a8d2b2452053d3458b24"
+  },
+  {
+   "path": "pets/emo/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 281027,
+   "sha256": "31ca866cc0d74c5e099f9f2ef74c931cbf516938190aa6da8063174773ee266a"
+  },
+  {
+   "path": "pets/emo/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 282427,
+   "sha256": "912d9d1675f524c93d2c13271fb408acf92a500b75a19aaf3ad207e1c53491fe"
+  },
+  {
+   "path": "pets/emo/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 307596,
+   "sha256": "6805145b898ea97ee58b8282eedc94e9d447a332ecf01c1452253f61ea882ca0"
+  },
+  {
+   "path": "pets/emo/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 309477,
+   "sha256": "48d235d88c2cd8afb39f7cfafe653b1f16d01cf32b498c8778dd3eb96c1106ed"
+  },
+  {
+   "path": "pets/emo/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 311991,
+   "sha256": "8f0c6420ee945461af3cef2c4363d85bee16593f8343029e42652182d089ee70"
+  },
+  {
+   "path": "pets/emo/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 287635,
+   "sha256": "f87cf55da37b9f80e7a398e82df5e0e01346fec0dd043d2617c148208da4a449"
+  },
+  {
+   "path": "pets/emo/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 302857,
+   "sha256": "aa6d1226ca17c99325238f4bff0a49ca8a7a59e0135d790cb67f06a3da698100"
+  },
+  {
+   "path": "pets/emo/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 321777,
+   "sha256": "01fb13c369ecf77489724d0b1a9ff559a5485a3c88fffeb3aaebd48c27401bd4"
+  },
+  {
+   "path": "pets/emo/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 323674,
+   "sha256": "a82f0a2dd66fd366cf6ba12267427d87da9eaa55d35a28d50917c17a2f35e152"
+  },
+  {
+   "path": "pets/emo/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 279575,
+   "sha256": "d6afcfe6a37439dcfd59971353b965d1618f1f0a2a597b9e6c130936d8a4b9cc"
+  },
+  {
+   "path": "pets/emo/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 331726,
+   "sha256": "6e9170a6e8acab2c3c300d96d04a69e6a888c254e50d697b683413d3c5c7809c"
+  },
+  {
+   "path": "pets/emo/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 301667,
+   "sha256": "7d8c17ec26933b5153df59d21cf51cc0b5d552962c57459df20657fd4bd2b0b2"
+  },
+  {
+   "path": "pets/emo/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 303512,
+   "sha256": "937c0d03b85ab6b1d828d41314b5f8c7528177ed95cbc5d17e8313f47bec8632"
+  },
+  {
+   "path": "pets/fomo/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 262344,
+   "sha256": "378bb2abfd6d7101dd14260180d90a5eafee39910a0cfc4f868c10f4744a8b60"
+  },
+  {
+   "path": "pets/fomo/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 264798,
+   "sha256": "7bd244f1990042c4565c60cbbecc9d5de653489b7708fcf022f905e12c1cab41"
+  },
+  {
+   "path": "pets/fomo/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 261597,
+   "sha256": "a2726ee3bce40e56523938d9adba6e91b32d9cc4d9544d8115e0a2fd3db76533"
+  },
+  {
+   "path": "pets/fomo/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 261031,
+   "sha256": "633f8b5e92aa77f8735c3361e1143ff80659ac4ff8b312d8cc91c0f2d394cc68"
+  },
+  {
+   "path": "pets/fomo/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 300256,
+   "sha256": "9859580d3ffcca67ef99220c20c041246991f33a346ee1102223f5cf04648544"
+  },
+  {
+   "path": "pets/fomo/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 207563,
+   "sha256": "7846162c2510edaf23a7b8227c648111d0777d97a621d2b00bdb8d77e51a3d4d"
+  },
+  {
+   "path": "pets/fomo/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 207612,
+   "sha256": "12dc2990e4871bc3717aa5601cebc501ff19cb24ab2b121a5d5a1a673edabe5c"
+  },
+  {
+   "path": "pets/fomo/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 229769,
+   "sha256": "12083c5e1f3f0207391736a4db20118a0e21a6d5b81cb808d107e737d74a95a0"
+  },
+  {
+   "path": "pets/fomo/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 285141,
+   "sha256": "96a95652dd54681b1f4a3cbdf5562749bcb04f1504e7424755bc92eee4ee7759"
+  },
+  {
+   "path": "pets/fomo/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 221420,
+   "sha256": "b58b5a1dbdbf08f3338b3dc8bee8846007bb1753cd0c1a453f65cd962ffcdebd"
+  },
+  {
+   "path": "pets/fomo/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 220525,
+   "sha256": "00c61a0954b163f4a0f21654dc0ca47c6b82a9f5e28624c3a5426d05f8ab7962"
+  },
+  {
+   "path": "pets/fomo/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 309206,
+   "sha256": "22734a2a0de49210a323ad46e47ecfc6e49043bfa6dcf7f073f61bb987c06ef8"
+  },
+  {
+   "path": "pets/fomo/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 340949,
+   "sha256": "5396b1e06fc044a7dbe379592b0939db6595f421c781c142fa4c3afd3a117678"
+  },
+  {
+   "path": "pets/fomo/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 253391,
+   "sha256": "c598ba643e81a10535d0937fd482928689f53cd33873cc5f7371a7d9a2d18442"
+  },
+  {
+   "path": "pets/fomo/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 252652,
+   "sha256": "90b7f913416ab51cdf26f448d7d2f9daa54ecc5dba175de17c1579ac05ce5f5d"
+  },
+  {
+   "path": "pets/fomo/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 284273,
+   "sha256": "948ea79770539a9bb3513328f543bace32987a5f2cb8b7f6ef464b3d9625e6ca"
+  },
+  {
+   "path": "pets/fomo/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 349067,
+   "sha256": "6b356c2cfff2ba2dcd4db8c67b5f517e68cc94073ffd7ffcf874816b67ee53f7"
+  },
+  {
+   "path": "pets/fomo/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 248281,
+   "sha256": "3484025871c0972eb130f600b02a92d0eef3fda6681ccb778b6c1d95e86f9125"
+  },
+  {
+   "path": "pets/fomo/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 246400,
+   "sha256": "7ac6e8e116668053525cba36de9a521c0a48d3280624f032b136b23701453ba5"
+  },
+  {
+   "path": "pets/neikao/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 373865,
+   "sha256": "643e68a3820bdddcd10248a24981eac35ddc6e09ae595fc3a90d735a2a38fe31"
+  },
+  {
+   "path": "pets/neikao/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 375491,
+   "sha256": "9385fb0f7d46b94cc4d8784d09a74d238de5d2e9ce08a9b571d7fcb7eec75e55"
+  },
+  {
+   "path": "pets/neikao/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 366844,
+   "sha256": "12f980995d4ff0de43df8735c52f3b53520bfcb6c91ad1b892d739252ba1ffd6"
+  },
+  {
+   "path": "pets/neikao/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 264810,
+   "sha256": "1f4a3ba4f52b87cff3c5971c8610f2f41e2d1c1c8385b7d5653c0645ef5f1bd9"
+  },
+  {
+   "path": "pets/neikao/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 261448,
+   "sha256": "845a228296fb16182c10ac40cd0833759c5c42a6bca38f68d9fab63e787c6331"
+  },
+  {
+   "path": "pets/neikao/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 256770,
+   "sha256": "304d890464cb9f5b0ca1d839b362f6fb7bab04486bf8dee321df68df364ec79a"
+  },
+  {
+   "path": "pets/neikao/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 256327,
+   "sha256": "526b131ee826803efb63565e451485357419479a8b66195199303f0692975f6e"
+  },
+  {
+   "path": "pets/neikao/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 265395,
+   "sha256": "f4845ec0651ca1aa9ab495064068c54226db9ce951972a7298a4b15366621c95"
+  },
+  {
+   "path": "pets/neikao/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 279656,
+   "sha256": "326291dc6985f263862de32a05fedb5a675c67d448ef09c15b3bdd6eef9d58f6"
+  },
+  {
+   "path": "pets/neikao/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 284168,
+   "sha256": "560a54e172409507b6c7047343f644bec16a8324608781ecc0c90cb7df810daa"
+  },
+  {
+   "path": "pets/neikao/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 284853,
+   "sha256": "cba2c6e92831672fe8e1783d385a187690d4dd4e806b5291b32e94659201b2cc"
+  },
+  {
+   "path": "pets/neikao/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 337607,
+   "sha256": "3379fbe1f580b5677c686230a5a331db09b0061daed05600a47115fed20cb005"
+  },
+  {
+   "path": "pets/neikao/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 343182,
+   "sha256": "9bc1822d162cd9339e12d03bf0d0daa9649314c271235343607d3e3fa31cf57f"
+  },
+  {
+   "path": "pets/neikao/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 324343,
+   "sha256": "5a5ee4c59cfdf43ffca0b910e71ac651fff1f5f18f13997c83cdf33b38267c33"
+  },
+  {
+   "path": "pets/neikao/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 324961,
+   "sha256": "79a9e29373b53854937b76887aa6252e12a1d63aa711dd202f7434fd88cb63f1"
+  },
+  {
+   "path": "pets/neikao/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 319849,
+   "sha256": "922741fb2e24b03fc684c2b398936aa31370ce196a54506446636997fc7ed706"
+  },
+  {
+   "path": "pets/neikao/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 360332,
+   "sha256": "4e8066353ed58a91649105b95c8eb3a2cf2bc9bf8357864b25c4cee2ab0d5513"
+  },
+  {
+   "path": "pets/neikao/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 307810,
+   "sha256": "5a08a5288e7258acfe6982adeeb5413725067c60cec026dee81f1346aac47cc7"
+  },
+  {
+   "path": "pets/neikao/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 307932,
+   "sha256": "2c3326d7b2db04a8596bcff5dd875d943c3f94cc63f478aec77f57cee7255e41"
+  },
+  {
+   "path": "pets/perfect/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 331333,
+   "sha256": "38318bbfe451467662a949f7e36c78a0685a62c5da4fc761f11fe1774a300c5b"
+  },
+  {
+   "path": "pets/perfect/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 336857,
+   "sha256": "725301a4877061ee5eaf0a4a2ba2ef9c64ce52b88eab6df696a143a9085b1bba"
+  },
+  {
+   "path": "pets/perfect/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 332894,
+   "sha256": "f8b63d74e855bd28c227ba912ba3a07fa5aa20c7e647dcb46f2d48108d56cb0b"
+  },
+  {
+   "path": "pets/perfect/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 301653,
+   "sha256": "f1b8990bcb6d205a1ad6714a0ad48e307b1fedc8deccbbacf60fc63585ec79cd"
+  },
+  {
+   "path": "pets/perfect/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 313695,
+   "sha256": "d714d78e0362e884e555fa22c25cc3da4d0606c2a653ff6103fd63aa27cb7951"
+  },
+  {
+   "path": "pets/perfect/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 182813,
+   "sha256": "90d30e42effc019d5ec6efb6879f98580146180faeac71047b087cf428c131a9"
+  },
+  {
+   "path": "pets/perfect/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 182614,
+   "sha256": "b5ade0a152e63e38941e63c9d6714b23e8fc02be2d52f82470b555c97b9e58c4"
+  },
+  {
+   "path": "pets/perfect/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 284578,
+   "sha256": "571156241907c9f81a1dae80f72f1acba1322fb6b35a49535468d3f2a457b2af"
+  },
+  {
+   "path": "pets/perfect/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 279059,
+   "sha256": "780faf6632fd734842e8e829d16b7fe73dd066403081fe955b97cb978c68e87d"
+  },
+  {
+   "path": "pets/perfect/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 158270,
+   "sha256": "e2cb20bf9126add9bb97135080b8e0fde112ca5c57f694204d2c5e62f364ad6f"
+  },
+  {
+   "path": "pets/perfect/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 158517,
+   "sha256": "1a7a10339ec82ec27e0f8c218ea7ed33caa6804f0ab85fec6caff54f10119916"
+  },
+  {
+   "path": "pets/perfect/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 374375,
+   "sha256": "8d4bc52c3fc4441198de45e8c80503fd4da0bbb580bb4616f42d3d5820a87956"
+  },
+  {
+   "path": "pets/perfect/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 375910,
+   "sha256": "62f3b2b1d91759d0e38ce4aff45dac61488431025ff718c6d4d7dd42b6193249"
+  },
+  {
+   "path": "pets/perfect/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 242873,
+   "sha256": "cb3e4a3a1669cbf714feb5532a2ec9c54744b396bab89112ccefd916a9023cd6"
+  },
+  {
+   "path": "pets/perfect/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 242822,
+   "sha256": "5798944839b8211e52f86f7856e3133fcc2ed9c1badee35d4e4f64398abad678"
+  },
+  {
+   "path": "pets/perfect/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 345758,
+   "sha256": "c191c7b6b7f670eabf30e706f6d3a2e0964f2643634576732a942a3e8d223281"
+  },
+  {
+   "path": "pets/perfect/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 358692,
+   "sha256": "03ce83a93f2295f658bd252e94d9f784385b44f92e77e6f7127cc90e2a887e6c"
+  },
+  {
+   "path": "pets/perfect/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 250843,
+   "sha256": "9ac6aa69ff9397bfdf47f6923b5c83e1aa461e209959d73ce7faab521b88e7b4"
+  },
+  {
+   "path": "pets/perfect/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 250937,
+   "sha256": "aca2dc65b43bf634d0608bee4977578ba76a8dc5d5bad55a698869444d8bc68a"
+  },
+  {
+   "path": "pets/shy/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 312748,
+   "sha256": "39672d658d1050d41b278ab853172dca24d31eb7baf337d2caf5630b7e5a6df3"
+  },
+  {
+   "path": "pets/shy/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 311062,
+   "sha256": "1ae8c02dc5d92dce4332b7cb60b548781882cf2db4a1b26bc8fe753547b18498"
+  },
+  {
+   "path": "pets/shy/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 312146,
+   "sha256": "8b45a32a37d626f8f23a6852e86a85081c8d9476073d58b106a5ae535b25bac3"
+  },
+  {
+   "path": "pets/shy/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 250590,
+   "sha256": "adda62e133b3708ee81ce21fe7b81df59c7acaa3e05f6d1b101f69584efb662e"
+  },
+  {
+   "path": "pets/shy/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 304274,
+   "sha256": "5c2edb9c1c23f85d2aadaf14214f08e6b0a70c85a8daa2f2c20e3e5873fe9dbd"
+  },
+  {
+   "path": "pets/shy/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 259972,
+   "sha256": "5ee83a37b2d1ad099d55b1569cb166ce8a649b385ed837f462b0ab3cf8246a9d"
+  },
+  {
+   "path": "pets/shy/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 259674,
+   "sha256": "38b267420619d042bf7b3a71c87bea675013187789852fad0cb9d652ac2749fd"
+  },
+  {
+   "path": "pets/shy/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 259334,
+   "sha256": "858d34205ac1c0fc9696367d412420843e2e4ae6c2577ee081a338d1ddf43987"
+  },
+  {
+   "path": "pets/shy/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 299358,
+   "sha256": "ff59f5cffd3ecdbd8402d6b80235b8b52150b6a4296a9be890848da82eb126a2"
+  },
+  {
+   "path": "pets/shy/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 248437,
+   "sha256": "b20d2c5b8a9e5201502875e49eff1358137f6b692530949bbcf7d691cccdf1b1"
+  },
+  {
+   "path": "pets/shy/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 249211,
+   "sha256": "b46f0313a247d199012a222412002623a3c63532edddfc7ca56d098604e4cc57"
+  },
+  {
+   "path": "pets/shy/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 300687,
+   "sha256": "ed452ef3cf6ddccd467942c2faf96de7b331c1e221245c609ada674baf902dd4"
+  },
+  {
+   "path": "pets/shy/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 330295,
+   "sha256": "09fa83a24310a85c8727e873da670104efe1b300e2428382f70c303aac486f9a"
+  },
+  {
+   "path": "pets/shy/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 345467,
+   "sha256": "1cfe30b1d986eee2753b14681609714f2a4468111f6c6e98ee1f3bc3d887eb63"
+  },
+  {
+   "path": "pets/shy/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 346137,
+   "sha256": "244d9321fb41d7bbea0aabaa9ff7804bde386b3ff3af4fad31c7dab2b86cfe34"
+  },
+  {
+   "path": "pets/shy/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 301008,
+   "sha256": "23e463556676f7286ddf9883241d0f606df95d73f53898de29620cd3ed8498b3"
+  },
+  {
+   "path": "pets/shy/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 302033,
+   "sha256": "558230b2795dda68adbea2637ee423ffb0671b2559ff3fe67de9d24b2478d4a5"
+  },
+  {
+   "path": "pets/shy/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 328931,
+   "sha256": "37aa1b7029208ddca29b84a8940372cf97854dfdd2c7551fd4a0a8d5d0d8a16a"
+  },
+  {
+   "path": "pets/shy/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 328014,
+   "sha256": "4d4ea08a187c6e521517404328d58b8aeea54b2bdcd2859bb7cdf8a624c96d67"
+  },
+  {
+   "path": "pets/sloth/_expressions/calm.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 253858,
+   "sha256": "c6ae75ea889c91b48a0165c76f7efdee0272ce4536bdd394bdec8e7e9df82e9b"
+  },
+  {
+   "path": "pets/sloth/_expressions/happy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 258665,
+   "sha256": "56d3adf5d312426cc099baa57567f04dd548e7f4483f4a677b619581d0ebf966"
+  },
+  {
+   "path": "pets/sloth/_expressions/shy.png",
+   "size": [
+    418,
+    627
+   ],
+   "bytes": 254260,
+   "sha256": "98930b7d2c4932734c7d7f64c7a078046adc5b4bcea5c3839b4035c28d72a549"
+  },
+  {
+   "path": "pets/sloth/st2_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 231567,
+   "sha256": "334b0be4c312dad97d5ca075869c7f444297524504634bfb01543876ca2957ff"
+  },
+  {
+   "path": "pets/sloth/st2_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 259761,
+   "sha256": "45af3977b1f23c2b7f8347382d41e715c0d3859be63ac4ae5f8a83d5dc08d13f"
+  },
+  {
+   "path": "pets/sloth/st2_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 250664,
+   "sha256": "6a13f90ca1cef8090181f11262701dbbad283a85384f6b51980e5f87e35e2d63"
+  },
+  {
+   "path": "pets/sloth/st2_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 250291,
+   "sha256": "54bb5ad41cac22fa1759bf7685cd61858887828265e839c9849afc6a62d4613b"
+  },
+  {
+   "path": "pets/sloth/st3_clear_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 266145,
+   "sha256": "c2c08e3b666834011d5d19e0da4265dd1ad58d0efa04177a4102408dd666230c"
+  },
+  {
+   "path": "pets/sloth/st3_clear_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 291071,
+   "sha256": "61cc891ab4477158b5ecd45d76f2b56d4e4a0a8cf1d92963e0559928dba75f9e"
+  },
+  {
+   "path": "pets/sloth/st3_clear_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 272375,
+   "sha256": "9f77920cd7c53324e10f1224f227b4a27d10cb481f8515c021137d39536c09dc"
+  },
+  {
+   "path": "pets/sloth/st3_clear_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 272512,
+   "sha256": "c00f3a0c98e79c84e8933965142feeeca6dd7b4cf297d361c97efb8b67ce90cd"
+  },
+  {
+   "path": "pets/sloth/st4_constellation_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 317282,
+   "sha256": "f4d86c325462ffc4c0592dbefc68f567951cb306e6800f756faea579dffbfae4"
+  },
+  {
+   "path": "pets/sloth/st4_constellation_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 384240,
+   "sha256": "e4796bdd317e53b9796becb54254705d2ca532bd48335f2646982993a67acbc7"
+  },
+  {
+   "path": "pets/sloth/st4_constellation_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 356988,
+   "sha256": "58655153baa55d9af61fca7f274d4fc2d430eba8d2b0ad0595b4d1fad6c01893"
+  },
+  {
+   "path": "pets/sloth/st4_constellation_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 357199,
+   "sha256": "58306fb0cb438692d49f13a367ddee34d8737478d79ad52ad85752db7b7eaf7f"
+  },
+  {
+   "path": "pets/sloth/st4_deepcurrent_back.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 310590,
+   "sha256": "3723e4011150e14e904fc847e69112dd1c4b03dc37db61793a6d9aaf9ed11a2d"
+  },
+  {
+   "path": "pets/sloth/st4_deepcurrent_front.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 327260,
+   "sha256": "275b7595317ccf54eec74aa0722a899cb607bc8307c9c3732e617afe8505a987"
+  },
+  {
+   "path": "pets/sloth/st4_deepcurrent_left.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 262456,
+   "sha256": "c5f40cb50e51957020351819640b3f7a88d499ab90b4f7a29fc3e758d2711921"
+  },
+  {
+   "path": "pets/sloth/st4_deepcurrent_right.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 261350,
+   "sha256": "f39c5012d5a1c8005fbd3d9b1fbfe49217a701291a36a0653efe8622996ee877"
+  },
+  {
+   "path": "postcards/autumn.png",
+   "size": [
+    1200,
+    800
+   ],
+   "bytes": 1686687,
+   "sha256": "6a02a61859e5de7f5546edfe481fd8a6b94b5ea78782de95e55dd6fa3ab67a9a"
+  },
+  {
+   "path": "postcards/spring.png",
+   "size": [
+    1200,
+    800
+   ],
+   "bytes": 1649932,
+   "sha256": "f3a145cb4c48382b32cbf8504c0eeecc1a77bf84cb2f1a2b29af2415ea26fa4a"
+  },
+  {
+   "path": "postcards/summer.png",
+   "size": [
+    1200,
+    800
+   ],
+   "bytes": 1679653,
+   "sha256": "fe29896b0d89c26928fc76116b0f76c2cbcdcbd7ea9417dc3dbfbd21359f404c"
+  },
+  {
+   "path": "postcards/winter.png",
+   "size": [
+    1200,
+    800
+   ],
+   "bytes": 1751228,
+   "sha256": "4645dec4a625bf665767fa79dc3865f70d6ac87f46c1003c1c2ce1fdcbac8d58"
+  },
+  {
+   "path": "process/maze_floor_base.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 2084446,
+   "sha256": "f83b091c5da20e9154e7460d96f2639b6325b2ba87ce25bdf8dde93eca3e9e56"
+  },
+  {
+   "path": "process/maze_foe_atlas.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1174700,
+   "sha256": "3994004e187cd9e1b4a8fc87b44f65d90e749b7c16b49923696994e1583157f3"
+  },
+  {
+   "path": "process/maze_tile_atlas.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 1098125,
+   "sha256": "8af268b59a324f2f3d619a7427d4df798b734b4bce1c766b840ffa78d0ef6404"
+  },
+  {
+   "path": "process/ui_sticker_atlas.png",
+   "size": [
+    1254,
+    1254
+   ],
+   "bytes": 964406,
+   "sha256": "fa5235983bbb2e4058d6836e5ecd12e37252fedfd46c53ee9d992ee7bb4fd564"
+  },
+  {
+   "path": "souvenirs/aurora_curtain.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 70707,
+   "sha256": "3119abb2ed4bccec12ec5c05fda472d9fbce68cbca5c4cec3de07adba88450f9"
+  },
+  {
+   "path": "souvenirs/auroraVeil.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 96268,
+   "sha256": "0e8a2fc29f874e85715ac07083773dddfa0f6a60cb263f66cc1026d4cb977cd2"
+  },
+  {
+   "path": "souvenirs/breeze_chime_stand.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 92071,
+   "sha256": "1c88121937af837245b1d71eb5c7a4fca811de7349372776bea478ba3ccd1dea"
+  },
+  {
+   "path": "souvenirs/cloudBell.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 67828,
+   "sha256": "6c5d60f17275a0a3dff93f6c0b5796400036933f1852e65feedf906a25d47e93"
+  },
+  {
+   "path": "souvenirs/convectionFire.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 73960,
+   "sha256": "52277ce788f456bd13facb16ed208f5c74575fa170727203d3cd40ad8287f1d4"
+  },
+  {
+   "path": "souvenirs/fog_lamp_ornament.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 61673,
+   "sha256": "ca542530561d97890bebc965dccf8051276037c093944186f8706403ad0f3603"
+  },
+  {
+   "path": "souvenirs/four_seasons_flower_clock.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 127109,
+   "sha256": "e0a704651af89524ec38c408c9ca628dced7eb9c5374141c774eb9e80e1becfe"
+  },
+  {
+   "path": "souvenirs/lotus_boat.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 73514,
+   "sha256": "778fdb439f35dad6204d953e73a2dea3f047bfe2529fcc22a9e3a3e79a357f65"
+  },
+  {
+   "path": "souvenirs/meteor_wishing_pool.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 102094,
+   "sha256": "bbac1849e0bd8b86eeb4d8d8dbad5fa15a102b712120ae4ae9c3327b4893422d"
+  },
+  {
+   "path": "souvenirs/rainbow_arch.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 77847,
+   "sha256": "14727ed249209face08b53a7d6012c7e7fa5f51f793559d2c229d762bf5802f8"
+  },
+  {
+   "path": "souvenirs/rainbowHoop.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 49288,
+   "sha256": "793a4b619709c06fa69144bf6eb9989a3d01ea836340ee09498c6a525a23027e"
+  },
+  {
+   "path": "souvenirs/rainGauge.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 73597,
+   "sha256": "dec2a4f8e9e80277793fa61e97d3f3b4dd94d435c3ce1bdf24648d3fc338180c"
+  },
+  {
+   "path": "souvenirs/shell_wind_chime.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 72159,
+   "sha256": "95dbe9b3da5aa343d258b49304cf5bcb133ea25ff5a1b6ba14f05558599dc5db"
+  },
+  {
+   "path": "souvenirs/star_wish_swing.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 82454,
+   "sha256": "06b313b06026934a0c2dcbeb02a9c1d1867c7a25b0f3fd8edd7dc51ae77b7c68"
+  },
+  {
+   "path": "souvenirs/starChartScarf.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 101831,
+   "sha256": "63847d78d97f23d8e42beac5bfa67219d0de508ef60c62e6d6585f845e65737e"
+  },
+  {
+   "path": "souvenirs/sunnyRainDoll.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 95331,
+   "sha256": "58573840ea41cd5ea2d466fc91e73cc2d8c64c359158716085f32a9245894609"
+  },
+  {
+   "path": "souvenirs/travel_mailbox.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 97549,
+   "sha256": "0d779aa46066ddfa6d49bb84d5d8be39186d360f6fa56d729f3440f63203e87b"
+  },
+  {
+   "path": "souvenirs/warm_night_campfire.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 90768,
+   "sha256": "feb9b3cf9188b6ac4d55c23c7ef07174cbd41a6a07dbf99fc04fd134c14a08bf"
+  },
+  {
+   "path": "souvenirs/weather_house.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 96450,
+   "sha256": "35433789e18c2a9c17f06305b28b1b905bf5ae386a3f797f1e19fcc2c5c1ee5f"
+  },
+  {
+   "path": "souvenirs/windmillLamp.png",
+   "size": [
+    256,
+    256
+   ],
+   "bytes": 63825,
+   "sha256": "ae81add5f1671699850b44233093b4ccfbee9b7e5c9c270b45b1dd4ed46e4277"
+  },
+  {
+   "path": "travel/monsoon_short.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 509218,
+   "sha256": "d1b4aacf4f941c895fbdd8433a9a868f422d0d6cda5aa3668c841535059efb99"
+  },
+  {
+   "path": "travel/polar_long.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 523256,
+   "sha256": "393cfa26384783e92f5029ce0dc22e1ca49195558ebf4c9dac1ff368d5ed22bf"
+  },
+  {
+   "path": "travel/trade_wind_halfday.png",
+   "size": [
+    512,
+    512
+   ],
+   "bytes": 563225,
+   "sha256": "7842719edee2ae31a86ddb3aa4b92fdbe633db61ef1dcc25e1b6983eb8d84ba5"
+  },
+  {
+   "path": "ui/actions/checkin.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 25618,
+   "sha256": "ef52e9afc8520b7d14bb9ef0f9c1f362ef4db6c0b0296d19e6bf4ec3f7b71085"
+  },
+  {
+   "path": "ui/actions/complete.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 23900,
+   "sha256": "60b004f1e3147b5b0bd32532db3e7b80dba495b03e214332d43295399c72c04c"
+  },
+  {
+   "path": "ui/actions/delete.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 20134,
+   "sha256": "bf773d0ddb73d1cb26301f3f47ace71b4c458673d430a34572f9b53fec3dd417"
+  },
+  {
+   "path": "ui/actions/focus.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 26669,
+   "sha256": "ae7ba7922c999ad78599655e1df5afbdfe1fca616cc30ef4c62923867ce11344"
+  },
+  {
+   "path": "ui/actions/pin.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 20831,
+   "sha256": "36a73582131b44834ede23859c03d62e15695b208ec8bcf42fc166cb62e83537"
+  },
+  {
+   "path": "ui/actions/restart.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 20819,
+   "sha256": "e3237b2ead6921bc42fdfc15239c4157172bd68222e240c19b432b6be443d897"
+  },
+  {
+   "path": "ui/actions/settings.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 24306,
+   "sha256": "12cca66e90926b83bffb371c916cf67ab83ceee5a8e958e07a6024f91da02263"
+  },
+  {
+   "path": "ui/actions/share.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 15011,
+   "sha256": "862ee78204e6de5987fcf926c4d7206fd93597946b21db71a5312b5c8cef7ba3"
+  },
+  {
+   "path": "ui/actions/start.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 21909,
+   "sha256": "821015e0b78c5446491672d06a3b9b7bd35fa0d4413da6d1c5fc537860414ea3"
+  },
+  {
+   "path": "ui/actions/undo.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 17885,
+   "sha256": "64d1c7e2afb89c2ef996bf41e68b47b7ffc54f54d224018a79b8f0a406e219ee"
+  },
+  {
+   "path": "ui/app_icon.png",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 1290410,
+   "sha256": "be4d30fa4b320d13826ec97f321f2a7a3f0d5f5d3875f6ee2394d080cede580d"
+  },
+  {
+   "path": "ui/difficulty/challenge.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 9522,
+   "sha256": "ed52d813ded158df4470b4df05275c70699c6c2b5291bcb9c1269169dbe3b275"
+  },
+  {
+   "path": "ui/difficulty/easy.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 12534,
+   "sha256": "8abf9d782a2c674f7b94248cd36dc3bd5403cbe3b0fc46680c5ae2f365d7b045"
+  },
+  {
+   "path": "ui/difficulty/steady.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 9451,
+   "sha256": "424f63f66e7048cfb707de56979de726fe49c0c7b8d0e5cd510156303dec183f"
+  },
+  {
+   "path": "ui/emotes/happy.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 19564,
+   "sha256": "181c62fdc3c21ff77c2b689d6f7b277dcbe35419d9a73d41a5d1ea2630573b21"
+  },
+  {
+   "path": "ui/emotes/heart.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 16701,
+   "sha256": "6823f8f7f9425682cba4645d0a1368d8e38538f5e2e3882ffd03951ccd918904"
+  },
+  {
+   "path": "ui/emotes/leaf.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 15688,
+   "sha256": "69692ef0160bb7c76f4a77c2f9fff37f22846d5c64b78d517e81c529af35803b"
+  },
+  {
+   "path": "ui/emotes/music.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 16526,
+   "sha256": "68b50f5c1769237ce90174434afb51d2b866cc431c8195754cbaa5b916acfddd"
+  },
+  {
+   "path": "ui/emotes/sparkle.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 13066,
+   "sha256": "b5a44ba57d2b84b8af6c7075629509744cf4c17efa79e028b2991a6adeeb75f7"
+  },
+  {
+   "path": "ui/feedback/calm.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 16220,
+   "sha256": "e3c799e3a53f6a9df7e2d4391557124ce436da901f2e2e716b283b8e29151f6b"
+  },
+  {
+   "path": "ui/feedback/easier.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 19075,
+   "sha256": "0e7f0ab49257c65331d141247877741d404fde4fb4fa6483f35ed85ddb6b80c6"
+  },
+  {
+   "path": "ui/feedback/proud.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 15117,
+   "sha256": "a82b77969ce1bdc9b70114d0b9d05094a7cb4e3c4d0558351399a55194017c41"
+  },
+  {
+   "path": "ui/feedback/relief.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 15645,
+   "sha256": "6b1cb87db43aabeb0401c769f8571962277c469860c2b8ab9e4a25ba8afb94b4"
+  },
+  {
+   "path": "ui/sections/roam.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 21217,
+   "sha256": "6985f52ec366cddc04e8a19792ee4264103d2d76c9244a7d9d7accf84c7b08ff"
+  },
+  {
+   "path": "ui/sections/store.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 18943,
+   "sha256": "a127826f834002a92780082d9580de09b9bbf5054d5bbc3ad0b6fa8a413949b0"
+  },
+  {
+   "path": "ui/tabs/compendium.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 30314,
+   "sha256": "75ca785944aad73ff22438b37facdcdf3a4ed1e206f322e1ed5c3ac8c290a479"
+  },
+  {
+   "path": "ui/tabs/growth.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 24330,
+   "sha256": "fb669f864512dba32390e3c6214e112199f1793e72d6436352600dcbc6b903b9"
+  },
+  {
+   "path": "ui/tabs/island.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 23577,
+   "sha256": "db6e8283af7086b2dfc1b78fd9610d97e6c264a81045fe198a7767e98a75ce6a"
+  },
+  {
+   "path": "ui/tabs/maze.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 23718,
+   "sha256": "ce49b7d3c500398b94a1f81defed6af3e36b4fb68b81821c6998c88ba51c2093"
+  },
+  {
+   "path": "ui/tabs/todo.png",
+   "size": [
+    128,
+    128
+   ],
+   "bytes": 27878,
+   "sha256": "db7bb008b6018b4415cec020b5af4b0141ab5f754ac167b8d40b95d9dc380b4c"
+  }
+ ]
+}

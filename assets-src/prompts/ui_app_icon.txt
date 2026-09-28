@@ -1,0 +1,8 @@
+Use case: Production application icon for Moodisle on Android and Web.
+Asset type: Square full-bleed app icon master artwork.
+Primary request: A small floating heart-shaped island above a calm pale-blue sea, with one friendly rounded white cloud weather spirit gently holding a tiny orange heart on the island; warm, comforting, focused, memorable at launcher size.
+Style/medium: Soft flat sticker illustration matching Moodisle: thick rounded warm-brown (#5a3e22) outline, pastel palette, subtle paper grain, simple large shapes and two-step soft lighting.
+Composition: Centered square icon, no separate frame and no pre-rounded corners. Keep the island, spirit, and heart entirely within the central 70% safe area so Android masks and Web maskable icons do not crop them. The background fills the whole canvas.
+Color palette: paper cream, pale sea blue, fresh island green, cloud white, and a restrained warm orange heart.
+Constraints: Strong clean silhouette; minimal details; no text or wordmark; original Moodisle artwork only.
+Avoid: letters, words, UI mockup, border, watermark, signature, emoji glyph style, photorealism, 3D, harsh shadows, busy scenery, tiny details.

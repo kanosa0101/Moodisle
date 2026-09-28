@@ -1,0 +1,46 @@
+# app/ · Flutter 应用
+
+本文记录当前代码结构与可复现命令。项目处于 Web/Android 测试打磨阶段；不要把历史检查结果当作当前版本的验证结论。
+
+## 环境与命令
+
+需要 Flutter SDK；pubspec.yaml 要求 Dart >=3.3.0 <4.0.0。
+
+    cd app
+    flutter pub get
+    flutter run -d chrome
+    flutter run                 # 需要已连接的 Android 设备或模拟器
+    flutter analyze
+    flutter test
+    flutter build web --release
+    flutter build apk --release
+
+从仓库根目录运行美术工具：
+
+    cd ..
+    python tool/asset_pipeline.py todo
+    python tool/asset_pipeline.py validate
+    python tool/asset_pipeline.py manifest
+    python tool/ip_scan.py .
+
+## 当前实现
+
+- lib/main.dart：MaterialApp、共享页面框架、五项底部导航和首次引导。成长页从右上角进入。
+- lib/domain/：游戏状态、规则、经济、气候、专注、生态与回廊内核。
+- lib/application/：GameController（ChangeNotifier 门面、计时心跳和约 2 秒延迟合并保存）与 GameCore 协作。
+- lib/data/：JSON v2 编解码和 SaveStore；原生平台使用应用文档目录，Web 使用 localStorage，保留有效备份。
+- lib/presentation/pages/：心屿、待办、图鉴、回廊、专注、成长和引导页面。
+- lib/shared/：主题 token 和共用 UI。
+- assets/：278 张当前运行时 PNG。
+- test/：17 个测试文件、103 条测试声明。
+
+pubspec.yaml 的唯一运行时第三方依赖是 path_provider。桌面小组件、iOS Live Activity、通知、音频播放、触感反馈和暗色主题目前不是已交付能力；平台状态见 [架构文档](../docs/05-多端技术架构.md)。
+
+## 验证状态
+
+- 最近一次有记录的完整测试结果为历史版本的 89 项通过；当前 103 条测试声明没有在最近 UI 修改后重跑。
+- Web Release 构建于 2026-09-28 成功。
+- Android 需要基于当前源码重新构建并进行设备验收；iOS 目录存在，但没有当前构建或设备验收记录。
+- Web 测试中仍有引导第三步无法输入、回廊入口持续灰显的反馈，复现与原因待确认；见 [验收指南](../docs/09-验收指南.md)。
+
+更多项目约束与验证边界见仓库根目录的 [README](../README.md)。

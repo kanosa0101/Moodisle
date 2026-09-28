@@ -1,0 +1,7 @@
+Use case: Moodisle game UI asset.
+Asset type: Small transparent difficulty-selector icon, displayed at 18 px.
+Primary request: A simple pair of fresh mint-green leaves with one tiny new bud, clearly communicating an easy, gentle task.
+Style/medium: Soft flat sticker illustration matching Moodisle: thick rounded warm-brown (#5a3e22) outline, pastel palette, subtle paper grain, rounded shapes.
+Composition: One centered compact silhouette in a square canvas, filling about 70% of the canvas with generous transparent padding; readable when reduced to 18 px.
+Constraints: True transparent background; no container or badge behind the leaves; use a small number of flat color areas.
+Avoid: text, letters, numbers, emoji glyph style, watermark, signature, photorealism, 3D, gradients, thin detail, extra objects.
