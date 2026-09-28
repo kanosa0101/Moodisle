@@ -38,5 +38,7 @@
 **Remote:** `https://github.com/kanosa0101/Moodisle`
 
 - [x] Preserve the existing target repository's settings: it is public and empty, so no repository creation or visibility change is needed.
-- [ ] Push `main` and verify the remote HEAD matches the local commit.
+- [x] Push `main` and verify the remote HEAD matches the local commit.
+
+> Published 2026-09-28: initial project commit `a29a5ed` reached the existing public repository over SSH; the remote `main` HEAD matched local HEAD.
 
