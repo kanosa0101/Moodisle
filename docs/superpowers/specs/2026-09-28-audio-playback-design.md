@@ -1,13 +1,13 @@
 # Moodisle 音频接入设计
 
 日期：2026-09-28  
-状态：待用户审阅；本文件记录设计，不代表音频已制作或运行时已接入。
+状态：用户已批准；10 个音效按本文件离线合成，3 首 BGM 由用户提供；本文件不代表两端实听已验收。
 
 ## 目标与范围
 
-为 Web 和 Android 接入项目既有规格中的 10 种音效与 3 首背景音乐。音频素材由用户使用 AI 工具生成；实现工作负责约定素材交付、播放、交互触发、生命周期管理和验收。素材来源继续遵守项目“AI 制作并留存生成记录”的规则。
+为 Web 和 Android 接入项目既有规格中的 10 种音效与 3 首背景音乐。用户已提供 3 首长音乐；由于当前没有可调用的音效生成模型，10 个短音效由项目 Python 标准库脚本确定性合成。实现负责资源校验、播放器接入、交互触发、生命周期管理和来源记录。
 
-不修改游戏领域规则、存档格式或专注计时，不制作程序合成替代音，不接入远程音频流。
+不修改游戏领域规则、存档格式或专注计时，不接入远程音频流，不引用第三方音效采样。
 
 ## 素材交付
 
@@ -15,10 +15,12 @@
 
 | 类型 | 文件名 | 交付规格 |
 |---|---|---|
-| 音效 | `tap.wav`、`add.wav`、`complete.wav`、`capture.wav`、`evolve.wav`、`light.wav`、`loot.wav`、`levelup.wav`、`error.wav`、`glance.wav` | PCM WAV，44.1 kHz，16-bit，mono；按原规格控制时长和音色，避免开头长静音与刺耳峰值 |
-| BGM | `bgm_sunny.mp3`、`bgm_mist.mp3`、`bgm_night.mp3` | MP3，44.1 kHz，stereo，128 kbps，60–90 秒；循环首尾应平顺，结尾保留可衔接的氛围尾音 |
+| 音效 | `tap.wav`、`add.wav`、`complete.wav`、`capture.wav`、`evolve.wav`、`light.wav`、`loot.wav`、`levelup.wav`、`error.wav`、`glance.wav` | Python 标准库离线确定性合成；PCM WAV，44.1 kHz，16-bit，mono；短促、柔和、无开头长静音，固定每个音效的随机种子以便复现 |
+| BGM | `bgm_sunny.mp3`、`bgm_mist.mp3`、`bgm_night.mp3` | 用户提供的 MP3 原样复制，不转码：44.1 kHz，stereo，约 192 kbps，时长约 177–183 秒；循环首尾待实听验收 |
 
-原始生成文件放在 `assets-src/audio/original/`，运行时文件放在 `app/assets/audio/`。`assets-src/audio/manifest.csv` 和 `assets-src/ledger.md` 记录每项的生成工具/模型、完整提示词、seed 或生成参数、日期、适用授权条款及 SHA-256。生成工具不提供某字段时，记为“不提供”，不可补造。
+原始音频放在 `assets-src/audio/original/`，运行时副本放在 `app/assets/audio/`。3 首 BGM 按文件名暂映射为 `Barefoot_on_the_Lawn`→晴朗、`Through_the_Orchard_Gate`→薄雾、`Running_Toward_The_Horizon`→夜晚；这是基于标题的暂定映射，实听确认后可调整。BGM 原件保留用户给出的名称，运行时副本只做重命名且字节一致。
+
+`tool/generate_audio_sfx.py` 只用 Python 标准库生成 10 个 WAV 原件及运行时副本，参数和固定种子写入 `assets-src/audio/manifest.csv`。清单与 `assets-src/ledger.md` 记录 source、工具/模型、提示词或“不适用”、seed/参数、日期、权利/授权信息及 SHA-256。用户提供音乐缺少的模型、提示词和授权字段如实记为“未提供”；不从文件签名推断模型或授权。
 
 ## 播放架构
 
@@ -54,11 +56,11 @@
 
 ## 验收
 
-接入分两步完成：先接入播放器服务、静音控制和事件触发；缺少的素材不创建静音占位文件，播放器遇到未交付资源时无声返回。收到全部 13 个有生成记录的素材后，确认文件名、格式、时长、授权记录和哈希，再接入 Flutter 资源清单并启用实际播放。
+播放器服务、静音控制、页面事件和 13 项资源已接入；资源格式、时长、哈希、pubspec 声明、`flutter analyze` 及 Web/Android Release 构建已有通过记录。当前未完成的是 Web/Android 实际听音验收，包括静音、BGM 情绪映射与循环、前后台恢复及 10 个音效触发。音频接入后没有记录全量 `flutter test` 重跑；BGM 的模型、prompt、日期和授权仍为“未提供”，不得据文件元数据推断。详见 docs/09 §1、§6。
 
 最终交付前执行 `flutter analyze`、Web Release（带 `--pwa-strategy=none`）与 Android Release 构建，并在浏览器与 Android 设备分别手动检查静音、BGM 选择/循环/前后台恢复及表中 10 个音效触发。
 
-项目当前没有 13 个音频素材；第一步完成后，应用在素材交付前仍保持无声且不影响现有功能。自动化测试范围不在本设计内。
+构建成功只证明资源打包和代码编译。BGM 的情绪映射、曲目循环、静音、10 个触发点及 Android/Web 的实际输出仍需手动实听确认。自动化测试范围不在本设计内。
 
 ## 依据
 

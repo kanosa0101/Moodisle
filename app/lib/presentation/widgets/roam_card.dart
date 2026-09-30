@@ -7,6 +7,8 @@ import '../../application/game_controller.dart';
 import '../../domain/config/roam_config.dart';
 import '../../domain/entities/emotion.dart';
 import '../../domain/entities/pet.dart';
+import '../../shared/audio/moodisle_audio_scope.dart';
+import '../../shared/audio/moodisle_audio_service.dart';
 import '../../shared/theme/tokens.dart';
 import 'game_icons.dart';
 import 'pet_sprite.dart';
@@ -108,7 +110,13 @@ class _RoamSlotRow extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: FilledButton(
-              onPressed: due ? () => controller.claimRoam(index) : null,
+              onPressed: due
+                  ? () {
+                      controller.claimRoam(index);
+                      MoodisleAudioScope.maybeOf(context)
+                          ?.play([MoodisleSound.loot]);
+                    }
+                  : null,
               style: FilledButton.styleFrom(
                 backgroundColor: MoodisleColors.green,
                 foregroundColor: MoodisleColors.ink,

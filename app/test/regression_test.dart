@@ -20,10 +20,38 @@ import 'package:moodisle_app/domain/events/game_events.dart';
 import 'package:moodisle_app/domain/game_core.dart';
 import 'package:moodisle_app/domain/time/local_date.dart';
 import 'package:moodisle_app/main.dart';
+import 'package:moodisle_app/presentation/pages/coach_page.dart';
 import 'package:moodisle_app/presentation/pages/dex_page.dart';
 import 'package:moodisle_app/presentation/pages/island_page.dart';
 import 'package:moodisle_app/presentation/widgets/game_icons.dart';
 import 'package:moodisle_app/presentation/widgets/pet_sprite.dart';
+
+import 'helpers/temp_dir_cleanup.dart';
+
+/// 识别持有已解码世界地图的画笔（_MapImagePainter 持有 image；其余画笔无该成员）。
+bool hasMapImagePainter(Widget widget) {
+  if (widget is! CustomPaint) return false;
+  try {
+    return (widget.painter as dynamic).image != null;
+  } on NoSuchMethodError {
+    return false;
+  }
+}
+
+Widget _coachHarness({required bool waiting, required VoidCallback onNext}) =>
+    MaterialApp(
+      home: Scaffold(
+        body: CoachOverlay(
+          hole: null,
+          stepIndex: 2,
+          total: 9,
+          text: '输入一件今天真实要做的事',
+          waiting: waiting,
+          onNext: onNext,
+          onSkip: () {},
+        ),
+      ),
+    );
 
 void main() {
   const pathProvider = MethodChannel('plugins.flutter.io/path_provider');
@@ -31,14 +59,20 @@ void main() {
 
   setUp(() {
     documents = Directory.systemTemp.createTempSync('moodisle-widget-test-');
+    // getTemporaryDirectory 单独指向系统临时目录，避免 just_audio 资产缓存
+    // 写入存档目录导致 teardown 删除时句柄未释放（Windows errno 32）。
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(pathProvider, (_) async => documents.path);
+        .setMockMethodCallHandler(pathProvider, (call) async {
+      return call.method == 'getTemporaryDirectory'
+          ? Directory.systemTemp.path
+          : documents.path;
+    });
   });
 
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(pathProvider, null);
-    documents.deleteSync(recursive: true);
+    deleteTempDirWithRetry(documents);
   });
 
   testWidgets('开始上岛后第一步和下一步引导卡片都可见', (tester) async {
@@ -76,6 +110,64 @@ void main() {
     }
   });
 
+  testWidgets('引导等待步骤在洞就绪前只拦截不推进', (tester) async {
+    var next = 0;
+    await tester.pumpWidget(_coachHarness(waiting: true, onNext: () => next++));
+    await tester.pump();
+    await tester.tap(find.byType(CoachOverlay));
+    await tester.pump();
+    expect(next, 0, reason: '等待步骤洞未就绪时点击不应触发推进（避免误触跳步）');
+  });
+
+  testWidgets('引导普通步骤点击空白处推进', (tester) async {
+    var next = 0;
+    await tester
+        .pumpWidget(_coachHarness(waiting: false, onNext: () => next++));
+    await tester.pump();
+    await tester.tap(find.byType(CoachOverlay));
+    await tester.pump();
+    expect(next, 1, reason: '非等待步骤点击高亮区外应推进');
+  });
+
+  testWidgets('引导第三步输入框可直接输入，召唤后自动放行', (tester) async {
+    tester.view.physicalSize = const Size(1280, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    try {
+      await tester.pumpWidget(const MoodisleApp());
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.tap(find.byKey(const ValueKey('intro_start')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+
+      // 推进到等待真实输入的第 3 步（高亮添加面板）
+      await tester.tap(find.text('下一步'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.tap(find.text('下一步'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      expect(find.text('第 3 / 9 步'), findsOneWidget);
+
+      // 提示卡片不得遮挡输入框；洞内输入框可点击、可输入
+      final fieldRect = tester.getRect(find.byType(TextField).first);
+      final tipRect =
+          tester.getRect(find.byKey(const ValueKey('coach_tip_card')));
+      expect(fieldRect.overlaps(tipRect), isFalse, reason: '引导提示卡片不得遮挡录入框');
+      await tester.tap(find.byType(TextField).first);
+      await tester.enterText(find.byType(TextField).first, '写周报');
+      await tester.tap(find.text('召唤'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // 召唤成功 → 引导自动放行到第 4 步
+      expect(find.text('第 4 / 9 步'), findsOneWidget);
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
   testWidgets('首屏等待存档恢复后再判断是否显示首次引导', (tester) async {
     final saved = GameState.fresh()..onboarded = true;
     await SaveStore().save(encodeSave(saved));
@@ -86,14 +178,14 @@ void main() {
     try {
       await tester.pumpWidget(const MoodisleApp());
       await tester.pump(const Duration(milliseconds: 500));
-      expect(find.text('🏝️ 欢迎来到心晴屿'), findsNothing);
-      expect(find.text('🌅 今日心晴'), findsNothing);
+      expect(find.text('欢迎来到心晴屿'), findsNothing);
+      expect(find.text('今日心晴'), findsNothing);
 
       directoryRead.complete(documents.path);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
       expect(find.byKey(const ValueKey('intro_start')), findsNothing);
-      expect(find.text('🌅 今日心晴'), findsOneWidget);
+      expect(find.text('今日心晴'), findsOneWidget);
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());
     }
@@ -146,7 +238,7 @@ void main() {
     }
   });
 
-  testWidgets('地图资源按大世界尺寸绘制，再由视口裁切', (tester) async {
+  testWidgets('地图以世界图经相机窗口裁切绘制到视口', (tester) async {
     final controller = GameController();
     try {
       await tester.pumpWidget(MaterialApp(
@@ -159,15 +251,21 @@ void main() {
         ),
       ));
       await tester.pump();
-      final map = find.byWidgetPredicate((widget) =>
-          widget is Image &&
-          widget.image is AssetImage &&
-          (widget.image as AssetImage)
-              .assetName
-              .startsWith('assets/island/map_'));
+      await tester.runAsync(() async {
+        // 真实异步窗口：等待 rootBundle + 图片解码完成（FakeAsync 不推进引擎 IO）
+        await Future<void>.delayed(const Duration(milliseconds: 150));
+      });
+      await tester.pump();
 
-      expect(map, findsOneWidget);
-      expect(tester.getSize(map), const Size(kWorldW, kWorldH));
+      // 场景画笔持有一张已解码的世界地图（assets/island/map_* 部署且加载成功）
+      final mapPainters = find.byWidgetPredicate(hasMapImagePainter);
+      expect(mapPainters, findsOneWidget);
+
+      // 相机钳制在世界范围内：视口 428×300 按相机窗口从世界图裁切
+      final painter =
+          tester.widget<CustomPaint>(mapPainters).painter! as dynamic;
+      expect(painter.cam.dx, inInclusiveRange(0, kWorldW - kViewW));
+      expect(painter.cam.dy, inInclusiveRange(0, kWorldH - kViewH));
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();

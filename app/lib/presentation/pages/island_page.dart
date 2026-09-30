@@ -1,4 +1,4 @@
-/// 心屿页：可拖动的世界场景（对齐原版 FlowIsLand 的实现方式）。
+/// 心屿页：可拖动的世界场景（固定逻辑视口 + 相机裁切）。
 ///
 /// 原版做法（render.js + styles.css）：
 ///   · canvas 固定逻辑视口 428×300，CSS 等比缩放适配屏幕；
@@ -24,6 +24,8 @@ import '../../domain/entities/game_state.dart';
 import '../../domain/entities/pet.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/engine/eco_sim.dart';
+import '../../shared/audio/moodisle_audio_scope.dart';
+import '../../shared/audio/moodisle_audio_service.dart';
 import '../../shared/theme/tokens.dart';
 import '../widgets/game_icons.dart';
 import '../widgets/pet_sprite.dart';
@@ -383,6 +385,7 @@ class _IslandPageState extends State<IslandPage>
   }
 
   void _tapActor(IslandActor a) {
+    MoodisleAudioScope.maybeOf(context)?.play([MoodisleSound.glance]);
     final zone = a.biome.cn;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: const Duration(seconds: 1),

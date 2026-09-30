@@ -8,7 +8,7 @@
 
 **Tech Stack:** Flutter/Dart、项目 `tool/asset_pipeline.py`、AI 生成 PNG、Web 与 Android 共用 assets。
 
-> QA 状态（2026-09-28）：代码改动和 Web 构建记录已完成；宽屏细节、最终 Android 设备表现与回廊进入状态仍需按 docs/09 复核。
+> QA 状态（2026-09-29 文档核对）：Web 宽屏/窄屏图鉴、藏品状态、云游路线卡和专注按钮已有 2026-09-28 浏览器验收记录（见本计划 Final validation 与 docs/qa）；回廊入口状态已复核。Android 设备验收仍待完成，所有十个回廊主题的逐区视觉检查也未完成，见迷宫视觉计划与 docs/09。
 
 ---
 
@@ -113,6 +113,6 @@ Container(
 - [x] Run `flutter build web --release --pwa-strategy=none` from `app/`; expect a successful `build/web` output.
 - [x] Run `flutter build apk --release` from `app/`; expect a successful `build/app/outputs/flutter-apk/app-release.apk` output.
 - [x] Confirm the running Web host serves the refreshed `index.html` and `main.dart.js` with HTTP 200; inspect the narrow companion detail, collection detail, and all 20 gray-state catalog entries.
-- [ ] Visually inspect the desktop-wide companion detail, enlarged route illustrations, and focus start CTA on a save that owns a companion.
-- [ ] Recheck Web maze entry after the current gray-entry report. Reproduce with a save that meets the displayed entry requirements and record the disabled-state cause before closing this item.
+- [x] Visually inspect the desktop-wide companion detail, enlarged route illustrations, and focus start CTA on a save that owns a companion. > 2026-09-28 Chrome 900×700 实测：详情横向大画册、路线大插画卡、专注主按钮全部符合设计（证据 docs/qa/2026-09-28-web-验收/09、10、11）。
+- [x] Recheck Web maze entry after the current gray-entry report. Reproduce with an eligible save and record the disabled-state cause before closing this item. > 2026-09-28 复核：收服伙伴后雷鸣丘入口为橙色可用，点击即进入且贴图/怪物渲染正常；灰色按钮仅为未解锁区（累计探索门槛），无伙伴时按钮可点并弹提示解释。旧报告未在新构建复现（证据 05、06；自动化回归已断言）。
 

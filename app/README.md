@@ -30,17 +30,18 @@
 - lib/application/：GameController（ChangeNotifier 门面、计时心跳和约 2 秒延迟合并保存）与 GameCore 协作。
 - lib/data/：JSON v2 编解码和 SaveStore；原生平台使用应用文档目录，Web 使用 localStorage，保留有效备份。
 - lib/presentation/pages/：心屿、待办、图鉴、回廊、专注、成长和引导页面。
-- lib/shared/：主题 token 和共用 UI。
-- assets/：278 张当前运行时 PNG。
-- test/：17 个测试文件、103 条测试声明。
+- lib/shared/：主题 token（含 MoodisleSans 字体族）、共用 UI 和应用级音频播放器。
+- assets/：278 张当前运行时 PNG 与 2 个中文子集字体（tool/subset_font.py 生成）。
+- test/：17 个测试文件、106 条测试。
 
-pubspec.yaml 的唯一运行时第三方依赖是 path_provider。桌面小组件、iOS Live Activity、通知、音频播放、触感反馈和暗色主题目前不是已交付能力；平台状态见 [架构文档](../docs/05-多端技术架构.md)。
+运行时第三方依赖为 path_provider 与 just_audio。音频播放器、静音、生命周期、页面事件与 13 项音频资源已接入；Web/Android Release 构建通过，实际播放仍待实听验收。桌面小组件、iOS Live Activity、通知、触感反馈和暗色主题目前不是已交付能力；平台状态见 [架构文档](../docs/05-多端技术架构.md)。
 
 ## 验证状态
 
-- 最近一次有记录的完整测试结果为历史版本的 89 项通过；当前 103 条测试声明没有在最近 UI 修改后重跑。
-- Web Release 构建于 2026-09-28 成功。
-- Android 需要基于当前源码重新构建并进行设备验收；iOS 目录存在，但没有当前构建或设备验收记录。
-- Web 测试中仍有引导第三步无法输入、回廊入口持续灰显的反馈，复现与原因待确认；见 [验收指南](../docs/09-验收指南.md)。
+- 2026-09-28：全量回归记录为 106/106 通过，`flutter analyze` 无问题，`tool/ip_scan.py` PASS。
+- 2026-09-30（音频接入后）：全量重跑 106/106 通过，`flutter analyze` 无问题，`tool/ip_scan.py` PASS。重跑时修复三类测试环境问题（just_audio 平台替身、日期敏感夹具、临时目录清理），见 [验收指南](../docs/09-验收指南.md) §6。
+- Web Release 构建（`--pwa-strategy=none`）于 2026-09-28 成功，并在真实浏览器完成引导、回廊、图鉴、专注与云游的交互验收（截图见 `docs/qa/2026-09-28-web-验收/`）。
+- 此前 Web 反馈的“引导第三步无法输入”与“回廊入口灰显”均未在当前构建复现，复核结论见 [验收指南](../docs/09-验收指南.md) §4。
+- Android Release APK 已于 2026-09-28 基于当时源码构建成功，仍需安装并进行设备验收；iOS 目录存在，但没有当前构建或设备验收记录。
 
 更多项目约束与验证边界见仓库根目录的 [README](../README.md)。

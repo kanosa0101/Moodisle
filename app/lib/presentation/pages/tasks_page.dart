@@ -9,6 +9,8 @@ import '../../domain/entities/pet.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/config/weather_cycle.dart';
 import '../../domain/game_core.dart';
+import '../../shared/audio/moodisle_audio_scope.dart';
+import '../../shared/audio/moodisle_audio_service.dart';
 import '../../shared/theme/tokens.dart';
 import '../widgets/game_icons.dart';
 import '../widgets/pet_sprite.dart';
@@ -205,7 +207,11 @@ class _AddPanelState extends State<_AddPanel> {
   }
 
   void _add() {
+    final valid = _input.text.trim().isNotEmpty;
     widget.controller.addTask(_input.text, _emotion, _difficulty);
+    if (valid) {
+      MoodisleAudioScope.maybeOf(context)?.play([MoodisleSound.add]);
+    }
     _input.clear();
     FocusScope.of(context).unfocus();
   }
@@ -478,6 +484,14 @@ class _TaskRow extends StatelessWidget {
           // ignore: avoid_print
           Navigator.of(sheetCtx).pop();
           controller.completeTask(task.id, fb);
+          final capture = controller.pendingCapture;
+          final sounds = <MoodisleSound>[MoodisleSound.complete];
+          if (capture != null) {
+            sounds.add(
+                capture.evolved ? MoodisleSound.evolve : MoodisleSound.capture);
+            if (capture.keeperLevelUp) sounds.add(MoodisleSound.levelup);
+          }
+          MoodisleAudioScope.maybeOf(context)?.play(sounds);
           // ignore: avoid_print
           _showCapture(context);
         },
@@ -485,9 +499,19 @@ class _TaskRow extends StatelessWidget {
     );
   }
 
-  void _showCapture(BuildContext context) {
-    // ignore: avoid_print
+  Future<void> _showCapture(BuildContext context) async {
     if (controller.pendingCapture == null) return;
+    // 先解码立绘再入场，避免弹窗内短暂显示灰色占位圆
+    final cap = controller.pendingCapture!;
+    final rec = controller.state.pets[cap.emotion];
+    if (rec != null) {
+      await precacheImage(
+        AssetImage(
+            petAssetPath(cap.emotion, cap.newStage, rec.branch, 'front')),
+        context,
+      );
+    }
+    if (!context.mounted) return;
     showDialog(
       context: context,
       barrierDismissible: false,

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'application/game_controller.dart';
 import 'domain/config/game_config.dart';
 import 'domain/entities/task.dart';
+import 'domain/engine/climate.dart';
+import 'domain/events/game_events.dart';
 import 'domain/time/local_date.dart';
 import 'presentation/pages/coach_page.dart';
 import 'presentation/pages/dex_page.dart';
@@ -13,6 +15,8 @@ import 'presentation/pages/grow_page.dart';
 import 'presentation/pages/island_page.dart';
 import 'presentation/pages/maze_page.dart';
 import 'presentation/pages/tasks_page.dart';
+import 'shared/audio/moodisle_audio_scope.dart';
+import 'shared/audio/moodisle_audio_service.dart';
 import 'shared/theme/tokens.dart';
 
 void main() => runApp(const MoodisleApp());
@@ -70,6 +74,8 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   late final GameController _controller;
+  late final MoodisleAudioService _audio;
+  FocusCompleted? _lastFocusDone;
   int _tab = 0;
 
   // —— 引导 ——
@@ -100,6 +106,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _controller = GameController();
+    _audio = MoodisleAudioService();
+    unawaited(_audio.initialize().then((_) {
+      if (mounted) setState(() {});
+    }));
     _steps = [
       CoachStep(_tabTodoSelKey,
           '底部导航：<b>心屿 / 待办 / 图鉴 / 回廊 / 专注</b>（右上角打开成长页）。先去「待办」录入第一件事。',
@@ -256,7 +266,21 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   /// 引导等待：召唤/收服后自动放行。
   void _onControllerChanged() {
-    if (!_coachActive || !mounted) return;
+    if (!mounted) return;
+    _audio.updateMusic(
+      mist: _controller.state.climate.tier != ClimateTier.sunny,
+      now: DateTime.now(),
+    );
+    final focusDone = _controller.pendingFocusDone;
+    if (focusDone == null) {
+      _lastFocusDone = null;
+    } else if (!identical(focusDone, _lastFocusDone)) {
+      _lastFocusDone = focusDone;
+      if (focusDone.bondLevelUpTo != null) {
+        _audio.play([MoodisleSound.levelup]);
+      }
+    }
+    if (!_coachActive) return;
     final wait = _steps[_coachStep].wait;
     if (wait == 'add' && _controller.state.tasks.length > _tasksAtCoachStart) {
       _nextStep();
@@ -302,6 +326,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    _audio.onLifecycleChanged(state);
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
       _controller.focusBackgrounded();
@@ -315,6 +340,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
+    unawaited(_audio.dispose());
     super.dispose();
   }
 
@@ -340,9 +366,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           title: Row(children: [
             Image.asset('assets/ui/app_icon.png', width: 30, height: 30),
             const SizedBox(width: 7),
-            const Text('心晴屿 Moodisle',
-                style: TextStyle(
-                    fontWeight: FontWeight.w900, color: Color(0xFF5A3E22))),
+            // 标题可收缩省略：窄屏 / 宽动作区时不挤压溢出
+            const Flexible(
+              child: Text('心晴屿 Moodisle',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900, color: Color(0xFF5A3E22))),
+            ),
           ]),
           actions: [
             AnimatedBuilder(
@@ -377,6 +408,23 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
               ),
             ),
             IconButton(
+              tooltip: !_audio.hasAudio
+                  ? '音频素材待接入'
+                  : _audio.isMuted
+                      ? '开启音频'
+                      : '关闭音频',
+              onPressed: _audio.hasAudio
+                  ? () {
+                      setState(_audio.toggleMuted);
+                    }
+                  : null,
+              icon: Icon(
+                _audio.hasAudio && !_audio.isMuted
+                    ? Icons.volume_up_rounded
+                    : Icons.volume_off_rounded,
+              ),
+            ),
+            IconButton(
               key: _growBtnKey,
               tooltip: '成长',
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
@@ -386,24 +434,30 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           ],
         ),
         body: Stack(children: [
-          IndexedStack(index: _tab, children: [
-            IslandPage(controller: _controller),
-            TasksPage(
-              controller: _controller,
-              addRowKey: _addRowKey,
-              typeChipsKey: _typeChipsKey,
-              taskListKey: _taskListKey,
-              chainKey: _chainKey,
-            ),
-            DexPage(controller: _controller),
-            MazePage(controller: _controller),
-            FocusPage(controller: _controller),
-          ]),
+          MoodisleAudioScope(
+            service: _audio,
+            child: IndexedStack(index: _tab, children: [
+              IslandPage(controller: _controller),
+              TasksPage(
+                controller: _controller,
+                addRowKey: _addRowKey,
+                typeChipsKey: _typeChipsKey,
+                taskListKey: _taskListKey,
+                chainKey: _chainKey,
+              ),
+              DexPage(controller: _controller),
+              MazePage(controller: _controller),
+              FocusPage(controller: _controller),
+            ]),
+          ),
         ]),
         bottomNavigationBar: NavigationBar(
           key: _navBarKey,
           selectedIndex: _tab,
-          onDestinationSelected: (i) => setState(() => _tab = i),
+          onDestinationSelected: (i) {
+            if (i != _tab) _audio.play([MoodisleSound.tap]);
+            setState(() => _tab = i);
+          },
           destinations: [
             _tabDest([_tabIslandKey, _tabIslandSelKey], 'island',
                 Icons.landscape_outlined, '心屿'),

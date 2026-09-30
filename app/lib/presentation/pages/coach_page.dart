@@ -61,12 +61,16 @@ class CoachOverlay extends StatelessWidget {
   List<Widget> _barriers(Size size) {
     final target = waiting ? hole : null;
     if (target == null) {
+      // 等待步骤在洞就绪前只拦截不推进，避免步骤切换瞬间误触跳步；
+      // 非等待步骤保持点击空白处推进。
       return [
         Positioned.fill(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: onNext,
-          ),
+          child: waiting
+              ? const ModalBarrier(dismissible: false)
+              : GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onNext,
+                ),
         ),
       ];
     }

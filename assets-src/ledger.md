@@ -1,7 +1,9 @@
-# AI 生成台账（强制 · 权属证据链）
+# 资产来源与生成台账（权属证据链）
 
-> 规范：docs/00 §5、docs/06 §4。**每张资产入库前必须在本表登记**，与 `assets_manifest.json` 交叉校验，缺记录 = 不合格资产。
+> 规范要求见 docs/00 §5、docs/06 §4。**当前状态（2026-09-29）：本台账含批次摘要，尚未覆盖每一项资产的独立记录，也没有与 `assets_manifest.json` 自动交叉校验；工具条款核查表仍待填写。不能据此宣称全资产来源和授权已核清。**缺口与后续动作见 docs/07 §3。
 > 描述真源：docs/08-美术资产描述总表.md（prompt 片段从该文拼装）。
+
+> 未提供的模型、prompt、日期或授权信息均保留为“未提供”；用户提供的 BGM 授权信息未确认。现有 `tool/ip_scan.py` PASS 只代表禁用词扫描通过，不代表资产版权或台账完整性通过。
 
 ## 工具条款核查记录
 
@@ -64,15 +66,38 @@
 | 权属边界 | 本项目原创生成，未使用只读参考原型代码或图片；AI 原图保留在 process/，没有改写生成主体 |
 | 校验 | `validate`：278 项合格、0 项不合格；`todo`：278/278；`manifest`：322 条 SHA256（包括 4 张 process 原始图集/底图）；`deploy`：278 张进入 `app/assets/` |
 
-## 生成记录（历史）
+### 2026-09-28 · 中文子集字体随包分发
+
+| 项目 | 记录 |
+|---|---|
+| 字体来源 | Noto Sans SC（SIL OFL 1.0，允许再分发与子集化）；授权全文入库 `fonts/OFL.txt` |
+| 下载方式 | Google Fonts CSS API 直链（curl + 代理环境），两个字重各约 10.5 MB，存档为 `fonts/NotoSansSC-{400,700}-full.ttf` 供追溯与再生成 |
+| 处理工具 | `tool/subset_font.py`（fonttools/pyftsubset；字符集 = app/lib + docs + app/test + 根 README 全文 + 可打印 ASCII + 常用中文标点） |
+| 产物 | `app/assets/fonts/NotoSansSC-Regular-Subset.ttf`、`NotoSansSC-Bold-Subset.ttf`（各 0.44 MB / 1742 字形；字符集存档 `process/font_charset.txt`） |
+| 接线 | pubspec 声明 `MoodisleSans` 族（Bold 挂 700/800/900）；主题全局引用；迷宫画布文字显式引用 |
+| 验收 | FreeType 渲染通过；Web 构建 FontManifest 含该字族且文件 200 加载；对照实验：主题文本使用包内字体（无效族名对照下 gstatic 回退切片 9 → 21） |
+| 权属边界 | 字体为 SIL OFL 开源授权，非 AI 生成；未使用参考原型任何素材 |
+| 经手人 | Claude（ZCode 会话，2026-09-28） |
+
+### 2026-09-28 · 背景音乐与交互音效
+
+| 项目 | 记录 |
+|---|---|
+| BGM 原件 | 用户提供 `Barefoot_on_the_Lawn.mp3`、`Through_the_Orchard_Gate.mp3`、`Running_Toward_The_Horizon.mp3`，保留于 `audio/original/`；分别暂映射晴朗、薄雾、夜晚 |
+| BGM 规格 | 原件 44.1 kHz stereo MP3，时长 177.498 s、182.521 s、177.629 s；运行时仅重命名，三组源/运行时 SHA-256 一致 |
+| BGM 来源边界 | 文件含 C2PA 元数据，签名字符串含 Google LLC；未提供具体工具/模型、prompt、生成日期和授权条款，因此不作推断，详见 `audio/manifest.csv` |
+| SFX 制作 | `tool/generate_audio_sfx.py` 使用 Python 标准库离线合成 10 个短音效；每个声音使用固定 seed，无第三方采样；源 WAV 与运行时副本 SHA-256 一致 |
+| SFX 规格 | PCM WAV、44.1 kHz、16-bit、mono，时长 75–960 ms；所有参数、seed 与哈希见 `audio/manifest.csv` |
+| 权属与验收 | 用户提供音乐和项目自制合成音效均未混用参考原型素材；音乐授权信息未提供。文件格式、时长与哈希已核对；循环、音量、BGM 情绪映射及 Android/Web 播放仍待实听验收 |
+
+## 逐资产生成记录模板（当前尚未覆盖全部历史资产）
 
 | 日期 | 资产 ID | 描述来源（08 章节） | 工具 | prompt 指纹/全文链接 | seed | 重摇次数 | 人工后处理 | 经手人 | 验收 |
 |---|---|---|---|---|---|---|---|---|---|
-| （示例）2026-09-26 | pets/sloth/st2_front | 08 §1.3 + §2.1 晴态 + §2.2 front | Nano Banana | [prompts/sloth_st2_front.txt] | 174823 | 2 | rembg→量化→512² | 张三 | ✅ |
-| | | | | | | | | | |
+| 待补录 | 待填资产 ID | docs/08 对应段落 | 待填工具及版本 | prompt 文件路径或“不适用” | 实际 seed/参数或“未提供” | 待填 | 实际后处理步骤 | 待填经手人 | 待验收 |
 
 ## 过程文件索引（人工创作贡献证据）
 
 | 资产/精灵 | 过程文件（process/ 下） | 说明 |
 |---|---|---|
-| （示例）雾灵 canon | process/sloth_canon_sketch_v2.png | 手排设定草图第 2 版 |
+| 待补录资产/过程 | process/ 下的实际文件名 | 说明人工创作贡献 |

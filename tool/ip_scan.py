@@ -48,11 +48,8 @@ def main() -> int:
         for i, line in enumerate(text.splitlines(), 1):
             m = pattern.search(line)
             if m:
-                # 合法上下文：本脚本自身、禁用词表定义文档、指向原型文件夹的路径
-                if (f.name == "ip_scan.py" or "00-版权" in str(f)
-                        or "心流岛-FlowIsLand-Demo" in line
-                        or "FlowIsLand/Moodisle" in line
-                        or "原版 FlowIsLand" in line):
+                # 合法上下文：本脚本自身、禁用词表定义文档
+                if f.name == "ip_scan.py" or "00-版权" in str(f):
                     continue
                 hits.append(f"{f.relative_to(root)}:{i}: {m.group(0)}")
     if hits:

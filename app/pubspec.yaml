@@ -9,12 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  just_audio: ^0.9.46
   path_provider: ^2.1.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  # 测试替身直接引用其接口（app/test/helpers/fake_just_audio_platform.dart）
+  just_audio_platform_interface: ^4.6.0
 
 flutter:
   uses-material-design: true
@@ -43,5 +46,19 @@ flutter:
     - assets/ui/actions/
     - assets/ui/difficulty/
     - assets/ui/emotes/
+    - assets/audio/
     - assets/ui/feedback/
     - assets/ui/sections/
+  # 中文子集字体（tool/subset_font.py 生成，SIL OFL 1.0）：
+  # 界面文本离线可用，不再依赖 fonts.gstatic.com 的运行时下载。
+  # Bold 同时声明为 700/800/900，避免粗体字重匹配不到而走在线回退
+  fonts:
+    - family: MoodisleSans
+      fonts:
+        - asset: assets/fonts/NotoSansSC-Regular-Subset.ttf
+        - asset: assets/fonts/NotoSansSC-Bold-Subset.ttf
+          weight: 700
+        - asset: assets/fonts/NotoSansSC-Bold-Subset.ttf
+          weight: 800
+        - asset: assets/fonts/NotoSansSC-Bold-Subset.ttf
+          weight: 900

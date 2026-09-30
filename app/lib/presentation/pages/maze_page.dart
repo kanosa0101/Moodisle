@@ -14,6 +14,8 @@ import '../../domain/entities/emotion.dart';
 import '../../domain/events/game_events.dart';
 import '../../domain/engine/maze/maze_runtime.dart';
 import '../../domain/engine/maze/zone_tuning.dart';
+import '../../shared/audio/moodisle_audio_scope.dart';
+import '../../shared/audio/moodisle_audio_service.dart';
 import '../../shared/theme/tokens.dart';
 import '../widgets/game_icons.dart';
 import '../widgets/pet_sprite.dart' show petAssetPath, PetSprite;
@@ -465,13 +467,40 @@ class _MazeBoardPageState extends State<_MazeBoardPage> {
   }
 
   void _doClick(BuildContext context, int cx, int cy) {
+    final pickedBefore = controller.mazeRun?.picked.length ?? 0;
+    final lanternsBefore = controller.mazeRun?.lanterns ?? 0;
     final events = controller.mazeClick(cx, cy);
+    _playMazeOutcome(context, events, pickedBefore, lanternsBefore);
     _toast(context, events);
   }
 
   void _doStep(BuildContext context, int dx, int dy) {
+    final pickedBefore = controller.mazeRun?.picked.length ?? 0;
+    final lanternsBefore = controller.mazeRun?.lanterns ?? 0;
     final events = controller.mazeStep(dx, dy);
+    _playMazeOutcome(context, events, pickedBefore, lanternsBefore);
     _toast(context, events);
+  }
+
+  void _playMazeOutcome(
+    BuildContext context,
+    List<MazeRunEvent> events,
+    int pickedBefore,
+    int lanternsBefore,
+  ) {
+    final run = controller.mazeRun;
+    final pickedAfter = run?.picked.length ?? 0;
+    final lanternsAfter = run?.lanterns ?? 0;
+    final sound = events.any((event) => event.isError)
+        ? MoodisleSound.error
+        : lanternsAfter > lanternsBefore
+            ? MoodisleSound.light
+            : pickedAfter > pickedBefore
+                ? MoodisleSound.loot
+                : null;
+    if (sound != null) {
+      MoodisleAudioScope.maybeOf(context)?.play([sound]);
+    }
   }
 
   void _leave(BuildContext context) {
@@ -744,6 +773,7 @@ class _MazePainter extends CustomPainter {
       text: TextSpan(
           text: label,
           style: TextStyle(
+              fontFamily: MoodisleColors.fontFamily,
               fontSize: cell * 0.19,
               fontWeight: FontWeight.w800,
               color: Colors.white)),

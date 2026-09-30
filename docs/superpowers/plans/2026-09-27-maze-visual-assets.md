@@ -83,6 +83,7 @@ if (foe.kind == FoeKind.elite) _drawEliteBadge(canvas, cx + cell * 0.25, cy - ce
 ## Final validation
 
 - [x] Run `flutter build web --release --pwa-strategy=none` and `flutter build apk --release` from `app/`; both should complete successfully with the new assets bundled.
-- [ ] Open the Web maze and inspect mixed floor/wall layouts for continuous fence edges; inspect all ten zone themes at cell size, and confirm ordinary, elite and Boss sprites are illustrations rather than circles while level/status labels remain readable. The latest Web feedback says the maze entry stays gray; reproduce with an eligible save and record why it is disabled before closing this item.
+- [x] Open the Web maze and inspect a mixed floor/wall layout, foe illustrations, movement and collision; reproduce the gray-entry report with an eligible save and record its cause. > 2026-09-28 Chrome 实测：雷鸣丘栅栏连续、地面无缝，普通怪/精英（星标）/Boss 均为立绘 + Lv 徽章，传送门/神龛/出口/起点贴图齐全，移动与碰撞正常（证据 docs/qa/2026-09-28-web-验收/06、07）。入口“灰显”复核为未解锁区设计，解锁区按钮可用。
+- [ ] Inspect the remaining nine zone themes at cell size for tile continuity and correct ordinary/elite/Boss illustrations. The common asset pipeline is not evidence that every zone has been visually checked; record screenshots or a concise result when this review is done.
 - [x] Compare the generated source count and manifest with the updated totals in `docs/06-AI美术资产管线.md` and `assets-src/assets_manifest.json`.
 

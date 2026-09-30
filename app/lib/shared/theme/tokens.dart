@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 class MoodisleColors {
   MoodisleColors._();
 
+  /// 随包分发的中文子集字体族名（app/pubspec.yaml fonts 声明；
+  /// 由 tool/subset_font.py 生成）。裸 TextPainter 等不经过主题的文本需显式引用。
+  static const String fontFamily = 'MoodisleSans';
+
   static const Color orange = Color(0xFFE0A23C); // 主色
   static const Color green = Color(0xFF5FE08E); // 成功
   static const Color yellow = Color(0xFFFFE9B0);
@@ -52,7 +56,9 @@ class PaperPanel {
 
 /// 应用主题（M2 骨架用；随里程碑演进）。
 ThemeData buildMoodisleTheme() {
-  final base = ThemeData(useMaterial3: true);
+  // 随包分发的中文子集字体（SIL OFL），界面文本离线可用；
+  // 集外字符走系统/在线回退
+  final base = ThemeData(useMaterial3: true, fontFamily: MoodisleColors.fontFamily);
   return base.copyWith(
     scaffoldBackgroundColor: MoodisleColors.pageBg,
     colorScheme: base.colorScheme.copyWith(

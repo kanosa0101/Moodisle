@@ -10,7 +10,10 @@ import 'package:moodisle_app/domain/entities/pet.dart';
 import 'package:moodisle_app/domain/events/game_events.dart';
 
 void main() {
-  final now = DateTime(2026, 9, 26, 10, 0);
+  // 夹具取当前时间：SocialState.hasVisitor 读取真实时钟判断 72h 客住窗口，
+  // 固定历史日期会让窗口过期，断言随日历漂移（2026-09-29 起曾复现）。
+  // 本文件其余断言均基于相对 now 的时长运算，无绝对日期依赖。
+  final now = DateTime.now();
 
   group('云游引擎（docs/02 §7）', () {
     test('派遣校验：未收服/重复派遣/名额满 均拒绝', () {

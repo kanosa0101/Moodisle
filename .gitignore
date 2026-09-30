@@ -18,4 +18,5 @@ Thumbs.db
 # Flutter's app/.gitignore covers generated Flutter output under app/.
 # Android Gradle cache and machine-specific SDK location.
 app/android/.gradle/
+app/android/build/
 app/android/local.properties
