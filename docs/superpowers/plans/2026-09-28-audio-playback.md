@@ -265,4 +265,4 @@ Expected: exit code 0 and refreshed `app/build/app/outputs/flutter-apk/app-relea
 
 Run `git status --short --branch` and confirm the new audio service, dependency, app wiring, and docs appear alongside (not replacing) the pre-existing user edits. Do not stage or commit implementation files because they overlap existing uncommitted files and the user has not asked to commit them.
 
-After build verification, actual browser and Android listening acceptance remains pending until a person checks output, mute, track mapping, looping, lifecycle, and the ten event cues.
+After build verification, actual browser and Android listening acceptance was completed by the user on 2026-10-01: output, mute, track mapping, looping, lifecycle, and the ten event cues all check out on Web and Android.
