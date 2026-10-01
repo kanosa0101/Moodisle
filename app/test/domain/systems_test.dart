@@ -8,6 +8,7 @@ import 'package:moodisle_app/domain/entities/emotion.dart';
 import 'package:moodisle_app/domain/entities/game_state.dart';
 import 'package:moodisle_app/domain/entities/pet.dart';
 import 'package:moodisle_app/domain/events/game_events.dart';
+import 'package:moodisle_app/domain/time/local_date.dart';
 
 void main() {
   // 夹具取当前时间：SocialState.hasVisitor 读取真实时钟判断 72h 客住窗口，
@@ -119,7 +120,8 @@ void main() {
       final report = WeeklyEngine.build(s, now);
       expect(report.lines.length, greaterThanOrEqualTo(4));
       expect(report.headline, isNotEmpty);
-      expect(report.weekStart.day, lessThanOrEqualTo(now.day));
+      // 周一可能落在上个日历月（跨月周），不能比较 day 数值
+      expect(report.weekStart <= LocalDate.fromDateTime(now), isTrue);
       // 空档期文案分支
       final empty = WeeklyEngine.build(GameState.fresh(), now);
       expect(empty.headline, contains('安静'));

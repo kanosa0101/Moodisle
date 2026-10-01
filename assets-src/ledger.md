@@ -90,14 +90,30 @@
 | SFX 规格 | PCM WAV、44.1 kHz、16-bit、mono，时长 75–960 ms；所有参数、seed 与哈希见 `audio/manifest.csv` |
 | 权属与验收 | 用户提供音乐和项目自制合成音效均未混用参考原型素材；音乐授权信息未提供。文件格式、时长与哈希已核对；循环、音量、BGM 情绪映射及 Android/Web 播放经 2026-10-01 用户实测正常，音乐授权信息仍待补充 |
 
-## 逐资产生成记录模板（当前尚未覆盖全部历史资产）
+## 工具条款检查表（docs/00 §生成前检查要求）
 
-| 日期 | 资产 ID | 描述来源（08 章节） | 工具 | prompt 指纹/全文链接 | seed | 重摇次数 | 人工后处理 | 经手人 | 验收 |
-|---|---|---|---|---|---|---|---|---|---|
-| 待补录 | 待填资产 ID | docs/08 对应段落 | 待填工具及版本 | prompt 文件路径或“不适用” | 实际 seed/参数或“未提供” | 待填 | 实际后处理步骤 | 待填经手人 | 待验收 |
+| 工具/服务 | 版本 | 条款要点 | 检查日期 | 检查来源 |
+|---|---|---|---|---|
+| Codex 内置 image_gen.imagegen（OpenAI 图像生成） | 工具未提供内部版本号 | 输出归属：按 OpenAI 服务条款，"在法律允许范围内用户拥有全部输出，OpenAI 将输出的全部权利、权属和利益转让给用户"，允许含商用在内的任意用途。注意事项：(1) 纯 AI 生成图像在部分司法辖区（如美国版权局现行口径）可能不属于可版权客体，合同归属不等于可注册版权；(2) 输出非唯一，不保证与他人输出不相似；(3) 训练数据相关条款以服务条款现行文本为准 | 2026-10-01 | OpenAI Terms of Use（openai.com/policies/terms-of-use）及帮助中心 "Who owns output" 条目 |
+| Noto Sans SC 字体 | Google Fonts 全量母版（400/700） | SIL OFL 1.0：允许再分发、子集化、商用与嵌入，须保留许可文本（已入库 `fonts/OFL.txt`）；非 AI 生成素材 | 2026-09-28 | SIL OFL 1.0 全文随库存档 |
+| just_audio / just_audio_platform_interface | 0.9.46 / 4.6.0 | MIT 许可的运行时播放库，不产生素材权属 | 2026-09-28 | pub.dev 包许可元数据 |
+| Python 标准库音效合成 | Python 3 内置 wave/struct/math/random | 无第三方采样，项目自制；脚本、参数与固定 seed 入库可复现 | 2026-09-28 | `tool/generate_audio_sfx.py` 及 `audio/manifest.csv` |
+
+## 逐资产生成记录（已覆盖全部 manifest 资产）
+
+逐资产的来源字段由 `tool/generate_ledger_per_asset.py` 依据上述批次记录与
+`tool/intake_picture.py` 的映射规则推导，输出 `assets-src/ledger_per_asset.csv`
+（322 行）。该脚本的 `audit` 模式与 `assets_manifest.json` 交叉核对：任何
+manifest 资产在 CSV 中缺失或字段不完整即 FAIL。批次记录是权属判断的原始
+依据，CSV 是其逐资产展开，两者由管线维护一致。
 
 ## 过程文件索引（人工创作贡献证据）
 
 | 资产/精灵 | 过程文件（process/ 下） | 说明 |
 |---|---|---|
-| 待补录资产/过程 | process/ 下的实际文件名 | 说明人工创作贡献 |
+| 回廊 11 类 tile（256²） | process/maze_tile_atlas.png | 4×4 tile 图集原图，slice_atlases.py 确定性切片 |
+| 回廊无缝地面底图 | process/maze_floor_base.png | tile_floor 无边框底图，与 tile_wall 对边做周期混合 |
+| 十区天气怪物立绘 | process/maze_foe_atlas.png | 怪物图集原图，切片后裁边置中缩放 256px |
+| UI 贴纸（emotes/feedback/sections） | process/ui_sticker_atlas.png | 贴纸图集原图，切片后缩放 128px |
+| 图集切片规则 | process/slice_atlases.py | 人工定义的行优先切片、裁边与缩放规则（创作贡献留痕） |
+| 中文字体子集字符集 | process/font_charset.txt | subset_font.py 实际用字存档（1713 字符），可复现子集 |

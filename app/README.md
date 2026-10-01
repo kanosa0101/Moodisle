@@ -40,9 +40,10 @@
 
 - 2026-09-28：全量回归记录为 106/106 通过，`flutter analyze` 无问题，`tool/ip_scan.py` PASS。
 - 2026-09-30（音频接入后）：全量重跑 106/106 通过，`flutter analyze` 无问题，`tool/ip_scan.py` PASS。重跑时修复三类测试环境问题（just_audio 平台替身、日期敏感夹具、临时目录清理），见 [验收指南](../docs/09-验收指南.md) §6。
-- 2026-10-01：用户实测 Web 与 Android 音频输出正常，音频实听验收通过；BGM 授权信息仍待补充。
+- 2026-10-01：用户实测 Web 与 Android 音频输出正常，音频实听验收通过；同日用户完成 Android 设备实机验收。BGM 授权信息仍待补充。
+- 2026-10-01：迷宫属性测试扩至 10 区 × 1000 种子（10,000 组）后全量重跑 106/106，`flutter analyze` 无问题；`dart run benchmark/maze_benchmark.dart` 性能基准达标（最差 16.43 ms / 回放 1000 局 4.43 s）；`flutter test --coverage` 记录 domain 行覆盖 92.6%、lib 整体 69.7%；GitHub Actions CI 建立。
 - Web Release 构建（`--pwa-strategy=none`）于 2026-09-28 成功，并在真实浏览器完成引导、回廊、图鉴、专注与云游的交互验收（截图见 `docs/qa/2026-09-28-web-验收/`）。
 - 此前 Web 反馈的“引导第三步无法输入”与“回廊入口灰显”均未在当前构建复现，复核结论见 [验收指南](../docs/09-验收指南.md) §4。
-- Android Release APK 已于 2026-09-28 基于当时源码构建成功，仍需安装并进行设备验收；iOS 目录存在，但没有当前构建或设备验收记录。
+- iOS 目录存在，但没有当前构建或设备验收记录（前置条件：Mac 与 Apple 开发者账号）。
 
 更多项目约束与验证边界见仓库根目录的 [README](../README.md)。

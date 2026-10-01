@@ -91,10 +91,10 @@ void main() {
     expect(m.endLevel, lastSolve.finalLevel);
   }
 
-  test('属性测试：10 区 × 100 种子全部生成成功、可解、满足不变式', () {
+  test('属性测试：10 区 × 1000 种子全部生成成功、可解、满足不变式', () {
     var count = 0;
     for (var zi = 0; zi < 10; zi++) {
-      for (var seed = 0; seed < 100; seed++) {
+      for (var seed = 0; seed < 1000; seed++) {
         final m = gen(zi, seed);
         expect(m.floors.length, tuningFor(zi).floorCount,
             reason: 'zi=$zi seed=$seed 层数不符');
@@ -102,7 +102,7 @@ void main() {
         count++;
       }
     }
-    expect(count, 1000);
+    expect(count, 10000);
   });
 
   test('确定性：同种子两次生成指纹一致；不同种子大概率不同', () {
