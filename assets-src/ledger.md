@@ -3,7 +3,7 @@
 > 规范要求见 docs/00 §5、docs/06 §4。**当前状态（2026-09-29）：本台账含批次摘要，尚未覆盖每一项资产的独立记录，也没有与 `assets_manifest.json` 自动交叉校验；工具条款核查表仍待填写。不能据此宣称全资产来源和授权已核清。**缺口与后续动作见 docs/07 §3。
 > 描述真源：docs/08-美术资产描述总表.md（prompt 片段从该文拼装）。
 
-> 未提供的模型、prompt、日期或授权信息均保留为“未提供”；用户提供的 BGM 授权信息未确认。现有 `tool/ip_scan.py` PASS 只代表禁用词扫描通过，不代表资产版权或台账完整性通过。
+> 未提供的明细（如用户 AI 生成素材的具体工具/prompt）保留为“未提供”，不作推断。现有 `tool/ip_scan.py` PASS 只代表禁用词扫描通过，不代表资产版权或台账完整性通过。
 
 ## 工具条款核查记录
 
@@ -83,12 +83,12 @@
 
 | 项目 | 记录 |
 |---|---|
-| BGM 原件 | 用户提供 `Barefoot_on_the_Lawn.mp3`、`Through_the_Orchard_Gate.mp3`、`Running_Toward_The_Horizon.mp3`，保留于 `audio/original/`；分别暂映射晴朗、薄雾、夜晚 |
+| BGM 原件 | 用户提供 `Barefoot_on_the_Lawn.mp3`、`Through_the_Orchard_Gate.mp3`、`Running_Toward_The_Horizon.mp3`，保留于 `audio/original/`；分别映射晴朗、薄雾、夜晚；用户自述（2026-10-01）三首均由本人使用 AI 工具生成 |
 | BGM 规格 | 原件 44.1 kHz stereo MP3，时长 177.498 s、182.521 s、177.629 s；运行时仅重命名，三组源/运行时 SHA-256 一致 |
-| BGM 来源边界 | 文件含 C2PA 元数据，签名字符串含 Google LLC；未提供具体工具/模型、prompt、生成日期和授权条款，因此不作推断，详见 `audio/manifest.csv` |
+| BGM 来源边界 | 用户提供，用户自述（2026-10-01）：三首均由本人使用 AI 工具生成，权利条款与本人其他美术资源一致；具体工具/模型与 prompt 未登记明细，文件含 C2PA 元数据（签名字符串含 Google LLC），不作工具推断，详见 `audio/manifest.csv` |
 | SFX 制作 | `tool/generate_audio_sfx.py` 使用 Python 标准库离线合成 10 个短音效；每个声音使用固定 seed，无第三方采样；源 WAV 与运行时副本 SHA-256 一致 |
 | SFX 规格 | PCM WAV、44.1 kHz、16-bit、mono，时长 75–960 ms；所有参数、seed 与哈希见 `audio/manifest.csv` |
-| 权属与验收 | 用户提供音乐和项目自制合成音效均未混用参考原型素材；音乐授权信息未提供。文件格式、时长与哈希已核对；循环、音量、BGM 情绪映射及 Android/Web 播放经 2026-10-01 用户实测正常，音乐授权信息仍待补充 |
+| 权属与验收 | 用户提供音乐和项目自制合成音效均未混用参考原型素材；音乐为用户 AI 生成（自述权利与本人美术资源一致，2026-10-01）。文件格式、时长与哈希已核对；循环、音量、BGM 情绪映射及 Android/Web 播放经 2026-10-01 用户实测正常 |
 
 ## 工具条款检查表（docs/00 §生成前检查要求）
 
