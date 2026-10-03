@@ -5,7 +5,7 @@
 generate 模式：按 assets_manifest.json 的 322 项资产，依据 ledger.md 各批次
 记录与 tool/intake_picture.py 的映射规则，推导出逐资产的来源字段，
 写入 assets-src/ledger_per_asset.csv。
-audit 模式：核对既有 CSV 覆盖 manifest 全部路径且字段完整，缺漏即非零退出。
+audit 模式：核对 CSV 表头、记录数量、路径唯一性和 manifest 完整覆盖，字段缺失即非零退出。
 
 用法：
     python tool/generate_ledger_per_asset.py generate
@@ -14,6 +14,7 @@ audit 模式：核对既有 CSV 覆盖 manifest 全部路径且字段完整，�
 import csv
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -111,8 +112,8 @@ def batch_for(path: str) -> dict:
         }
     return {
         "batch_date": "未知", "batch_title": "未匹配批次（需人工补录）",
-        "prompt_ref": "待补", "postprocess": "待补",
-        "source": "待补", "tool": "待补", "seed": "待补", "operator": "待补",
+        "source": "待补", "tool_or_model": "待补", "prompt_ref": "待补",
+        "seed_or_parameters": "待补", "postprocess": "待补", "operator": "待补",
     }
 
 
@@ -138,17 +139,60 @@ def generate() -> int:
 def audit() -> int:
     assets = json.loads(MANIFEST.read_text(encoding="utf-8"))["assets"]
     with CSV_PATH.open(encoding="utf-8-sig") as fh:
-        rows = {r["path"]: r for r in csv.DictReader(fh)}
-    missing = [a["path"] for a in assets if a["path"] not in rows]
-    incomplete = [
-        p for p, r in rows.items()
-        if any(not str(v).strip() for v in r.values())
-    ]
+        reader = csv.DictReader(fh)
+        headers = reader.fieldnames or []
+        rows = list(reader)
+
+    manifest_paths = [asset["path"] for asset in assets]
+    row_paths = [str(row.get("path") or "") for row in rows]
+    manifest_path_set = set(manifest_paths)
+    row_path_set = {path for path in row_paths if path}
+    missing = sorted(manifest_path_set - row_path_set)
+    unexpected = sorted(path for path in row_path_set - manifest_path_set if path)
+    duplicate_rows = sorted(
+        path for path, count in Counter(row_paths).items() if path.strip() and count > 1
+    )
+    duplicate_manifest = sorted(
+        path for path, count in Counter(manifest_paths).items() if count > 1
+    )
+    incomplete = []
+    for line_number, row in enumerate(rows, start=2):
+        missing_fields = [
+            field for field in HEADER if not str(row.get(field) or "").strip()
+        ]
+        if None in row:
+            missing_fields.append("多余列")
+        if missing_fields:
+            incomplete.append(f"第 {line_number} 行（{row.get('path') or '无路径'}）")
+
+    bad_header = headers != HEADER
+    bad_count = len(rows) != len(assets)
     print(f"[ledger_audit] manifest {len(assets)} 项，CSV {len(rows)} 行；"
-          f"缺失 {len(missing)}，字段不完整 {len(incomplete)}")
-    if missing or incomplete:
-        for p in (missing + incomplete)[:10]:
-            print(f"  - {p}")
+          f"缺失 {len(missing)}，重复 {len(duplicate_rows)}，额外路径 {len(unexpected)}，"
+          f"字段不完整 {len(incomplete)}")
+    if bad_header:
+        print(f"  - CSV 表头不匹配，期望：{','.join(HEADER)}")
+    if bad_count:
+        print(f"  - CSV 记录数应为 {len(assets)}，实际为 {len(rows)}")
+    if duplicate_manifest:
+        print(f"  - manifest 存在重复路径：{duplicate_manifest[:5]}")
+    if (
+        missing
+        or unexpected
+        or duplicate_rows
+        or duplicate_manifest
+        or incomplete
+        or bad_header
+        or bad_count
+    ):
+        for label, paths in (
+            ("缺失", missing),
+            ("重复", duplicate_rows),
+            ("额外", unexpected),
+            ("字段不完整", incomplete),
+        ):
+            for path in paths[:5]:
+                print(f"  - {label}：{path}")
         print("[ledger_audit] FAIL")
         return 1
     print("[ledger_audit] PASS — 逐资产台账覆盖全部 manifest 资产且字段完整")

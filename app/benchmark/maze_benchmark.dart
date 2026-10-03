@@ -6,8 +6,26 @@
 // ignore_for_file: avoid_print
 library;
 
+import 'dart:io';
+
 import 'package:moodisle_app/domain/engine/maze/maze_generator.dart';
 import 'package:moodisle_app/domain/engine/maze/maze_solver.dart';
+
+double medianMillis(List<int> samples) {
+  if (samples.isEmpty) {
+    throw ArgumentError.value(samples, 'samples', 'cannot be empty');
+  }
+  final sorted = [...samples]..sort();
+  final middle = sorted.length ~/ 2;
+  if (sorted.length.isOdd) return sorted[middle].toDouble();
+  return (sorted[middle - 1] + sorted[middle]) / 2;
+}
+
+bool meetsMazeBudget({
+  required double worstGenerationMs,
+  required List<int> replaySamplesMs,
+}) =>
+    worstGenerationMs < 50 && medianMillis(replaySamplesMs) < 5000;
 
 void main() {
   final watch = Stopwatch();
@@ -19,8 +37,8 @@ void main() {
       watch
         ..reset()
         ..start();
-      final m = MazeGenerator.generate(
-          zoneIndex: zi, startLevel: 5, seed: seed);
+      final m =
+          MazeGenerator.generate(zoneIndex: zi, startLevel: 5, seed: seed);
       MazeSolver.solve(m.floors.last, m.floorStartLevels.last);
       samples.add(watch.elapsedMicroseconds);
     }
@@ -34,17 +52,26 @@ void main() {
       'p95 ${p95.toStringAsFixed(2)} ms，最差 ${worst.toStringAsFixed(2)} ms'
       '（目标 < 50 ms）');
 
-  // 2) 回放 1000 局（各区轮流，种子 0–999）
-  final replay = Stopwatch()..start();
-  for (var i = 0; i < 1000; i++) {
-    final m = MazeGenerator.generate(
-        zoneIndex: i % 10, startLevel: 5, seed: i);
-    MazeSolver.solve(m.floors.last, m.floorStartLevels.last);
+  // 2) 回放 1000 局，测三次并以中位数作为门禁值，降低单次调度抖动影响。
+  final replaySamplesMs = <int>[];
+  for (var trial = 0; trial < 3; trial++) {
+    final replay = Stopwatch()..start();
+    for (var i = 0; i < 1000; i++) {
+      final m =
+          MazeGenerator.generate(zoneIndex: i % 10, startLevel: 5, seed: i);
+      MazeSolver.solve(m.floors.last, m.floorStartLevels.last);
+    }
+    replay.stop();
+    replaySamplesMs.add(replay.elapsedMilliseconds);
   }
-  replay.stop();
-  print('回放 1000 局：${(replay.elapsedMicroseconds / 1000).toStringAsFixed(0)} ms'
-      '（目标 < 5000 ms）');
+  final replayMedian = medianMillis(replaySamplesMs);
+  print('回放 1000 局（三次样本 ${replaySamplesMs.join(', ')} ms）：'
+      '中位数 ${replayMedian.toStringAsFixed(0)} ms（目标 < 5000 ms）');
 
-  final ok = worst < 50 && replay.elapsedMilliseconds < 5000;
+  final ok = meetsMazeBudget(
+    worstGenerationMs: worst,
+    replaySamplesMs: replaySamplesMs,
+  );
   print(ok ? '结论：达标' : '结论：未达标');
+  if (!ok) exitCode = 1;
 }

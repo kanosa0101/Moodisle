@@ -6,7 +6,8 @@
 | intake_picture.py | 使用 Pillow 将指定下载目录中的素材重命名、裁切/缩放并接入 assets-src/。脚本中的下载目录是本机路径，换环境前需调整。 |
 | ip_scan.py | 按 docs/00 的禁用词表扫描源码、文档和源资产文本，可手动运行 python tool/ip_scan.py .；已纳入 GitHub Actions（.github/workflows/ci.yml）。 |
 | coverage_report.py | 从 app/coverage/lcov.info 汇总 domain 行覆盖率；需先运行 flutter test --coverage。 |
-| generate_ledger_per_asset.py | 逐资产台账：generate 依据 ledger.md 批次与 intake 映射规则生成 assets-src/ledger_per_asset.csv（322 行）；audit 与 assets_manifest.json 交叉核对，缺失或字段不完整即非零退出（CI 已接入）。 |
+| generate_ledger_per_asset.py | 逐资产台账：generate 依据 ledger.md 批次与 intake 映射规则生成 assets-src/ledger_per_asset.csv（322 行）；audit 核对表头、记录数、路径唯一性、manifest 覆盖及字段完整性（CI 已接入）。 |
+| test_generate_ledger_per_asset.py | 台账生成与审计单测：运行 `python -m unittest tool.test_generate_ledger_per_asset`；当前工作区已加入 GitHub Actions，待远程运行确认。 |
 | subset_font.py | 收集工程实际用字（app/lib、docs、app/test、根 README + ASCII + 常用中文标点），用 fonttools 把全量 Noto Sans SC 裁成子集输出到 app/assets/fonts/；需先 pip install fonttools 且全量母版在 assets-src/fonts/。见 docs/06 §7。 |
 | generate_audio_sfx.py | 使用 Python 标准库和固定 seed 离线生成 10 个短 WAV 音效，写入 assets-src/audio/original/ 与 app/assets/audio/；发现内容不同的既有文件时拒绝覆盖。见 docs/06 §6。 |
 
