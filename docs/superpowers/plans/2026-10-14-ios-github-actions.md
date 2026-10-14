@@ -8,7 +8,7 @@
 
 **Tech Stack:** Flutter 3.47.5, Dart, Xcode on `macos-15`, GitHub Actions, Apple code signing tools.
 
-> **Delivery evidence (2026-10-14):** Linux CI run `38557417103` passed before the only macOS dispatch. iOS run `38557785074` completed the `unsigned-app` path successfully in about four minutes; the downloaded inner artifact SHA-256 is `9508A5D2F10A596490B6791C6DB18A0F133C971C0F266A691C24D439BEC97BFB`. Signed IPA and real-device acceptance remain open because Apple signing material has not been provided.
+> **Delivery evidence (2026-10-14):** The workflow first passed in run `38557785074`. After the cross-platform audit fixed the shared build number, commit `4f68c60` passed Linux CI run `38563573340`, then the single final macOS dispatch run `38564098008` completed `unsigned-app` in about 3 minutes 35 seconds. The final artifact contains v0.1.0/build 1, 13 audio files and both project fonts. Signed IPA and real-device acceptance remain open because Apple signing material has not been provided.
 
 ---
 
