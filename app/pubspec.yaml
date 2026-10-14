@@ -1,7 +1,7 @@
 name: moodisle_app
 description: 心晴屿 Moodisle —— 情绪即天气的陪伴式专注与待办收服（原创 IP）。
 publish_to: "none"
-version: 0.1.0
+version: 0.1.0+1
 
 environment:
   sdk: ">=3.3.0 <4.0.0"

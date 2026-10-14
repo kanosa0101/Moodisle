@@ -357,6 +357,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final compactTitle = MediaQuery.sizeOf(context).width < 430;
     // 引导遮罩需要盖住 AppBar/底栏 → 整个 Scaffold 包进外层 Stack
     return Stack(key: _shellStackKey, children: [
       Scaffold(
@@ -367,11 +368,11 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
             Image.asset('assets/ui/app_icon.png', width: 30, height: 30),
             const SizedBox(width: 7),
             // 标题可收缩省略：窄屏 / 宽动作区时不挤压溢出
-            const Flexible(
-              child: Text('心晴屿 Moodisle',
+            Flexible(
+              child: Text(compactTitle ? '心晴屿' : '心晴屿 Moodisle',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontWeight: FontWeight.w900, color: Color(0xFF5A3E22))),
             ),
           ]),

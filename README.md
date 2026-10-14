@@ -30,7 +30,7 @@ flutter run                 # 已连接 Android 设备或模拟器
 cd app
 flutter test
 flutter analyze
-flutter build web --release --pwa-strategy=none
+flutter build web --release
 flutter build apk --release
 ```
 
@@ -42,13 +42,14 @@ iOS 必须在 macOS/Xcode 环境构建。Windows 开发机在同一提交的 Lin
 python tool/asset_pipeline.py todo
 python tool/asset_pipeline.py validate
 python tool/ip_scan.py .
+python tool/check_platform_consistency.py
 ```
 
 ## 当前状态与证据边界
 
 - 当前资产目录含 278 张运行时 PNG 与 2 个中文子集字体（SIL OFL 授权，`tool/subset_font.py` 生成）；`assets-src/assets_manifest.json` 登记 322 项，其中另含 30 张未接入运行时的表情差分、10 张 canon 设定图和 4 张过程图。逐资产来源台账 322/322 覆盖（`tool/generate_ledger_per_asset.py audit`）。
-- 当前有 18 个 Flutter 测试文件、109 条测试声明；2026-10-02 全量回归 109/109，迷宫属性测试覆盖 10 区 × 1000 种子。domain 行覆盖 92.6% 为开发机记录；迷宫性能门禁与台账工具单测已纳入 CI，2026-10-03 远程首跑通过（本机基准数据受负载波动，见 [验收指南](docs/09-验收指南.md) §6）。GitHub Actions 执行 analyze、Flutter 测试、迷宫性能门禁、台账工具单测、资产校验、清洁室扫描与台账审计。
-- Web Release 构建于 2026-09-28 成功，并已在真实浏览器完成引导、回廊、图鉴、专注与云游的交互验收（截图见 `docs/qa/2026-09-28-web-验收/`）。Android 设备验收由用户于 2026-10-01 完成；iOS 手动工作流于 2026-10-14 首次无签名 Release 编译成功（run `38557785074`），签名与真机验收仍待执行；生成目录不纳入 Git。
+- 当前有 18 个 Flutter 测试文件、110 条测试声明；2026-10-14 全量回归 110/110，迷宫属性测试覆盖 10 区 × 1000 种子。domain 行覆盖 92.6% 为历史开发机记录；迷宫性能门禁、台账工具单测与三端一致性检查已纳入 CI（本机性能数据受负载波动，见 [验收指南](docs/09-验收指南.md) §6）。
+- 2026-10-14 已基于 `0.1.0+1` 重建 Web 与 Android Release；Android APK SHA-256 为 `BEA1106109DEE1F60C21B697356C6C78BFFBA1B454D21F8A158913F2C9B426E7`。Web Release 在 390×844 与 844×390 下冒烟通过并修复窄屏标题截断；Android 设备验收仍来自 2026-10-01。iOS 首次无签名构建已通过，修订版本的最终 iOS 编译与签名真机验收按 [验收指南](docs/09-验收指南.md) 执行。
 - 音频播放器、静音控制、生命周期、页面事件及 13 项音频资源已接入；音频已于 2026-10-01 在 Web 与 Android 实测通过，BGM 为用户 AI 生成（权利口径经用户确认）。暗色主题、通知、Android 桌面组件、iOS Live Activity、触感与 V2 素材接入为后续范围；详见 [架构](docs/05-多端技术架构.md) 与 [验收指南](docs/09-验收指南.md)。
 
 ## 授权

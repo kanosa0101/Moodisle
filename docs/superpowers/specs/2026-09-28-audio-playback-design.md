@@ -58,7 +58,7 @@
 
 播放器服务、静音控制、页面事件和 13 项资源已接入；资源格式、时长、哈希、pubspec 声明、`flutter analyze` 及 Web/Android Release 构建已有通过记录。Web/Android 实际听音验收（含静音、BGM 情绪映射与循环、前后台恢复及 10 个音效触发）已于 2026-10-01 用户实测通过。2026-09-30 补录了音频接入后的全量 `flutter test` 重跑（106/106，见 docs/09 §6）；BGM 的模型、prompt、日期和授权仍为“未提供”，不得据文件元数据推断。详见 docs/09 §1、§6。
 
-最终交付前执行 `flutter analyze`、Web Release（带 `--pwa-strategy=none`）与 Android Release 构建，并在浏览器与 Android 设备分别手动检查静音、BGM 选择/循环/前后台恢复及表中 10 个音效触发。
+最终交付前执行 `flutter analyze`、`flutter build web --release` 与 Android Release 构建，并在浏览器与 Android 设备分别手动检查静音、BGM 选择/循环/前后台恢复及表中 10 个音效触发。Flutter 3.47 已弃用旧的 `--pwa-strategy` 参数。
 
 构建成功只证明资源打包和代码编译。BGM 的情绪映射、曲目循环、静音、10 个触发点及 Android/Web 的实际输出已于 2026-10-01 经用户手动实听确认。自动化测试范围不在本设计内。
 

@@ -47,6 +47,9 @@ jobs:
           python -m pip install --quiet pillow
           python tool/asset_pipeline.py validate
 
+      - name: Cross-platform consistency
+        run: python tool/check_platform_consistency.py
+
       - name: Clean-room banned-word scan
         run: python tool/ip_scan.py .
 

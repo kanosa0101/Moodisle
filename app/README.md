@@ -34,7 +34,7 @@ iOS 不能在 Windows 本机构建。提交对应的 Linux CI 通过后，从 Gi
 - lib/presentation/pages/：心屿、待办、图鉴、回廊、专注、成长和引导页面。
 - lib/shared/：主题 token（含 MoodisleSans 字体族）、共用 UI 和应用级音频播放器。
 - assets/：278 张当前运行时 PNG 与 2 个中文子集字体（tool/subset_font.py 生成）。
-- test/：18 个测试文件、109 条测试。
+- test/：18 个测试文件、110 条测试。
 
 运行时第三方依赖为 path_provider 与 just_audio。音频播放器、静音、生命周期、页面事件与 13 项音频资源已接入；Web/Android Release 构建通过，实际播放已于 2026-10-01 经用户在两端实测。桌面小组件、iOS Live Activity、通知、触感反馈和暗色主题目前不是已交付能力；平台状态见 [架构文档](../docs/05-多端技术架构.md)。
 
@@ -50,5 +50,6 @@ iOS 不能在 Windows 本机构建。提交对应的 Linux CI 通过后，从 Gi
 - Web Release 构建（`--pwa-strategy=none`）于 2026-09-28 成功，并在真实浏览器完成引导、回廊、图鉴、专注与云游的交互验收（截图见 `docs/qa/2026-09-28-web-验收/`）。
 - 此前 Web 反馈的“引导第三步无法输入”与“回廊入口灰显”均未在当前构建复现，复核结论见 [验收指南](../docs/09-验收指南.md) §4。
 - 2026-10-14：iOS 显示名和图标已与 Android 对齐，仅手动触发的 GitHub macOS 构建首次无签名 Release 编译成功（run `38557785074`，产物 zip SHA-256 `9508A5D2F10A596490B6791C6DB18A0F133C971C0F266A691C24D439BEC97BFB`）。包内 Bundle ID、版本、13 项音频和 2 个字体已复核；无签名产物只证明编译，安装到 iPhone 仍需要 Apple 开发者账号、证书和包含设备 UDID 的描述文件。
+- 2026-10-14：三端版本源统一为 `0.1.0+1`，新增跨端一致性 CI 门禁；窄屏顶栏标题回归加入后全量 110/110，Web/Android Release 重建通过。最终 APK SHA-256 为 `BEA1106109DEE1F60C21B697356C6C78BFFBA1B454D21F8A158913F2C9B426E7`。
 
 更多项目约束与验证边界见仓库根目录的 [README](../README.md)。

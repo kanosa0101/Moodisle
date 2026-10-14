@@ -75,6 +75,22 @@ void main() {
     deleteTempDirWithRetry(documents);
   });
 
+  testWidgets('390px 窄屏顶栏使用短标题', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    try {
+      await tester.pumpWidget(const MoodisleApp());
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('心晴屿'), findsOneWidget);
+      expect(find.text('心晴屿 Moodisle'), findsNothing);
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
   testWidgets('开始上岛后第一步和下一步引导卡片都可见', (tester) async {
     tester.view.physicalSize = const Size(1280, 720);
     tester.view.devicePixelRatio = 1;

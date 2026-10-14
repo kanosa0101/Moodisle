@@ -6,7 +6,6 @@
     "background_color": "#92D1F8",
     "theme_color": "#92D1F8",
     "description": "陪你专注、照料天气精灵、点亮心晴屿。",
-    "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {

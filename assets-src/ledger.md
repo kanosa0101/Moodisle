@@ -73,7 +73,7 @@
 | 字体来源 | Noto Sans SC（SIL OFL 1.0，允许再分发与子集化）；授权全文入库 `fonts/OFL.txt` |
 | 下载方式 | Google Fonts CSS API 直链（curl + 代理环境），两个字重各约 10.5 MB，存档为 `fonts/NotoSansSC-{400,700}-full.ttf` 供追溯与再生成 |
 | 处理工具 | `tool/subset_font.py`（fonttools/pyftsubset；字符集 = app/lib + docs + app/test + 根 README 全文 + 可打印 ASCII + 常用中文标点） |
-| 产物 | `app/assets/fonts/NotoSansSC-Regular-Subset.ttf`、`NotoSansSC-Bold-Subset.ttf`（各 0.44 MB / 1742 字形；字符集存档 `process/font_charset.txt`） |
+| 产物 | `app/assets/fonts/NotoSansSC-Regular-Subset.ttf`、`NotoSansSC-Bold-Subset.ttf`（各 0.44 MB / 1752 字形；字符集存档 `process/font_charset.txt`） |
 | 接线 | pubspec 声明 `MoodisleSans` 族（Bold 挂 700/800/900）；主题全局引用；迷宫画布文字显式引用 |
 | 验收 | FreeType 渲染通过；Web 构建 FontManifest 含该字族且文件 200 加载；对照实验：主题文本使用包内字体（无效族名对照下 gstatic 回退切片 9 → 21） |
 | 权属边界 | 字体为 SIL OFL 开源授权，非 AI 生成；未使用参考原型任何素材 |
@@ -116,4 +116,4 @@ manifest 资产在 CSV 中缺失或字段不完整即 FAIL。批次记录是权�
 | 十区天气怪物立绘 | process/maze_foe_atlas.png | 怪物图集原图，切片后裁边置中缩放 256px |
 | UI 贴纸（emotes/feedback/sections） | process/ui_sticker_atlas.png | 贴纸图集原图，切片后缩放 128px |
 | 图集切片规则 | process/slice_atlases.py | 人工定义的行优先切片、裁边与缩放规则（创作贡献留痕） |
-| 中文字体子集字符集 | process/font_charset.txt | subset_font.py 实际用字存档（1713 字符），可复现子集 |
+| 中文字体子集字符集 | process/font_charset.txt | subset_font.py 实际用字存档（1723 字符），可复现子集 |
