@@ -45,10 +45,9 @@ class GameController extends ChangeNotifier {
     GameState? state,
     Random? rng,
     SaveStore? store,
-    GameRepository? repository,
+    this.repository,
   })  : state = state ?? GameState.fresh(),
         store = store ?? SaveStore(),
-        repository = repository,
         eco = EcoSim() {
     core = GameCore(this.state, rng: rng);
     core.ensureDaily(DateTime.now());
