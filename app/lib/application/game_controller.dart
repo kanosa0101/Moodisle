@@ -48,8 +48,7 @@ class GameController extends ChangeNotifier {
     GameRepository? repository,
   })  : state = state ?? GameState.fresh(),
         store = store ?? SaveStore(),
-        repository =
-            repository ?? (store == null ? SqliteGameRepository() : null),
+        repository = repository,
         eco = EcoSim() {
     core = GameCore(this.state, rng: rng);
     core.ensureDaily(DateTime.now());
@@ -77,6 +76,9 @@ class GameController extends ChangeNotifier {
 
       final legacy = await store.load();
       if (legacy != null && importSaveJson(legacy)) {
+        if (store.recoveredFromBackup) {
+          restoreNotice = '主存档损坏，已从备份恢复。最近一次自动保存可能缺少最后几秒的进度。';
+        }
         core.ensureDaily(DateTime.now());
         eco.rebuild(state);
         await _writeCurrentState();

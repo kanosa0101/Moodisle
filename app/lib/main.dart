@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'application/game_controller.dart';
+import 'data/game_repository.dart';
 import 'domain/config/game_config.dart';
 import 'domain/entities/task.dart';
 import 'domain/engine/climate.dart';
@@ -19,13 +20,15 @@ import 'shared/audio/moodisle_audio_scope.dart';
 import 'shared/audio/moodisle_audio_service.dart';
 import 'shared/theme/tokens.dart';
 
-void main() => runApp(const MoodisleApp());
+void main() => runApp(MoodisleApp(repository: SqliteGameRepository()));
 
 /// 心晴屿 Moodisle 主应用。
 /// 页面骨架对齐原版：460px 居中栏 + 顶栏 + 可滚动视图 + 底部导航。
 /// 版权约束：本工程为清洁室原创，禁止引入参考原型代码（docs/00 R1）。
 class MoodisleApp extends StatelessWidget {
-  const MoodisleApp({super.key});
+  final GameRepository? repository;
+
+  const MoodisleApp({super.key, this.repository});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class MoodisleApp extends StatelessWidget {
       title: '心晴屿 Moodisle',
       debugShowCheckedModeBanner: false,
       theme: buildMoodisleTheme(),
-      home: const _PageFrame(child: AppShell()),
+      home: _PageFrame(child: AppShell(repository: repository)),
     );
   }
 }
@@ -66,7 +69,9 @@ class _PageFrame extends StatelessWidget {
 
 /// 应用壳：生命周期桥接（专注宽限）+ 5 Tab + 首次引导 + 每日问候。
 class AppShell extends StatefulWidget {
-  const AppShell({super.key});
+  final GameRepository? repository;
+
+  const AppShell({super.key, this.repository});
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -105,7 +110,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _controller = GameController();
+    _controller = GameController(repository: widget.repository);
     _audio = MoodisleAudioService();
     unawaited(_audio.initialize().then((_) {
       if (mounted) setState(() {});
