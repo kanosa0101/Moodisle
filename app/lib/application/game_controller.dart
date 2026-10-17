@@ -11,6 +11,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
+import '../data/game_repository.dart';
 import '../data/save_codec.dart';
 import '../data/save_store.dart';
 import '../domain/config/roam_config.dart';
@@ -29,6 +30,8 @@ class GameController extends ChangeNotifier {
   late final GameCore core;
   final EcoSim eco;
   final SaveStore store;
+  final GameRepository? repository;
+  bool _useLegacyStore = false;
   late final Future<void> ready;
   Timer? _ticker;
   Timer? _saveDebounce;
@@ -38,9 +41,15 @@ class GameController extends ChangeNotifier {
   TaskCaptured? pendingCapture;
   FocusCompleted? pendingFocusDone;
 
-  GameController({GameState? state, Random? rng, SaveStore? store})
-      : state = state ?? GameState.fresh(),
+  GameController({
+    GameState? state,
+    Random? rng,
+    SaveStore? store,
+    GameRepository? repository,
+  })  : state = state ?? GameState.fresh(),
         store = store ?? SaveStore(),
+        repository =
+            repository ?? (store == null ? SqliteGameRepository() : null),
         eco = EcoSim() {
     core = GameCore(this.state, rng: rng);
     core.ensureDaily(DateTime.now());
@@ -49,8 +58,41 @@ class GameController extends ChangeNotifier {
     ready = restoreFromDisk();
   }
 
-  /// 启动时从磁盘恢复（异步、幂等；Web/不支持平台自动跳过）。
+  /// 启动时先从 SQLite 恢复；空库时验证并迁移 JSON v2 旧存档。
   Future<void> restoreFromDisk() async {
+    if (repository != null) {
+      DecodedSave? decoded;
+      try {
+        decoded = await repository!.load();
+      } catch (_) {
+        _useLegacyStore = true;
+        restoreNotice = '本地数据库暂时无法读取，已尝试从旧存档恢复。';
+      }
+      if (decoded != null) {
+        _restoreDecoded(decoded);
+        core.ensureDaily(DateTime.now());
+        eco.rebuild(state);
+        return;
+      }
+
+      final legacy = await store.load();
+      if (legacy != null && importSaveJson(legacy)) {
+        core.ensureDaily(DateTime.now());
+        eco.rebuild(state);
+        await _writeCurrentState();
+        return;
+      }
+      if (store.recoveredFromBackup) {
+        restoreNotice = '主存档损坏，已从备份恢复。最近一次自动保存可能缺少最后几秒的进度。';
+      } else if (legacy == null && store.hadCorruptSave) {
+        restoreNotice = '旧存档无法读取，已启动新存档。若有导出的 JSON，可在「成长 → 存档 → 导入」恢复。';
+      } else if (legacy != null) {
+        restoreNotice = '旧存档内容无法读取，已启动新存档。若有导出的 JSON，可在「成长 → 存档 → 导入」恢复。';
+      }
+      await _writeCurrentState();
+      return;
+    }
+
     final raw = await store.load();
     if (store.recoveredFromBackup) {
       restoreNotice = '主存档损坏，已从备份恢复。最近一次自动保存可能缺少最后几秒的进度。';
@@ -70,8 +112,27 @@ class GameController extends ChangeNotifier {
     if (_saveDebounce?.isActive ?? false) return;
     _saveDebounce = Timer(const Duration(seconds: 2), () {
       _saveDebounce = null;
-      unawaited(store.save(exportSaveJson()));
+      unawaited(_persistCurrentState());
     });
+  }
+
+  Future<void> _persistCurrentState() async {
+    await ready;
+    await _writeCurrentState();
+  }
+
+  Future<void> _writeCurrentState() async {
+    if (repository != null && !_useLegacyStore) {
+      try {
+        await repository!.save(state, activeMazeRun: core.activeMazeRun);
+      } catch (_) {
+        _useLegacyStore = true;
+        restoreNotice ??= '本地数据库保存失败，后续进度暂存到旧格式存档。';
+        await store.save(exportSaveJson());
+      }
+    } else {
+      await store.save(exportSaveJson());
+    }
   }
 
   void _startTicker() {
@@ -304,93 +365,98 @@ class GameController extends ChangeNotifier {
   bool importSaveJson(String raw) {
     try {
       final decoded = decodeSaveDocument(raw);
-      final restored = decoded.state;
-      state.version = restored.version;
-      // 原地恢复（控制器持有同一状态对象）
-      state.nextTaskId = restored.nextTaskId;
-      state.clearing = restored.clearing;
-      state.energy = restored.energy;
-      state.warmFrontTurns = restored.warmFrontTurns;
-      state.tailwindTurns = restored.tailwindTurns;
-      state.companion = restored.companion;
-      state.stats.totalDone = restored.stats.totalDone;
-      state.stats.totalFocusSessions = restored.stats.totalFocusSessions;
-      state.stats.totalFocusMinutes = restored.stats.totalFocusMinutes;
-      state.stats.mazeRuns = restored.stats.mazeRuns;
-      state.stats.mistDewCollected = restored.stats.mistDewCollected;
-      state.stats.deepDives = restored.stats.deepDives;
-      state.streak.sunnyDays = restored.streak.sunnyDays;
-      state.streak.lastSunny = restored.streak.lastSunny;
-      state.keeper.level = restored.keeper.level;
-      state.keeper.exp = restored.keeper.exp;
-      state.resonance.last = restored.resonance.last;
-      state.resonance.len = restored.resonance.len;
-      state.resonance.best = restored.resonance.best;
-      state.resonance.lastAt = restored.resonance.lastAt;
-      state.climate.fog = restored.climate.fog;
-      state.climate.tier = restored.climate.tier;
-      state.climate.tierHoldDays = restored.climate.tierHoldDays;
-      state.climate.zeroDoneStreak = restored.climate.zeroDoneStreak;
-      state.climate.days
-        ..clear()
-        ..addAll(restored.climate.days);
-      state.session = restored.session;
-      state.focusMeta.todayMin = restored.focusMeta.todayMin;
-      state.focusMeta.weekMin = restored.focusMeta.weekMin;
-      state.focusMeta.weekStart = restored.focusMeta.weekStart;
-      state.focusMeta.glancesToday = restored.focusMeta.glancesToday;
-      state.tasks
-        ..clear()
-        ..addAll(restored.tasks);
-      state.pets
-        ..clear()
-        ..addAll(restored.pets);
-      state.items
-        ..clear()
-        ..addAll(restored.items);
-      state.daily.date = restored.daily.date;
-      state.daily.checkinDays = restored.daily.checkinDays;
-      state.daily.checkinBest = restored.daily.checkinBest;
-      state.daily.checkedToday = restored.daily.checkedToday;
-      state.daily.lastCheckin = restored.daily.lastCheckin;
-      state.daily.lastGreet = restored.daily.lastGreet;
-      state.daily.mazeToday = restored.daily.mazeToday;
-      state.daily.quests
-        ..clear()
-        ..addAll(restored.daily.quests);
-      state.achievements
-        ..clear()
-        ..addAll(restored.achievements);
-      state.roam.slots
-        ..clear()
-        ..addAll(restored.roam.slots);
-      state.roam.souvenirs
-        ..clear()
-        ..addAll(restored.roam.souvenirs);
-      state.roam.pendant = restored.roam.pendant;
-      state.social.myName = restored.social.myName;
-      state.social.visitingPet = restored.social.visitingPet;
-      state.social.visitingExpire = restored.social.visitingExpire;
-      state.social.postcards
-        ..clear()
-        ..addAll(restored.social.postcards);
-      state.lastReportWeek = restored.lastReportWeek;
-      state.onboarded = restored.onboarded;
-      core.activeMazeRun = decoded.activeMazeRun;
-      eco.rebuild(state);
-      notifyListeners();
+      _restoreDecoded(decoded);
       return true;
     } catch (_) {
       return false;
     }
   }
 
+  void _restoreDecoded(DecodedSave decoded) {
+    final restored = decoded.state;
+    state.version = restored.version;
+    // 原地恢复（控制器持有同一状态对象）
+    state.nextTaskId = restored.nextTaskId;
+    state.clearing = restored.clearing;
+    state.energy = restored.energy;
+    state.warmFrontTurns = restored.warmFrontTurns;
+    state.tailwindTurns = restored.tailwindTurns;
+    state.companion = restored.companion;
+    state.stats.totalDone = restored.stats.totalDone;
+    state.stats.totalFocusSessions = restored.stats.totalFocusSessions;
+    state.stats.totalFocusMinutes = restored.stats.totalFocusMinutes;
+    state.stats.mazeRuns = restored.stats.mazeRuns;
+    state.stats.mistDewCollected = restored.stats.mistDewCollected;
+    state.stats.deepDives = restored.stats.deepDives;
+    state.streak.sunnyDays = restored.streak.sunnyDays;
+    state.streak.lastSunny = restored.streak.lastSunny;
+    state.keeper.level = restored.keeper.level;
+    state.keeper.exp = restored.keeper.exp;
+    state.resonance.last = restored.resonance.last;
+    state.resonance.len = restored.resonance.len;
+    state.resonance.best = restored.resonance.best;
+    state.resonance.lastAt = restored.resonance.lastAt;
+    state.climate.fog = restored.climate.fog;
+    state.climate.tier = restored.climate.tier;
+    state.climate.tierHoldDays = restored.climate.tierHoldDays;
+    state.climate.zeroDoneStreak = restored.climate.zeroDoneStreak;
+    state.climate.days
+      ..clear()
+      ..addAll(restored.climate.days);
+    state.session = restored.session;
+    state.focusMeta.todayMin = restored.focusMeta.todayMin;
+    state.focusMeta.weekMin = restored.focusMeta.weekMin;
+    state.focusMeta.weekStart = restored.focusMeta.weekStart;
+    state.focusMeta.glancesToday = restored.focusMeta.glancesToday;
+    state.tasks
+      ..clear()
+      ..addAll(restored.tasks);
+    state.pets
+      ..clear()
+      ..addAll(restored.pets);
+    state.items
+      ..clear()
+      ..addAll(restored.items);
+    state.daily.date = restored.daily.date;
+    state.daily.checkinDays = restored.daily.checkinDays;
+    state.daily.checkinBest = restored.daily.checkinBest;
+    state.daily.checkedToday = restored.daily.checkedToday;
+    state.daily.lastCheckin = restored.daily.lastCheckin;
+    state.daily.lastGreet = restored.daily.lastGreet;
+    state.daily.mazeToday = restored.daily.mazeToday;
+    state.daily.quests
+      ..clear()
+      ..addAll(restored.daily.quests);
+    state.achievements
+      ..clear()
+      ..addAll(restored.achievements);
+    state.roam.slots
+      ..clear()
+      ..addAll(restored.roam.slots);
+    state.roam.souvenirs
+      ..clear()
+      ..addAll(restored.roam.souvenirs);
+    state.roam.pendant = restored.roam.pendant;
+    state.social.myName = restored.social.myName;
+    state.social.visitingPet = restored.social.visitingPet;
+    state.social.visitingExpire = restored.social.visitingExpire;
+    state.social.postcards
+      ..clear()
+      ..addAll(restored.social.postcards);
+    state.lastReportWeek = restored.lastReportWeek;
+    state.onboarded = restored.onboarded;
+    core.activeMazeRun = decoded.activeMazeRun;
+    eco.rebuild(state);
+    notifyListeners();
+  }
+
   Future<void> flushSave() async {
     final pending = _saveDebounce;
-    if (pending == null || !pending.isActive) return;
-    pending.cancel();
-    _saveDebounce = null;
-    await store.save(exportSaveJson());
+    if (pending != null && pending.isActive) {
+      pending.cancel();
+      _saveDebounce = null;
+    }
+    await _persistCurrentState();
   }
 
   @override
