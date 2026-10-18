@@ -319,6 +319,12 @@ class GameCore {
 
   List<GameEvent> focusTick(DateTime now) => FocusEngine.tick(state, now);
 
+  List<GameEvent> focusOnScreenLocked(DateTime now) =>
+      FocusEngine.onScreenLocked(state, now);
+
+  List<GameEvent> focusOnScreenUnlocked(DateTime now) =>
+      FocusEngine.onScreenUnlocked(state, now);
+
   List<GameEvent> focusOnBackgrounded(DateTime now) =>
       FocusEngine.onBackgrounded(state, now);
 

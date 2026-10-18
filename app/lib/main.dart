@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'application/game_controller.dart';
+import 'application/focus_lifecycle_channel.dart';
 import 'data/game_repository.dart';
 import 'domain/config/game_config.dart';
 import 'domain/entities/task.dart';
@@ -67,7 +68,7 @@ class _PageFrame extends StatelessWidget {
   }
 }
 
-/// 应用壳：生命周期桥接（专注宽限）+ 5 Tab + 首次引导 + 每日问候。
+/// 应用壳：生命周期桥接（专注暂停/锁屏）+ 5 Tab + 首次引导 + 每日问候。
 class AppShell extends StatefulWidget {
   final GameRepository? repository;
 
@@ -80,6 +81,8 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   late final GameController _controller;
   late final MoodisleAudioService _audio;
+  bool _focusControllerReady = false;
+  String? _pendingFocusLifecycleSignal;
   FocusCompleted? _lastFocusDone;
   int _tab = 0;
 
@@ -112,6 +115,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _controller = GameController(repository: widget.repository);
     _audio = MoodisleAudioService();
+    unawaited(FocusLifecycleChannel.listenForScreenState(
+      onScreenLocked: _onScreenLocked,
+      onScreenUnlocked: _onScreenUnlocked,
+    ));
     unawaited(_audio.initialize().then((_) {
       if (mounted) setState(() {});
     }));
@@ -149,6 +156,23 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     if (!mounted) return;
     await _controller.ready;
     if (!mounted) return;
+    _focusControllerReady = true;
+    final pendingFocusSignal = _pendingFocusLifecycleSignal;
+    _pendingFocusLifecycleSignal = null;
+    if (pendingFocusSignal == 'screenLocked') {
+      _onScreenLocked();
+    } else if (pendingFocusSignal == 'screenUnlocked') {
+      _onScreenUnlocked();
+    }
+    if (pendingFocusSignal != 'screenLocked') {
+      final lifecycleState = WidgetsBinding.instance.lifecycleState;
+      if (lifecycleState == AppLifecycleState.resumed) {
+        _controller.focusResumed();
+      } else if (lifecycleState == AppLifecycleState.hidden ||
+          lifecycleState == AppLifecycleState.paused) {
+        _controller.focusBackgrounded();
+      }
+    }
     final notice = _controller.restoreNotice;
     if (notice != null) {
       await showDialog<void>(
@@ -332,8 +356,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _audio.onLifecycleChanged(state);
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
+    if (state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.paused) {
       _controller.focusBackgrounded();
       unawaited(_controller.flushSave());
     } else if (state == AppLifecycleState.resumed) {
@@ -341,8 +365,27 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     }
   }
 
+  void _onScreenLocked() {
+    if (!_focusControllerReady) {
+      _pendingFocusLifecycleSignal = 'screenLocked';
+      return;
+    }
+    _controller.focusScreenLocked();
+    unawaited(_controller.flushSave());
+  }
+
+  void _onScreenUnlocked() {
+    if (!_focusControllerReady) {
+      _pendingFocusLifecycleSignal = 'screenUnlocked';
+      return;
+    }
+    _controller.focusScreenUnlocked();
+    unawaited(_controller.flushSave());
+  }
+
   @override
   void dispose() {
+    FocusLifecycleChannel.clearHandler();
     WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     unawaited(_audio.dispose());

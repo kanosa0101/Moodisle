@@ -64,8 +64,8 @@ void main() {
     });
   });
 
-  group('状态机：张望宽限与作废（docs/03 §8）', () {
-    test('后台→宽限内回前台→无缝继续→完成', () {
+  group('状态机：应用切换暂停与锁屏计时（docs/03 §8）', () {
+    test('切到其他应用并暂停超过两分钟→回来继续→完成', () {
       final s = _stateWith(Emotion.anxious, Bond(minutes: 0));
       final c = GameCore(s, rng: _FixedRandom());
       var now = DateTime(2026, 9, 25, 9, 0);
@@ -76,35 +76,38 @@ void main() {
       expect(interrupted.whereType<FocusInterrupted>().length, 1);
       expect(s.session!.phase, 'glancing');
 
-      now = now.add(const Duration(seconds: 90)); // ≤120s 宽限
+      now = now.add(const Duration(minutes: 10)); // 暂停不因超时作废
       c.focusOnResumed(now);
       expect(s.session!.phase, 'focusing');
+      expect(s.focusMeta.glancesToday, 1);
 
-      now = now.add(const Duration(minutes: 14));
-      final events = c.focusTick(now); // 累计 5+14=19min ≥ 15
+      now = now.add(const Duration(minutes: 10));
+      final events = c.focusTick(now); // 累计 5+10=15min
       final done = events.whereType<FocusCompleted>().toList();
       expect(done.length, 1);
       expect(done.first.minutes, 15);
       expect(done.first.stardust, 3); // ⌊15/5×1×(1+0)⌋
-      expect(s.focusMeta.glancesToday, 0);
+      expect(s.focusMeta.glancesToday, 1);
     });
 
-    test('宽限超时 → 作废（零惩罚，记一次张望）', () {
+    test('熄屏期间继续累计；解锁后达标并结算', () {
       final s = _stateWith(Emotion.anxious, Bond(minutes: 0));
       final c = GameCore(s, rng: _FixedRandom());
       var now = DateTime(2026, 9, 25, 10, 0);
       c.startFocus(Emotion.anxious, 25, now);
 
       now = now.add(const Duration(minutes: 10));
-      c.focusOnBackgrounded(now);
-      now = now.add(const Duration(seconds: 121)); // >120s
+      c.focusOnScreenLocked(now);
+      expect(s.session!.phase, 'screenLocked');
+
+      now = now.add(const Duration(minutes: 15));
       final events = c.focusOnResumed(now);
 
-      expect(events.whereType<FocusVoided>().length, 1);
+      expect(events.whereType<FocusCompleted>().length, 1);
       expect(s.session, isNull);
-      expect(s.focusMeta.glancesToday, 1);
-      expect(s.pets[Emotion.anxious]!.bond.minutes, 0); // 零惩罚
-      expect(s.items[ItemId.stardust] ?? 0, 0);
+      expect(s.focusMeta.todayMin, 25);
+      expect(s.focusMeta.glancesToday, 0);
+      expect(s.pets[Emotion.anxious]!.bond.minutes, 25);
     });
 
     test('主动取消不记张望', () {

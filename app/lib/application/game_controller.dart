@@ -141,7 +141,8 @@ class GameController extends ChangeNotifier {
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       final now = DateTime.now();
       if (state.session != null) {
-        core.focusTick(now);
+        final events = core.focusTick(now);
+        _consume(events);
         _scheduleSave();
         final done = state.session == null;
         if (done) {
@@ -222,18 +223,45 @@ class GameController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void focusScreenLocked() {
+    _consume(core.focusOnScreenLocked(DateTime.now()));
+    if (state.session == null) {
+      pendingFocusDone ??= _lastFocusCompleted;
+    }
+    _scheduleSave();
+    notifyListeners();
+  }
+
+  void focusScreenUnlocked() {
+    _consume(core.focusOnScreenUnlocked(DateTime.now()));
+    if (state.session == null) {
+      pendingFocusDone ??= _lastFocusCompleted;
+    }
+    _scheduleSave();
+    notifyListeners();
+  }
+
   void focusBackgrounded() {
-    core.focusOnBackgrounded(DateTime.now());
+    _consume(core.focusOnBackgrounded(DateTime.now()));
+    _scheduleSave();
     notifyListeners();
   }
 
   void focusResumed() {
     _consume(core.focusOnResumed(DateTime.now()));
+    if (state.session == null) {
+      pendingFocusDone ??= _lastFocusCompleted;
+    }
+    _scheduleSave();
     notifyListeners();
   }
 
   void cancelFocus() {
-    core.cancelFocus(DateTime.now());
+    _consume(core.cancelFocus(DateTime.now()));
+    if (state.session == null) {
+      pendingFocusDone ??= _lastFocusCompleted;
+    }
+    _scheduleSave();
     notifyListeners();
   }
 

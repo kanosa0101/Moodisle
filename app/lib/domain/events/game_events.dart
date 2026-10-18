@@ -73,15 +73,14 @@ class FocusCompleted extends GameEvent {
   });
 }
 
-/// 专注中断：进入张望宽限（120s）。
+/// 切换到其他应用：进入可恢复的暂停状态。
 class FocusInterrupted extends GameEvent {
   final Emotion pet;
-  final int graceSecondsLeft;
 
-  const FocusInterrupted({required this.pet, required this.graceSecondsLeft});
+  const FocusInterrupted({required this.pet});
 }
 
-/// 专注作废（宽限超时/放弃；零惩罚）。
+/// 专注作废（用户主动放弃；零惩罚）。
 class FocusVoided extends GameEvent {
   final Emotion pet;
 

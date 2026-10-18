@@ -90,7 +90,10 @@ void _checkInvariants(GameState s, String where) {
   if (sess != null) {
     expect(sess.planMin, inInclusiveRange(5, 120), reason: where);
     expectTrue(
-        sess.phase == 'focusing' || sess.phase == 'glancing', '未知会话阶段');
+        sess.phase == 'focusing' ||
+            sess.phase == 'glancing' ||
+            sess.phase == 'screenLocked',
+        '未知会话阶段');
   }
   for (final p in s.pets.values) {
     expect(p.bond.level, inInclusiveRange(0, 10), reason: where);

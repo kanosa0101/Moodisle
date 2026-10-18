@@ -1,7 +1,8 @@
 /// 专注页：陪伴专注（选伙伴 → 档位 → 倒计时 → 完成结算）。
-/// 中断宽限（张望 120s）由 App 生命周期桥接（见 app_shell）。
+/// 切换应用会暂停；原生端可识别的设备锁屏会继续计时。
 library;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../../application/game_controller.dart';
@@ -22,7 +23,9 @@ class FocusPage extends StatelessWidget {
         builder: (context, _) {
           final s = controller.state;
           final session = s.session;
-          if (session != null) return _FocusingView(controller: controller);
+          if (session != null || controller.pendingFocusDone != null) {
+            return _FocusingView(controller: controller);
+          }
           final owned = s.pets.keys.where((e) => s.pets[e] != null).toList();
           return ListView(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -44,7 +47,10 @@ class FocusPage extends StatelessWidget {
                                   color: MoodisleColors.ink)),
                         ]),
                         const SizedBox(height: 4),
-                        const Text('选一位伙伴陪你专注。中途离开它只会张望等你（2 分钟内回来无缝继续），超时也不惩罚。',
+                        const Text(
+                            kIsWeb
+                                ? '选一位伙伴陪你专注。切换标签页、应用或熄屏隐藏网页时会暂停；回来后可以继续。'
+                                : '选一位伙伴陪你专注。切换到其他应用会暂停，不会自动结束；设备锁屏期间继续计时。',
                             style: TextStyle(
                                 fontSize: 11.5,
                                 color: MoodisleColors.ink2,
@@ -294,7 +300,7 @@ class _FocusingView extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                     glancing
-                        ? 'It looking around... 它在原地张望等你（2 分钟内回来无缝继续）'
+                        ? '你切到其他应用了，专注已暂停；回来后可以继续。'
                         : '${session.pet.petCn} 正安静地陪着你',
                     textAlign: TextAlign.center,
                     style: const TextStyle(

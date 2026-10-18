@@ -1,8 +1,9 @@
 /// 专注引擎状态机（docs/03 §8 设计真源）。
 ///
-/// Idle ▶ Focusing ▶ (appPaused) Glancing ▶ resume≤120s ▶ Focusing
-///                    └─ >120s ─▶ Voided（零惩罚）
-/// Focusing ─ doneMin≥plan ─▶ Completed（结算）▶ Idle
+/// Idle ▶ Focusing ▶ (screenLocked) ScreenLocked ──unlock──▶ Glancing/Focusing
+///                    └─ (appBackgrounded) Glancing ▶ resume ▶ Focusing
+/// Focusing / ScreenLocked ─ doneMin≥plan ─▶ Completed（结算）▶ Idle
+/// 任意活动状态 ─ userCancel ▶ Voided（零惩罚）
 /// 所有方法显式接收 now（可注入时钟，测试确定）。
 library;
 
@@ -39,7 +40,7 @@ class FocusEngine {
   static List<GameEvent> tick(GameState s, DateTime now) {
     final sess = s.session;
     if (sess == null) return <GameEvent>[];
-    if (sess.phase == 'focusing') {
+    if (sess.phase == 'focusing' || sess.phase == 'screenLocked') {
       sess.accumSeconds += now.difference(sess.lastTickAt).inSeconds;
       sess.lastTickAt = now;
       if (sess.doneMin >= sess.planMin) return _complete(s, now);
@@ -47,51 +48,89 @@ class FocusEngine {
     return <GameEvent>[];
   }
 
-  /// 进入后台：精灵开始张望（宽限 [GameConfig.focusGraceSeconds] 秒）。
+  /// 手机进入锁屏/息屏：专注继续计时，不要求设备保持常亮。
+  ///
+  /// Lifecycle 回调可能先于锁屏通知，因此允许短暂后台阶段升级为锁屏阶段。
+  static List<GameEvent> onScreenLocked(GameState s, DateTime now) {
+    final sess = s.session;
+    if (sess == null) return <GameEvent>[];
+
+    if (sess.phase == 'glancing') {
+      final pausedAt = sess.pausedAt;
+      if (pausedAt == null) return <GameEvent>[];
+      final transitionDelay = now.difference(pausedAt);
+      if (transitionDelay.isNegative ||
+          transitionDelay > const Duration(seconds: 2)) {
+        return <GameEvent>[];
+      }
+    } else if (sess.phase != 'focusing') {
+      return <GameEvent>[];
+    }
+
+    sess.phase = 'screenLocked';
+    sess.pausedAt = null;
+    return tick(s, now);
+  }
+
+  /// 切到其他应用：累计离开前的专注时长后暂停，回来时可继续。
   static List<GameEvent> onBackgrounded(GameState s, DateTime now) {
     final sess = s.session;
     if (sess == null || sess.phase != 'focusing') return <GameEvent>[];
-    sess.accumSeconds += now.difference(sess.lastTickAt).inSeconds;
+    final events = tick(s, now);
+    if (s.session == null) return events;
     sess.phase = 'glancing';
     sess.pausedAt = now;
-    return [
-      FocusInterrupted(
-          pet: sess.pet, graceSecondsLeft: GameConfig.focusGraceSeconds),
-    ];
+    return [...events, FocusInterrupted(pet: sess.pet)];
   }
 
-  /// 回到前台：宽限期内无缝继续；超时作废（零惩罚，记一次张望）。
+  /// 用户解锁后仍停留在其他应用：停止锁屏计时并转为可恢复暂停。
+  static List<GameEvent> onScreenUnlocked(GameState s, DateTime now) {
+    final sess = s.session;
+    if (sess == null || sess.phase != 'screenLocked') return <GameEvent>[];
+
+    final events = tick(s, now);
+    final unlocked = s.session;
+    if (unlocked == null) return events;
+    unlocked.phase = 'glancing';
+    unlocked.pausedAt = now;
+    return [...events, FocusInterrupted(pet: unlocked.pet)];
+  }
+
+  /// 回到前台：锁屏期间补算经过时长；应用切换造成的暂停不自动过期。
   static List<GameEvent> onResumed(GameState s, DateTime now) {
     final sess = s.session;
-    if (sess == null || sess.phase != 'glancing' || sess.pausedAt == null) {
-      return <GameEvent>[];
+    if (sess == null) return <GameEvent>[];
+
+    if (sess.phase == 'screenLocked') {
+      final events = tick(s, now);
+      final resumed = s.session;
+      if (resumed == null) return events;
+      resumed.phase = 'focusing';
+      resumed.pausedAt = null;
+      return [...events, const GameNotice('欢迎回来，继续专注')];
     }
-    final away = now.difference(sess.pausedAt!).inSeconds;
-    if (away <= GameConfig.focusGraceSeconds) {
+
+    if (sess.phase == 'glancing') {
+      s.focusMeta.glancesToday++;
       sess.phase = 'focusing';
       sess.lastTickAt = now;
       sess.pausedAt = null;
       return [const GameNotice('欢迎回来，继续专注')];
     }
-    s.focusMeta.glancesToday++;
-    final pet = sess.pet;
-    s.session = null;
-    return [
-      FocusVoided(pet: pet),
-      const GameNotice('它等你太久，先回去岛上了（零惩罚）'),
-    ];
+    return <GameEvent>[];
   }
 
   /// 用户主动放弃（零惩罚，不计张望）。
   static List<GameEvent> cancel(GameState s, DateTime now) {
     final sess = s.session;
     if (sess == null) return <GameEvent>[];
-    if (sess.phase == 'focusing') {
-      sess.accumSeconds += now.difference(sess.lastTickAt).inSeconds;
-    }
+    final events = (sess.phase == 'focusing' || sess.phase == 'screenLocked')
+        ? tick(s, now)
+        : <GameEvent>[];
+    if (s.session == null) return events;
     final pet = sess.pet;
     s.session = null;
-    return [FocusVoided(pet: pet)];
+    return [...events, FocusVoided(pet: pet)];
   }
 
   /// 完成结算（docs/03 §8.1）：星屑按结算前羁绊等级计算。

@@ -58,7 +58,7 @@ class FocusSessionState {
   final Emotion pet;
   final int planMin;
   final double tierMul; // 档位星屑系数（开始时按档位确定）
-  String phase; // focusing / glancing
+  String phase; // focusing / glancing / screenLocked
   int accumSeconds;
   final DateTime startedAt;
   DateTime lastTickAt;
