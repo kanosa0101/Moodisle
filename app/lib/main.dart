@@ -19,9 +19,13 @@ import 'presentation/pages/maze_page.dart';
 import 'presentation/pages/tasks_page.dart';
 import 'shared/audio/moodisle_audio_scope.dart';
 import 'shared/audio/moodisle_audio_service.dart';
+import 'shared/build_flags.dart';
 import 'shared/theme/tokens.dart';
 
-void main() => runApp(MoodisleApp(repository: SqliteGameRepository()));
+// 小程序构建（MOODISLE_MP=1）不注入 SQLite 仓库：drift 的 wasm/worker
+// 在微信运行时不可用，直接走 JSON SaveStore（localStorage 垫片 → wx 存储）。
+void main() => runApp(MoodisleApp(
+    repository: kMoodisleMp ? null : SqliteGameRepository()));
 
 /// 心晴屿 Moodisle 主应用。
 /// 页面骨架对齐原版：460px 居中栏 + 顶栏 + 可滚动视图 + 底部导航。

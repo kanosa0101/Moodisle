@@ -20,6 +20,9 @@ class FocusLifecycleChannel {
       await _channel.invokeMethod<void>('listen');
     } on MissingPluginException {
       // Web has no native screen-lock signal; its hidden lifecycle pauses focus.
+    } on PlatformException {
+      // 原生侧注册失败（如进程重启后 channel 断开）时，与 web 同路径：
+      // 仅靠生命周期状态（hidden/resumed）驱动专注暂停。
     }
   }
 

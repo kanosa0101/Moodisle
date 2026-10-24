@@ -49,8 +49,16 @@ jobs:
       - name: Resolve Flutter dependencies
         working-directory: app
         run: |
+          set +e
           rm -f pubspec.lock
-          flutter pub get
+          flutter pub get > ../pub_get.log 2>&1
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ]; then
+            msg=$(tail -n 50 ../pub_get.log | head -c 3600 | tr '\n' '|')
+            echo "::error title=pub get failed (exit $code)::${msg:-no output}"
+            exit "$code"
+          fi
 
       - name: Check Mini Program toolchain
         working-directory: app
@@ -61,7 +69,7 @@ jobs:
         working-directory: app
         run: |
           set +e
-          dart run flutter_miniprogram --appid touristappid > ../weapp_build.log 2>&1
+          dart run flutter_miniprogram --appid touristappid --dart-define=MOODISLE_MP=1 > ../weapp_build.log 2>&1
           code=$?
           set -e
           if [ "$code" -ne 0 ]; then

@@ -21,3 +21,4 @@ app/android/.gradle/
 app/android/build/
 app/android/local.properties
 __pycache__/
+.zcode/

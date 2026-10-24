@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../../application/game_controller.dart';
 import '../../domain/config/game_config.dart';
 import '../../domain/entities/emotion.dart';
+import '../../shared/build_flags.dart';
 import '../../shared/theme/tokens.dart';
 import '../widgets/pet_sprite.dart';
 import '../widgets/roam_card.dart';
@@ -48,9 +49,11 @@ class FocusPage extends StatelessWidget {
                         ]),
                         const SizedBox(height: 4),
                         const Text(
-                            kIsWeb
-                                ? '选一位伙伴陪你专注。切换标签页、应用或熄屏隐藏网页时会暂停；回来后可以继续。'
-                                : '选一位伙伴陪你专注。切换到其他应用会暂停，不会自动结束；设备锁屏期间继续计时。',
+                            kMoodisleMp
+                                ? '选一位伙伴陪你专注。切换到其他应用或切后台时会暂停；回来后可以继续。'
+                                : kIsWeb
+                                    ? '选一位伙伴陪你专注。切换标签页、应用或熄屏隐藏网页时会暂停；回来后可以继续。'
+                                    : '选一位伙伴陪你专注。切换到其他应用会暂停，不会自动结束；设备锁屏期间继续计时。',
                             style: TextStyle(
                                 fontSize: 11.5,
                                 color: MoodisleColors.ink2,

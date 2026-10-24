@@ -2,7 +2,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../application/game_controller.dart';
 import '../../domain/config/game_config.dart';
@@ -13,6 +12,7 @@ import '../../domain/engine/season_engine.dart';
 import '../../domain/engine/weekly_engine.dart';
 import '../../domain/entities/emotion.dart';
 import '../../shared/theme/tokens.dart';
+import '../../shared/widgets/clipboard_fallback.dart';
 import '../../shared/widgets/page_frame.dart';
 import '../widgets/game_icons.dart';
 
@@ -204,15 +204,11 @@ class GrowPage extends StatelessWidget {
                             Row(children: [
                               Expanded(
                                 child: OutlinedButton(
-                                  onPressed: () async {
-                                    await Clipboard.setData(ClipboardData(
-                                        text: controller.myPostcardCode()));
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text('你的明信片码已复制')));
-                                    }
-                                  },
+                                  onPressed: () => copyTextWithFallback(
+                                    context,
+                                    text: controller.myPostcardCode(),
+                                    successMessage: '你的明信片码已复制',
+                                  ),
                                   child: const Text('复制我的码',
                                       style: TextStyle(fontSize: 12)),
                                 ),
@@ -257,15 +253,11 @@ class GrowPage extends StatelessWidget {
                         Row(children: [
                           Expanded(
                             child: OutlinedButton(
-                              onPressed: () async {
-                                await Clipboard.setData(ClipboardData(
-                                    text: controller.exportSaveJson()));
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text('存档 JSON 已复制到剪贴板')));
-                                }
-                              },
+                              onPressed: () => copyTextWithFallback(
+                                context,
+                                text: controller.exportSaveJson(),
+                                successMessage: '存档 JSON 已复制到剪贴板',
+                              ),
                               child: const Text('导出（复制 JSON）',
                                   style: TextStyle(fontSize: 12)),
                             ),
@@ -273,19 +265,21 @@ class GrowPage extends StatelessWidget {
                           const SizedBox(width: 8),
                           Expanded(
                             child: OutlinedButton(
-                              onPressed: () async {
-                                final data =
-                                    await Clipboard.getData('text/plain');
-                                final ok = data?.text != null &&
-                                    controller.importSaveJson(data!.text!);
-                                if (context.mounted) {
+                              onPressed: () => pasteTextWithFallback(
+                                context,
+                                title: '导入存档',
+                                hint: '粘贴存档 JSON',
+                                onText: (text) {
+                                  if (!context.mounted) return;
+                                  final ok = text.isNotEmpty &&
+                                      controller.importSaveJson(text);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(ok
                                               ? '存档已恢复'
-                                              : '导入失败：剪贴板不是有效存档')));
-                                }
-                              },
+                                              : '导入失败：不是有效存档')));
+                                },
+                              ),
                               child: const Text('导入（读取剪贴板）',
                                   style: TextStyle(fontSize: 12)),
                             ),
@@ -457,7 +451,9 @@ void _showWeekly(BuildContext context) {
       actions: [
         TextButton(
           onPressed: () {
-            Clipboard.setData(ClipboardData(text: _weeklyShareText(report)));
+            copyTextWithFallback(ctx,
+                text: _weeklyShareText(report),
+                successMessage: '周报分享文本已复制');
             Navigator.pop(ctx);
           },
           child: const Text('复制分享'),
