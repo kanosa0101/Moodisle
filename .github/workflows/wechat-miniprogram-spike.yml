@@ -2,6 +2,11 @@ name: WeChat Mini Program spike
 
 on:
   workflow_dispatch:
+    inputs:
+      appid:
+        description: "小程序 AppID（留空则用 WECHAT_APPID Secret，再退回 touristappid 游客模式）"
+        required: false
+        default: ""
   # Run once when this workflow first reaches the development branch.
   # Later app changes require an intentional manual run to limit build usage.
   push:
@@ -84,9 +89,13 @@ jobs:
       # 构建失败时把日志尾部经 workflow annotation 外显（免认证可读）。
       - name: Build WeChat Mini Program
         working-directory: app
+        env:
+          # 真机验收用真实 AppID：手动运行时填写输入，或配置 WECHAT_APPID Secret；
+          # 默认退回游客模式 touristappid（仅开发者工具模拟器可用）。
+          WEAPP_APPID: ${{ inputs.appid || secrets.WECHAT_APPID || 'touristappid' }}
         run: |
           set +e
-          dart run flutter_miniprogram --appid touristappid --dart-define=MOODISLE_MP=1 > ../weapp_build.log 2>&1
+          dart run flutter_miniprogram --appid "$WEAPP_APPID" --dart-define=MOODISLE_MP=1 > ../weapp_build.log 2>&1
           code=$?
           set -e
           if [ "$code" -ne 0 ]; then
@@ -94,6 +103,7 @@ jobs:
             echo "::error title=weapp build failed (exit $code)::${msg:-no output}"
             exit "$code"
           fi
+          echo "::notice::built with appid $WEAPP_APPID"
 
       - name: Report package sizes
         run: |
@@ -104,12 +114,13 @@ jobs:
       - name: Publish weapp artifact to prerelease
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WEAPP_APPID: ${{ inputs.appid || secrets.WECHAT_APPID || 'touristappid' }}
         run: |
-          cd app/build && zip -qr weapp-tourist.zip weapp && cd ../..
+          cd app/build && zip -qr weapp-spike.zip weapp && cd ../..
           gh release delete weapp-spike-latest --yes --cleanup-tag || true
-          gh release create weapp-spike-latest app/build/weapp-tourist.zip \
+          gh release create weapp-spike-latest app/build/weapp-spike.zip \
             --prerelease --title "weapp spike (auto)" \
-            --notes "自动构建：${{ github.sha }}（touristappid，MOODISLE_MP=1）"
+            --notes "自动构建：${{ github.sha }}（appid $WEAPP_APPID，MOODISLE_MP=1）"
 
       - uses: actions/upload-artifact@v4
         with:
