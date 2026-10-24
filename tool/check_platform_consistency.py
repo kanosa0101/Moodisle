@@ -16,6 +16,13 @@ APP = ROOT / "app"
 DISPLAY_NAME = "心晴屿 Moodisle"
 SHORT_NAME = "心晴屿"
 FLUTTER_VERSION = "3.47.5"
+# 小程序 spike 例外：mp-flutter 0.3.2 构建硬校验 Flutter 3.41.x
+# （更高版本以退出码 3 拒绝），仓库基线 3.47.5 无法用于 weapp 构建。
+WORKFLOW_FLUTTER_VERSIONS = {
+    "ci.yml": FLUTTER_VERSION,
+    "ios-build.yml": FLUTTER_VERSION,
+    "wechat-miniprogram-spike.yml": "3.41.9",
+}
 
 
 def require(condition: bool, message: str) -> None:
@@ -104,18 +111,9 @@ def check_shared_assets() -> None:
 
 
 def check_workflows() -> None:
-    versions = []
-    workflows = (
-        ROOT / ".github/workflows/ci.yml",
-        ROOT / ".github/workflows/ios-build.yml",
-        ROOT / ".github/workflows/wechat-miniprogram-spike.yml",
-    )
-    for path in workflows:
-        versions.extend(re.findall(r"flutter-version:\s*['\"]?([^'\"\s]+)", read(path)))
-    require(
-        versions == [FLUTTER_VERSION] * len(workflows),
-        f"workflow Flutter versions drifted: {versions}",
-    )
+    for name, expected in WORKFLOW_FLUTTER_VERSIONS.items():
+        found = re.findall(r"flutter-version:\s*['\"]?([^'\"\s]+)", read(ROOT / ".github/workflows" / name))
+        require(found == [expected], f"{name} Flutter version drifted: {found} != [{expected}]")
 
 
 def main() -> int:

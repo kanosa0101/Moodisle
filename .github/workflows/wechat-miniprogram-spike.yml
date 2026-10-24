@@ -24,10 +24,12 @@ jobs:
         with:
           node-version: 20
 
+      # mp-flutter 0.3.2 构建硬校验 Flutter 3.41.x（更高速退出码 3），
+      # 与仓库 3.47.5 基线不同：见 tool/check_platform_consistency.py 的按工作流映射。
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.47.5
+          flutter-version: 3.41.9
           cache: true
 
       - name: Install Brotli
@@ -42,17 +44,31 @@ jobs:
           python3 tool/weapp_asset_diet.py apply
           python3 tool/weapp_asset_diet.py check
 
+      # 仓库 pubspec.lock 由 Flutter 3.47.5 生成（Dart 下限 3.12），
+      # 与 3.41.9 的 Dart 3.11 无解；CI 内重解析（钉死版本均兼容 Dart 3.10+）。
       - name: Resolve Flutter dependencies
         working-directory: app
-        run: flutter pub get
+        run: |
+          rm -f pubspec.lock
+          flutter pub get
 
       - name: Check Mini Program toolchain
         working-directory: app
         run: dart run flutter_miniprogram doctor
 
+      # 构建失败时把日志尾部经 workflow annotation 外显（免认证可读）。
       - name: Build WeChat Mini Program
         working-directory: app
-        run: dart run flutter_miniprogram --appid touristappid
+        run: |
+          set +e
+          dart run flutter_miniprogram --appid touristappid > ../weapp_build.log 2>&1
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ]; then
+            msg=$(tail -n 60 ../weapp_build.log | head -c 3600 | tr '\n' '|')
+            echo "::error title=weapp build failed (exit $code)::${msg:-no output}"
+            exit "$code"
+          fi
 
       - name: Report package sizes
         run: du -h -d 2 app/build/weapp | sort -h
