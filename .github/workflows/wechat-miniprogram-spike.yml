@@ -11,7 +11,8 @@ on:
       - .github/workflows/wechat-miniprogram-spike.yml
 
 permissions:
-  contents: read
+  # prerelease 用于免认证分发 weapp 产物（本地微信开发者工具验收用）。
+  contents: write
 
 jobs:
   build:
@@ -95,7 +96,20 @@ jobs:
           fi
 
       - name: Report package sizes
-        run: du -h -d 2 app/build/weapp | sort -h
+        run: |
+          du -h -d 2 app/build/weapp | sort -h
+          echo "::notice::$(du -k -d 2 app/build/weapp | sort -n | tail -15 | tr '\n' '|')"
+
+      # 固定 prerelease 标签，产物 URL 可免认证直接下载（本地验收用）。
+      - name: Publish weapp artifact to prerelease
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd app/build && zip -qr weapp-tourist.zip weapp && cd ../..
+          gh release delete weapp-spike-latest --yes --cleanup-tag || true
+          gh release create weapp-spike-latest app/build/weapp-tourist.zip \
+            --prerelease --title "weapp spike (auto)" \
+            --notes "自动构建：${{ github.sha }}（touristappid，MOODISLE_MP=1）"
 
       - uses: actions/upload-artifact@v4
         with:
