@@ -27,13 +27,20 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.41.9
+          flutter-version: 3.47.5
           cache: true
 
       - name: Install Brotli
         run: |
           sudo apt-get update
           sudo apt-get install --yes brotli
+
+      # 小程序包体硬限 30MB：构建前在临时 checkout 内原地瘦身（仓库资产不变）。
+      - name: Shrink assets for Mini Program
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 tool/weapp_asset_diet.py apply
+          python3 tool/weapp_asset_diet.py check
 
       - name: Resolve Flutter dependencies
         working-directory: app

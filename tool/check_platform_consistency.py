@@ -105,9 +105,17 @@ def check_shared_assets() -> None:
 
 def check_workflows() -> None:
     versions = []
-    for path in (ROOT / ".github/workflows/ci.yml", ROOT / ".github/workflows/ios-build.yml"):
+    workflows = (
+        ROOT / ".github/workflows/ci.yml",
+        ROOT / ".github/workflows/ios-build.yml",
+        ROOT / ".github/workflows/wechat-miniprogram-spike.yml",
+    )
+    for path in workflows:
         versions.extend(re.findall(r"flutter-version:\s*['\"]?([^'\"\s]+)", read(path)))
-    require(versions == [FLUTTER_VERSION, FLUTTER_VERSION], f"workflow Flutter versions drifted: {versions}")
+    require(
+        versions == [FLUTTER_VERSION] * len(workflows),
+        f"workflow Flutter versions drifted: {versions}",
+    )
 
 
 def main() -> int:
