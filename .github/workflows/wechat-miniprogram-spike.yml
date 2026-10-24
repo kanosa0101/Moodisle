@@ -1,0 +1,58 @@
+name: WeChat Mini Program spike
+
+on:
+  workflow_dispatch:
+  # Run once when this workflow first reaches the development branch.
+  # Later app changes require an intentional manual run to limit build usage.
+  push:
+    branches:
+      - feat/wechat-miniprogram
+    paths:
+      - .github/workflows/wechat-miniprogram-spike.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.41.9
+          cache: true
+
+      - name: Install Brotli
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes brotli
+
+      - name: Resolve Flutter dependencies
+        working-directory: app
+        run: flutter pub get
+
+      - name: Check Mini Program toolchain
+        working-directory: app
+        run: dart run flutter_miniprogram doctor
+
+      - name: Build WeChat Mini Program
+        working-directory: app
+        run: dart run flutter_miniprogram --appid touristappid
+
+      - name: Report package sizes
+        run: du -h -d 2 app/build/weapp | sort -h
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moodisle-wechat-spike-${{ github.sha }}
+          path: app/build/weapp/
+          if-no-files-found: error
+          retention-days: 7
