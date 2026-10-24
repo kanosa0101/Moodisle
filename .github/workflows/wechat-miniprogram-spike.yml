@@ -45,7 +45,23 @@ jobs:
           python3 tool/weapp_asset_diet.py check
 
       # 仓库 pubspec.lock 由 Flutter 3.47.5 生成（Dart 下限 3.12），
-      # 与 3.41.9 的 Dart 3.11 无解；CI 内重解析（钉死版本均兼容 Dart 3.10+）。
+      # 与 3.41.9 的 Dart 3.11 无解；CI 内重解析。
+      # 另摘掉 build_runner/drift_dev：analyzer ^14 需要 meta ^1.18.3，
+      # 与 3.41.9 SDK 钉死的 meta 1.17.0 冲突；两者仅用于本地代码生成，
+      # database.g.dart 已入库，weapp 构建不跑 codegen。
+      - name: Trim dev codegen tools for Dart 3.11 resolution
+        working-directory: app
+        run: |
+          python3 - <<'EOF'
+          from pathlib import Path
+          p = Path('pubspec.yaml')
+          text = p.read_text(encoding='utf-8')
+          for line in ('  drift_dev: 2.35.1\n', '  build_runner: ^2.16.2\n'):
+              assert line in text, f'missing: {line!r}'
+              text = text.replace(line, '')
+          p.write_text(text, encoding='utf-8')
+          EOF
+
       - name: Resolve Flutter dependencies
         working-directory: app
         run: |
