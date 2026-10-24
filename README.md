@@ -1,6 +1,6 @@
 # 心晴屿 Moodisle
 
-心晴屿是一款以“情绪即天气”为主题的 Flutter 应用：真实待办召唤天气精灵，完成后收服并陪伴专注。当前处于测试打磨阶段；Web、Android 与 iOS 共用 `app/` 中的 Dart/Flutter 实现。iOS 已配置 Windows → GitHub Actions 的手动构建入口，当前修订版本已完成无签名 Release 编译；签名和真机验收仍待完成。
+心晴屿是一款以“情绪即天气”为主题的 Flutter 应用：真实待办召唤天气精灵，完成后收服并陪伴专注。当前处于测试打磨阶段；Web、Android 与 iOS 共用 `app/` 中的 Dart/Flutter 实现。iOS 已配置 Windows → GitHub Actions 的手动构建入口，当前修订版本已完成无签名 Release 编译；签名和真机验收仍待完成。微信小程序端在独立分支 `feat/wechat-miniprogram` 开发（mp-flutter 编译，构建期资产瘦身，模拟器走查已通过；音频适配与真机验收待做），详见 [docs/12](docs/12-微信小程序适配.md)；该分支不改动 main。
 
 ## 项目结构
 
