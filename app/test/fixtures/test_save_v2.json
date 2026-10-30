@@ -1,0 +1,293 @@
+{
+  "version": 2,
+  "nextTaskId": 6,
+  "clearing": 96.5,
+  "energy": 23,
+  "warmFrontTurns": 2,
+  "tailwindTurns": 1,
+  "stats": {
+    "totalDone": 87,
+    "totalFocusSessions": 22,
+    "totalFocusMinutes": 530,
+    "mazeRuns": 60,
+    "mistDewCollected": 47,
+    "deepDives": 8
+  },
+  "achievements": [
+    "first",
+    "sunny3",
+    "sunny7",
+    "dex",
+    "rainbow",
+    "awakened",
+    "constellation",
+    "deepcurrent",
+    "clear100",
+    "chain3",
+    "chain5",
+    "maze10",
+    "dew20",
+    "deep5",
+    "bond10",
+    "collector",
+    "penpal",
+    "visitor"
+  ],
+  "roam": {
+    "slots": [],
+    "souvenirs": {
+      "cloudBell": 3,
+      "windmillLamp": 2,
+      "rainbowHoop": 2,
+      "starChartScarf": 1,
+      "rainGauge": 4,
+      "sunnyRainDoll": 2,
+      "convectionFire": 3,
+      "auroraVeil": 1,
+      "breeze_chime_stand": 1,
+      "travel_mailbox": 1,
+      "warm_night_campfire": 1,
+      "star_wish_swing": 1,
+      "lotus_boat": 1,
+      "fog_lamp_ornament": 1,
+      "shell_wind_chime": 1,
+      "weather_house": 1,
+      "rainbow_arch": 1,
+      "meteor_wishing_pool": 1,
+      "aurora_curtain": 1,
+      "four_seasons_flower_clock": 1
+    },
+    "pendant": "starChartScarf"
+  },
+  "social": {
+    "myName": "测试屿",
+    "visitingPet": null,
+    "visitingExpireMs": null,
+    "postcards": [
+      {
+        "code": "MDSL-AZTUBGGOAXD7AAD4AABZ-DNUQ",
+        "friendName": "晴风屿",
+        "friendPet": "shy",
+        "receivedAtMs": 1793268000000
+      },
+      {
+        "code": "MDSL-AZQ7BEOOAAD4AABY-8MHO",
+        "friendName": "星野",
+        "friendPet": "fomo",
+        "receivedAtMs": 1793194200000
+      }
+    ]
+  },
+  "lastReportWeek": "2026-10-26",
+  "onboarded": true,
+  "streak": {
+    "sunnyDays": 12,
+    "lastSunny": "2026-10-30"
+  },
+  "keeper": {
+    "level": 12,
+    "exp": 60
+  },
+  "resonance": {
+    "last": "shy",
+    "len": 3,
+    "best": 6,
+    "lastAtMs": 1793323800000
+  },
+  "climate": {
+    "fog": 12.0,
+    "tier": "sunny",
+    "tierHoldDays": 0,
+    "zeroDoneStreak": 0,
+    "buckets": [
+      {
+        "date": "2026-10-24",
+        "done": 2,
+        "focusMin": 0
+      },
+      {
+        "date": "2026-10-25",
+        "done": 4,
+        "focusMin": 25
+      },
+      {
+        "date": "2026-10-26",
+        "done": 1,
+        "focusMin": 0
+      },
+      {
+        "date": "2026-10-27",
+        "done": 5,
+        "focusMin": 50
+      },
+      {
+        "date": "2026-10-28",
+        "done": 3,
+        "focusMin": 15
+      },
+      {
+        "date": "2026-10-29",
+        "done": 6,
+        "focusMin": 25
+      },
+      {
+        "date": "2026-10-30",
+        "done": 2,
+        "focusMin": 25
+      }
+    ]
+  },
+  "focus": {
+    "todayMin": 25,
+    "weekMin": 140,
+    "weekStart": "2026-10-26",
+    "glancesToday": 1
+  },
+  "session": null,
+  "daily": {
+    "date": "2026-10-30",
+    "checkinDays": 9,
+    "checkinBest": 21,
+    "checkedToday": false,
+    "lastCheckin": "2026-10-29",
+    "lastGreet": "2026-10-30",
+    "mazeToday": 0,
+    "companion": "anxious",
+    "quests": {
+      "do3": {
+        "prog": 2,
+        "claimed": false
+      },
+      "focus1": {
+        "prog": 1,
+        "claimed": true
+      },
+      "chain3": {
+        "prog": 3,
+        "claimed": false
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": 5,
+      "text": "给朋友回消息",
+      "emotion": "shy",
+      "difficulty": 1,
+      "status": "pending",
+      "createdOn": "2026-10-30",
+      "pinned": false
+    },
+    {
+      "id": 4,
+      "text": "整理本周周报",
+      "emotion": "neikao",
+      "difficulty": 2,
+      "status": "pending",
+      "createdOn": "2026-10-30",
+      "pinned": true
+    },
+    {
+      "id": 3,
+      "text": "跑步 30 分钟",
+      "emotion": "emo",
+      "difficulty": 3,
+      "status": "pending",
+      "createdOn": "2026-10-29",
+      "pinned": false
+    },
+    {
+      "id": 2,
+      "text": "完成一次 25 分钟专注",
+      "emotion": "fomo",
+      "difficulty": 2,
+      "status": "done",
+      "createdOn": "2026-10-29",
+      "pinned": false
+    },
+    {
+      "id": 1,
+      "text": "读完一章书",
+      "emotion": "sloth",
+      "difficulty": 1,
+      "status": "done",
+      "createdOn": "2026-10-28",
+      "pinned": false
+    }
+  ],
+  "pets": {
+    "anxious": {
+      "count": 14,
+      "stage": "awakened",
+      "branch": "constellation",
+      "bondMinutes": 2400
+    },
+    "emo": {
+      "count": 12,
+      "stage": "awakened",
+      "branch": "deepcurrent",
+      "bondMinutes": 1500
+    },
+    "sloth": {
+      "count": 9,
+      "stage": "rainbow",
+      "branch": null,
+      "bondMinutes": 640
+    },
+    "burnout": {
+      "count": 7,
+      "stage": "rainbow",
+      "branch": null,
+      "bondMinutes": 320
+    },
+    "neikao": {
+      "count": 11,
+      "stage": "awakened",
+      "branch": "constellation",
+      "bondMinutes": 1050
+    },
+    "chaos": {
+      "count": 13,
+      "stage": "awakened",
+      "branch": "deepcurrent",
+      "bondMinutes": 1850
+    },
+    "distract": {
+      "count": 6,
+      "stage": "rainbow",
+      "branch": null,
+      "bondMinutes": 160
+    },
+    "perfect": {
+      "count": 4,
+      "stage": "clear",
+      "branch": null,
+      "bondMinutes": 90
+    },
+    "fomo": {
+      "count": 8,
+      "stage": "rainbow",
+      "branch": null,
+      "bondMinutes": 610
+    },
+    "shy": {
+      "count": 3,
+      "stage": "clear",
+      "branch": null,
+      "bondMinutes": 40
+    }
+  },
+  "items": {
+    "sunnyCrystal": 88,
+    "stardust": 64,
+    "morningDew": 12,
+    "prismCrystal": 9,
+    "mistDew": 5,
+    "warmFront": 3,
+    "tailwind": 4,
+    "knotShard": 7,
+    "cloudMica": 2,
+    "lantern": 1
+  },
+  "activeMazeRun": null
+}
