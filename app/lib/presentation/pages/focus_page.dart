@@ -284,7 +284,11 @@ class _FocusingView extends StatelessWidget {
               ),
             );
           }
-          final remain = session.planMin - session.doneMin;
+          // 剩余时间按秒展示（accumSeconds 每秒心跳推进，倒计时逐秒走动）
+          final remainSec =
+              (session.planMin * 60 - session.accumSeconds).clamp(0, 1 << 30);
+          final remainMin = remainSec ~/ 60;
+          final remainPart = remainSec % 60;
           final glancing = session.phase == 'glancing';
           return Center(
             child: Container(
@@ -306,7 +310,8 @@ class _FocusingView extends StatelessWidget {
                     style: const TextStyle(
                         fontSize: 12, color: MoodisleColors.ink2)),
                 const SizedBox(height: 10),
-                Text('${remain.toString().padLeft(2, '0')}:00',
+                Text(
+                    '${remainMin.toString().padLeft(2, '0')}:${remainPart.toString().padLeft(2, '0')}',
                     style: const TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.w900,

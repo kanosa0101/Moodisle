@@ -167,6 +167,14 @@ class _IslandPageState extends State<IslandPage>
                     _clampCam();
                   });
                 },
+                // 竖向拖动由地图接管（内层 VerticalDragRecognizer 在手势仲裁中
+                // 优先于外层 ListView），避免上下滑动误触发整页滚动。
+                onVerticalDragUpdate: (d) {
+                  setState(() {
+                    _camY -= d.delta.dy;
+                    _clampCam();
+                  });
+                },
                 onTapUp: (d) => _onTap(context, d.localPosition.dx + _camX,
                     d.localPosition.dy + _camY),
                 child: AnimatedBuilder(

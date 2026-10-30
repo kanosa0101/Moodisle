@@ -20,6 +20,7 @@ import 'presentation/pages/tasks_page.dart';
 import 'shared/audio/moodisle_audio_scope.dart';
 import 'shared/audio/moodisle_audio_service.dart';
 import 'shared/theme/tokens.dart';
+import 'shared/widgets/coach_registry.dart';
 
 void main() => runApp(MoodisleApp(repository: SqliteGameRepository()));
 
@@ -113,6 +114,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    CoachRegistry.launch = _startCoach;
     _controller = GameController(repository: widget.repository);
     _audio = MoodisleAudioService();
     unawaited(FocusLifecycleChannel.listenForScreenState(
@@ -385,6 +387,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    if (CoachRegistry.launch == _startCoach) CoachRegistry.launch = null;
     FocusLifecycleChannel.clearHandler();
     WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
