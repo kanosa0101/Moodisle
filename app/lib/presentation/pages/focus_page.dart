@@ -284,9 +284,9 @@ class _FocusingView extends StatelessWidget {
               ),
             );
           }
-          // 剩余时间按秒展示（accumSeconds 每秒心跳推进，倒计时逐秒走动）
-          final remainSec =
-              (session.planMin * 60 - session.accumSeconds).clamp(0, 1 << 30);
+          // 显示和引擎结算共用截止时间；暂停时 remainingSecondsAt 会冻结。
+          final remainSec = session.remainingSecondsAt(controller.focusNow);
+          final doneMin = (session.planMin * 60 - remainSec) ~/ 60;
           final remainMin = remainSec ~/ 60;
           final remainPart = remainSec % 60;
           final glancing = session.phase == 'glancing';
@@ -316,7 +316,7 @@ class _FocusingView extends StatelessWidget {
                         fontSize: 40,
                         fontWeight: FontWeight.w900,
                         color: MoodisleColors.orange)),
-                Text('已专注 ${session.doneMin} / ${session.planMin} 分钟',
+                Text('已专注 $doneMin / ${session.planMin} 分钟',
                     style: const TextStyle(
                         fontSize: 11.5, color: MoodisleColors.ink2)),
                 const SizedBox(height: 14),

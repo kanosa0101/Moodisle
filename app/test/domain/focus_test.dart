@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:math' show Random;
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moodisle_app/data/save_codec.dart';
 import 'package:moodisle_app/domain/config/game_config.dart';
 import 'package:moodisle_app/domain/entities/emotion.dart';
 import 'package:moodisle_app/domain/entities/pet.dart';
@@ -29,6 +31,184 @@ GameState _stateWith(Emotion pet, Bond bond) {
 }
 
 void main() {
+  group('截止时间计时', () {
+    test('无心跳也能计算剩余时间，截止前不提前完成，重复回调只结算一次', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final c = GameCore(s);
+      final start = DateTime(2026, 11, 15, 10, 0, 0, 350);
+      c.startFocus(Emotion.emo, 25, start);
+      final deadline = start.add(const Duration(minutes: 25));
+      expect(s.session!.endsAt, deadline);
+      expect(s.session!.remainingSecondsAt(start), 1500);
+      expect(s.session!.remainingSecondsAt(
+          start.add(const Duration(minutes: 10))), 900);
+      expect(s.session!.accumSeconds, 0);
+      final before = deadline.subtract(const Duration(milliseconds: 1));
+      expect(s.session!.remainingSecondsAt(before), 1);
+      expect(c.focusTick(before), isEmpty);
+      expect(c.focusTick(deadline).whereType<FocusCompleted>(), hasLength(1));
+      c.focusOnScreenUnlocked(deadline);
+      c.focusOnResumed(deadline);
+      c.focusTick(deadline.add(const Duration(hours: 1)));
+      expect(s.stats.totalFocusSessions, 1);
+      expect(s.focusMeta.todayMin, 25);
+    });
+
+    test('反复暂停精确保留剩余小数秒，重复生命周期通知不重复顺延', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final c = GameCore(s);
+      var now = DateTime(2026, 11, 15, 10);
+      c.startFocus(Emotion.emo, 25, now);
+      var expectedEnd = s.session!.endsAt;
+      for (var i = 0; i < 5; i++) {
+        now = now.add(const Duration(milliseconds: 350));
+        c.focusOnBackgrounded(now);
+        c.focusOnBackgrounded(now.add(const Duration(milliseconds: 100)));
+        final remaining = s.session!.remainingAt(now);
+        now = now.add(const Duration(minutes: 3, milliseconds: 125));
+        c.focusTick(now);
+        expect(s.session!.remainingAt(now), remaining);
+        c.focusOnResumed(now);
+        c.focusOnResumed(now);
+        expectedEnd = expectedEnd.add(
+            const Duration(minutes: 3, milliseconds: 125));
+        expect(s.session!.endsAt, expectedEnd);
+        expect(s.session!.remainingAt(now), remaining);
+      }
+      expect(s.session!.accumSeconds, 1);
+      expect(s.focusMeta.glancesToday, 5);
+      c.focusTick(expectedEnd);
+      expect(s.session, isNull);
+    });
+
+    test('息屏保持截止时间；解锁后停留其他应用则冻结到重新返回', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final c = GameCore(s);
+      final start = DateTime(2026, 11, 15, 10);
+      c.startFocus(Emotion.emo, 25, start);
+      final deadline = s.session!.endsAt;
+      c.focusOnScreenLocked(start.add(const Duration(minutes: 2)));
+      c.focusOnBackgrounded(start.add(const Duration(minutes: 2)));
+      c.focusOnScreenLocked(start.add(const Duration(minutes: 2)));
+      expect(s.session!.endsAt, deadline);
+      // 锁屏期间没有任何 tick。
+      final unlocked = start.add(const Duration(minutes: 10));
+      c.focusOnScreenUnlocked(unlocked);
+      c.focusOnScreenUnlocked(unlocked);
+      expect(s.session!.remainingSecondsAt(unlocked), 900);
+      final returned = unlocked.add(const Duration(minutes: 7));
+      expect(s.session!.remainingSecondsAt(returned), 900);
+      c.focusOnResumed(returned);
+      expect(s.session!.endsAt, deadline.add(const Duration(minutes: 7)));
+      expect(s.session!.remainingSecondsAt(returned), 900);
+    });
+
+    test('切应用较久后息屏不能把原暂停改成继续计时', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final c = GameCore(s);
+      final start = DateTime(2026, 11, 15, 10);
+      c.startFocus(Emotion.emo, 25, start);
+      c.focusOnBackgrounded(start.add(const Duration(minutes: 1)));
+      c.focusOnScreenLocked(start.add(const Duration(minutes: 2)));
+      expect(s.session!.phase, 'glancing');
+      expect(s.session!.remainingSecondsAt(
+          start.add(const Duration(hours: 1))), 1440);
+    });
+
+    test('旧 JSON 没有截止时间时按历史进度补算，新 JSON 保留截止时间', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final start = DateTime(2026, 11, 15, 10);
+      GameCore(s).startFocus(Emotion.emo, 25, start);
+      final json = saveToJson(s);
+      final session = json['session'] as Map<String, dynamic>;
+      session.remove('endsAtMs');
+      session['accumSeconds'] = 120;
+      session['lastTickAtMs'] =
+          start.add(const Duration(minutes: 7)).millisecondsSinceEpoch;
+      final restored = decodeSave(jsonEncode(json));
+      expect(restored.session!.endsAt,
+          start.add(const Duration(minutes: 30)));
+      expect(restored.session!.remainingSecondsAt(
+          start.add(const Duration(minutes: 10))), 1200);
+      final again = decodeSave(encodeSave(restored));
+      expect(again.session!.endsAt, restored.session!.endsAt);
+    });
+  });
+
+  group('计时精度回归', () {
+    test('不规则心跳保留不足一秒的余量，并在真实时长达标时结算一次', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final c = GameCore(s);
+      final start = DateTime(2026, 11, 15, 10);
+      c.startFocus(Emotion.emo, 25, start);
+      for (final ms in [650, 1651, 2649, 3652, 4650, 9900]) {
+        c.focusTick(start.add(Duration(milliseconds: ms)));
+        expect(s.session!.accumSeconds, ms ~/ 1000);
+      }
+      c.focusTick(start.add(
+          const Duration(minutes: 24, seconds: 59, milliseconds: 999)));
+      expect(s.session!.accumSeconds, 1499);
+      expect(
+          c.focusTick(start.add(const Duration(minutes: 25)))
+              .whereType<FocusCompleted>(),
+          hasLength(1));
+      expect(c.focusTick(start.add(const Duration(minutes: 26))), isEmpty);
+      expect(s.stats.totalFocusSessions, 1);
+    });
+
+    test('暂停排除后台时间，同时保留离开前不足一秒的专注时间', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final c = GameCore(s);
+      final start = DateTime(2026, 11, 15, 10);
+      c.startFocus(Emotion.emo, 25, start);
+      c.focusOnBackgrounded(start.add(const Duration(milliseconds: 750)));
+      c.focusOnResumed(
+          start.add(const Duration(minutes: 5, milliseconds: 750)));
+      c.focusTick(start.add(const Duration(minutes: 5, seconds: 1)));
+      expect(s.session!.accumSeconds, 1);
+    });
+
+    test('锁屏通知晚于后台通知时仍补齐连续专注时间', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final c = GameCore(s);
+      final start = DateTime(2026, 11, 15, 10);
+      c.startFocus(Emotion.emo, 25, start);
+      c.focusOnBackgrounded(start.add(const Duration(milliseconds: 750)));
+      c.focusOnScreenLocked(start.add(const Duration(milliseconds: 900)));
+      c.focusOnResumed(
+          start.add(const Duration(minutes: 10, milliseconds: 250)));
+      expect(s.session!.accumSeconds, 600);
+      c.focusTick(start.add(const Duration(minutes: 10, seconds: 1)));
+      expect(s.session!.accumSeconds, 601);
+    });
+
+    test('较早的时间戳不倒扣已累计时长', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final c = GameCore(s);
+      final start = DateTime(2026, 11, 15, 10);
+      c.startFocus(Emotion.emo, 25, start);
+      c.focusTick(start.add(const Duration(seconds: 5)));
+      c.focusTick(start.add(const Duration(seconds: 3)));
+      expect(s.session!.accumSeconds, 5);
+      c.focusTick(start.add(const Duration(seconds: 6)));
+      expect(s.session!.accumSeconds, 6);
+    });
+
+    test('暂停存档恢复后仍保留小数秒余量，且不计入暂停时长', () {
+      final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+      final c = GameCore(s);
+      final start = DateTime(2026, 11, 15, 10);
+      c.startFocus(Emotion.emo, 25, start);
+      c.focusOnBackgrounded(start.add(const Duration(milliseconds: 1750)));
+      final restored = decodeSave(encodeSave(s));
+      final resumed = GameCore(restored);
+      resumed.focusOnResumed(start.add(const Duration(minutes: 5)));
+      resumed.focusTick(
+          start.add(const Duration(minutes: 5, milliseconds: 250)));
+      expect(restored.session!.accumSeconds, 2);
+    });
+  });
+
   group('TC-FOC-001 完成结算（docs/03 §8.1）', () {
     test('50→75 分钟升 Lv2；星屑按结算前等级计算 = 5', () {
       final s = _stateWith(Emotion.emo, Bond(minutes: 50));

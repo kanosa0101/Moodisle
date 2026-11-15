@@ -130,6 +130,7 @@ class SqliteGameRepository implements GameRepository {
         startedAt: _requiredDateTime(activeFocus.startedAtMs),
         lastTickAt: _requiredDateTime(activeFocus.lastTickAtMs),
         pausedAt: _dateTime(activeFocus.pausedAtMs),
+        endsAt: _dateTime(activeFocus.endsAtMs),
       );
     }
 
@@ -341,6 +342,7 @@ class SqliteGameRepository implements GameRepository {
                 startedAtMs: Value(session.startedAt.millisecondsSinceEpoch),
                 lastTickAtMs: Value(session.lastTickAt.millisecondsSinceEpoch),
                 pausedAtMs: Value(session.pausedAt?.millisecondsSinceEpoch),
+                endsAtMs: Value(session.endsAt.millisecondsSinceEpoch),
               ),
             );
       }

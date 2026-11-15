@@ -290,6 +290,79 @@ void main() {
     }
   });
 
+  for (final width in [390.0, 800.0]) {
+    testWidgets('$width 宽度地图斜滑保留二维位移，区域外仍可滚动', (tester) async {
+      tester.view.physicalSize = Size(width, 700);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final controller = GameController();
+      try {
+        await tester.pumpWidget(MaterialApp(
+          home: Scaffold(body: IslandPage(controller: controller)),
+        ));
+        await tester.pump();
+        final map = find.byWidgetPredicate((w) {
+          if (w is! CustomPaint) return false;
+          try {
+            return (w.painter as dynamic).cam is Offset;
+          } on NoSuchMethodError {
+            return false;
+          }
+        });
+        Offset camera() =>
+            (tester.widget<CustomPaint>(map).painter as dynamic).cam as Offset;
+        final scroll = tester.state<ScrollableState>(
+          find.descendant(
+            of: find.byType(IslandPage),
+            matching: find.byType(Scrollable),
+          ).first,
+        ).position;
+        for (final delta in [
+          const Offset(-6, -10),
+          const Offset(10, 6),
+          const Offset(-10, 0),
+          const Offset(0, 10),
+        ]) {
+          final before = camera();
+          final gesture = await tester.startGesture(tester.getCenter(map));
+          for (var i = 0; i < 8; i++) {
+            await gesture.moveBy(delta);
+            await tester.pump(const Duration(milliseconds: 16));
+          }
+          await gesture.up();
+          await tester.pump();
+          final moved = camera() - before;
+          if (delta.dx != 0) expect(moved.dx * delta.dx, lessThan(0));
+          if (delta.dy != 0) expect(moved.dy * delta.dy, lessThan(0));
+          if (delta.dx != 0 && delta.dy != 0) {
+            expect(moved.dx / moved.dy, closeTo(delta.dx / delta.dy, 0.01));
+          }
+          expect(scroll.pixels, 0);
+        }
+        // 同一次拖动先竖滑再横滑，也应保留后半段的横向移动。
+        final turning = await tester.startGesture(tester.getCenter(map));
+        await turning.moveBy(const Offset(0, -40));
+        await tester.pump();
+        final beforeTurn = camera();
+        await turning.moveBy(const Offset(-50, 0));
+        await tester.pump();
+        expect(camera().dx - beforeTurn.dx, closeTo(50, 0.01));
+        await turning.up();
+        expect(scroll.pixels, 0);
+        final belowMap =
+            Offset(width / 2, tester.getBottomLeft(map).dy + 40);
+        await tester.dragFrom(belowMap, const Offset(0, -100));
+        await tester.pump();
+        expect(scroll.pixels, greaterThan(0));
+        expect(tester.takeException(), isNull);
+      } finally {
+        await tester.pumpWidget(const SizedBox.shrink());
+        controller.dispose();
+      }
+    });
+  }
+
   test('导入存档保留所有已编码状态', () {
     final source = GameState.fresh()
       ..onboarded = true
@@ -399,7 +472,7 @@ void main() {
     expect(restored.mazeRun!.pos, start);
   });
 
-  testWidgets('专注倒计时按秒走动（mm:ss）', (tester) async {
+  testWidgets('专注 UI 直接按截止时间刷新，切应用暂停、息屏继续', (tester) async {
     final state = GameState.fresh();
     state.pets[Emotion.sloth] = PetRecord(
       emotion: Emotion.sloth,
@@ -407,23 +480,47 @@ void main() {
       stage: PetStage.clear,
       bond: Bond(minutes: 0),
     );
-    final controller = GameController(state: state, rng: Random(1));
+    var now = DateTime(2026, 11, 15, 10);
+    final controller = GameController(
+        state: state, rng: Random(1), focusNow: () => now);
     controller.startFocus(Emotion.sloth, 25);
-    // 推进 25 秒：25:00 - 00:25 = 24:35
-    controller.state.session!.accumSeconds = 25;
     try {
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(body: FocusPage(controller: controller)),
       ));
       await tester.pump();
-
-      expect(find.text('24:35'), findsOneWidget,
-          reason: '倒计时应展示逐秒走动的 mm:ss，而不是恒为 :00');
-      // 心跳推进 47 秒后（ticker 每秒 notify）：24:35 - 00:47 = 23:48
-      controller.state.session!.accumSeconds = 25 + 47;
-      controller.setCompanion(Emotion.sloth); // 触发监听重建（等价一次心跳通知）
+      expect(find.text('25:00'), findsOneWidget);
+      now = now.add(const Duration(milliseconds: 999));
+      controller.setCompanion(Emotion.sloth);
+      await tester.pump(const Duration(milliseconds: 999));
+      expect(find.text('25:00'), findsOneWidget);
+      now = now.add(const Duration(milliseconds: 1));
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(find.text('24:59'), findsOneWidget);
+      // 没有心跳时，普通界面重建也必须根据当前时间显示正确倒计时。
+      now = now.add(const Duration(seconds: 24));
+      controller.setCompanion(Emotion.sloth);
       await tester.pump();
+      expect(state.session!.accumSeconds, 1);
+      expect(find.text('24:35'), findsOneWidget,
+          reason: '显示不能依赖上一次心跳的累计秒数');
+      now = now.add(const Duration(seconds: 47));
+      await tester.pump(const Duration(seconds: 1));
       expect(find.text('23:48'), findsOneWidget);
+      controller.focusBackgrounded();
+      now = now.add(const Duration(minutes: 5));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('23:48'), findsOneWidget);
+      controller.focusResumed();
+      now = now.add(const Duration(seconds: 1));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('23:47'), findsOneWidget);
+      controller.focusScreenLocked();
+      now = now.add(const Duration(minutes: 24));
+      controller.focusResumed();
+      await tester.pump();
+      expect(find.text('专注完成！'), findsOneWidget);
+      expect(state.stats.totalFocusSessions, 1);
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());
       controller.dispose();

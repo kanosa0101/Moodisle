@@ -46,7 +46,7 @@ class _IslandPageState extends State<IslandPage>
     with SingleTickerProviderStateMixin {
   double _camX = 0;
   double _camY = 0;
-  Offset _lastFocal = Offset.zero;
+  Offset _lastDragPosition = Offset.zero;
   DateTime _lastEcoTick = DateTime.now();
   String? _loadedMapPath;
   ui.Image? _mapImage;
@@ -123,6 +123,21 @@ class _IslandPageState extends State<IslandPage>
     _camY = _camY.clamp(0.0, kWorldH - kViewH);
   }
 
+  void _startMapDrag(DragStartDetails details) {
+    _lastDragPosition = details.localPosition;
+  }
+
+  void _updateMapDrag(DragUpdateDetails details) {
+    // 方向识别器的 delta 会丢弃另一轴，localPosition 则保留完整二维坐标。
+    final delta = details.localPosition - _lastDragPosition;
+    _lastDragPosition = details.localPosition;
+    setState(() {
+      _camX -= delta.dx;
+      _camY -= delta.dy;
+      _clampCam();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // 对齐原版 view-island：心岛面板(428:300) → 提示行 → 装扮商店，整页滚动
@@ -157,24 +172,12 @@ class _IslandPageState extends State<IslandPage>
             Positioned.fill(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onScaleStart: (d) => _lastFocal = d.localFocalPoint,
-                onScaleUpdate: (d) {
-                  // focal 差值驱动平移（与原版拖拽一致）
-                  setState(() {
-                    _camX -= d.localFocalPoint.dx - _lastFocal.dx;
-                    _camY -= d.localFocalPoint.dy - _lastFocal.dy;
-                    _lastFocal = d.localFocalPoint;
-                    _clampCam();
-                  });
-                },
-                // 竖向拖动由地图接管（内层 VerticalDragRecognizer 在手势仲裁中
-                // 优先于外层 ListView），避免上下滑动误触发整页滚动。
-                onVerticalDragUpdate: (d) {
-                  setState(() {
-                    _camY -= d.delta.dy;
-                    _clampCam();
-                  });
-                },
+                // 与外层滚动使用相同方向阈值，让内层先接管；两种方向共用
+                // 二维位移处理，斜滑和拖动中改变方向都不会锁死在单一轴。
+                onHorizontalDragStart: _startMapDrag,
+                onHorizontalDragUpdate: _updateMapDrag,
+                onVerticalDragStart: _startMapDrag,
+                onVerticalDragUpdate: _updateMapDrag,
                 onTapUp: (d) => _onTap(context, d.localPosition.dx + _camX,
                     d.localPosition.dy + _camY),
                 child: AnimatedBuilder(
