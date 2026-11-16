@@ -117,3 +117,7 @@ manifest 资产在 CSV 中缺失或字段不完整即 FAIL。批次记录是权�
 | UI 贴纸（emotes/feedback/sections） | process/ui_sticker_atlas.png | 贴纸图集原图，切片后缩放 128px |
 | 图集切片规则 | process/slice_atlases.py | 人工定义的行优先切片、裁边与缩放规则（创作贡献留痕） |
 | 中文字体子集字符集 | process/font_charset.txt | subset_font.py 实际用字存档（1723 字符），可复现子集 |
+
+### 2026-11-16 · 多端页面新增文案的字体子集更新
+
+沿用 Noto Sans SC 母版与 SIL OFL 授权，运行 `python tool/subset_font.py` 重新收集实际用字并生成两个字重子集。此次覆盖新增日期归档、专注场景及平台能力提示；未新增外部美术资源，场景复用已有心屿地图与伙伴立绘。字符清单以 `process/font_charset.txt` 为准。

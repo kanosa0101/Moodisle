@@ -68,6 +68,7 @@ class TaskRows extends Table {
   late final status = text()
       .customConstraint("NOT NULL CHECK (status IN ('pending', 'done'))")();
   late final createdOn = text()();
+  late final completedOn = text().nullable()();
   late final pinned = boolean()();
 
   @override
@@ -398,7 +399,7 @@ class MoodisleDatabase extends _$MoodisleDatabase {
         ));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -407,8 +408,12 @@ class MoodisleDatabase extends _$MoodisleDatabase {
           await _seedCatalogs();
         },
         onUpgrade: (migrator, from, to) async {
+          if (from < 3) {
+            await migrator.addColumn(taskRows, taskRows.completedOn);
+          }
           if (from < 2) {
-            await migrator.addColumn(activeFocusSessions, activeFocusSessions.endsAtMs);
+            await migrator.addColumn(
+                activeFocusSessions, activeFocusSessions.endsAtMs);
             await customStatement('''
               UPDATE active_focus_sessions
               SET ends_at_ms = last_tick_at_ms +

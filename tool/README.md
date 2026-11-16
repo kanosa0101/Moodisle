@@ -10,7 +10,8 @@
 | test_generate_ledger_per_asset.py | 台账生成与审计单测：运行 `python -m unittest tool.test_generate_ledger_per_asset`；已纳入 GitHub Actions（2026-10-03 远程通过）。 |
 | subset_font.py | 收集工程实际用字（app/lib、docs、app/test、根 README + ASCII + 常用中文标点），用 fonttools 把全量 Noto Sans SC 裁成子集输出到 app/assets/fonts/；需先 pip install fonttools 且全量母版在 assets-src/fonts/。见 docs/06 §7。 |
 | generate_audio_sfx.py | 使用 Python 标准库和固定 seed 离线生成 10 个短 WAV 音效，写入 assets-src/audio/original/ 与 app/assets/audio/；发现内容不同的既有文件时拒绝覆盖。见 docs/06 §6。 |
-| check_platform_consistency.py | 核对 Web/Android/iOS 的显示名、版本映射、应用图标、13 项音频、2 个字体和工作流 Flutter 版本；已纳入 Linux CI，不消耗 macOS runner。 |
+| check_platform_consistency.py | 核对 Web/Android/iOS 的显示名、版本映射、应用图标、13 项音频、2 个字体和工作流 Flutter 版本（ci / ios-build / 小程序 spike 三个工作流）；已纳入 Linux CI，不消耗 macOS runner。 |
+| weapp_asset_diet.py | 微信小程序构建期资产瘦身（需 Pillow）：apply 在 CI 临时 checkout 内剔除音频并以 .keep 占位、PNG 降采样+256 色量化重编码（实测 79MB→11.2MB）；check 作体积门禁；report 只读统计。仓库资产与 assets-src 台账不受影响。单测：`python -m unittest tool.test_weapp_asset_diet`。 |
 | make_test_save.py | 生成「基本全收集」测试存档夹具到 app/test/fixtures/test_save_v2.json（十精灵全收服、20 件纪念品、18 项成就、十区全解锁、明信片码按 SocialEngine 编码逐位一致）；`--today YYYY-MM-DD` 可刷新日期锚。夹具由 app/test/data/test_save_fixture_test.dart 守护；导入方式见 docs/09 §3 第 7 步。 |
 
 脚本细节和资产规则见 [docs/06](../docs/06-AI美术资产管线.md)。asset_pipeline.py manifest 只从 PNG 文件生成清单；与台账的交叉核对由 generate_ledger_per_asset.py audit 承担。

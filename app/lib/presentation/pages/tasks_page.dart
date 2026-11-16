@@ -12,6 +12,8 @@ import '../../domain/game_core.dart';
 import '../../shared/audio/moodisle_audio_scope.dart';
 import '../../shared/audio/moodisle_audio_service.dart';
 import '../../shared/theme/tokens.dart';
+import '../task_date_groups.dart';
+import '../../domain/time/local_date.dart';
 import '../widgets/game_icons.dart';
 import '../widgets/pet_sprite.dart';
 
@@ -276,15 +278,12 @@ class _TaskListPanelState extends State<_TaskListPanel> {
     return AnimatedBuilder(
         animation: controller,
         builder: (context, _) {
-          final pend2 = controller.state.tasks
-              .where((t) => t.status != TaskStatus.done)
-              .toList()
-            ..sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
-          final doneList = controller.state.tasks
-              .where((t) => t.status == TaskStatus.done)
-              .toList()
-            ..sort((a, b) => b.difficulty - a.difficulty);
-          final done = doneList.length;
+          final pendingGroups =
+              groupTasksByDate(controller.state.tasks, TaskStatus.pending);
+          final doneGroups =
+              groupTasksByDate(controller.state.tasks, TaskStatus.done);
+          final done = doneGroups.fold<int>(
+              0, (count, group) => count + group.tasks.length);
           return Container(
             key: widget.panelKey,
             padding: const EdgeInsets.all(14),
@@ -332,7 +331,7 @@ class _TaskListPanelState extends State<_TaskListPanel> {
                         color: MoodisleColors.ink)),
               ]),
               const SizedBox(height: 10),
-              if (pend2.isEmpty)
+              if (pendingGroups.isEmpty)
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 18),
                   child: Center(
@@ -341,8 +340,11 @@ class _TaskListPanelState extends State<_TaskListPanel> {
                               fontSize: 12.5, color: MoodisleColors.ink2))),
                 )
               else
-                for (final t in pend2)
-                  _TaskRow(task: t, controller: controller),
+                for (final group in pendingGroups) ...[
+                  _TaskDateHeading(group: group, completed: false),
+                  for (final t in group.tasks)
+                    _TaskRow(task: t, controller: controller),
+                ],
               if (done > 0) ...[
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
@@ -368,44 +370,77 @@ class _TaskListPanelState extends State<_TaskListPanel> {
                   ),
                 ),
                 if (_showDone)
-                  for (final t in doneList)
-                    Container(
-                      margin: const EdgeInsets.only(top: 6),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFFDF7),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: const Color(0xFFEFE1C2)),
+                  for (final group in doneGroups) ...[
+                    _TaskDateHeading(group: group, completed: true),
+                    for (final t in group.tasks)
+                      Container(
+                        margin: const EdgeInsets.only(top: 6),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFFDF7),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFEFE1C2)),
+                        ),
+                        child: Row(children: [
+                          Opacity(
+                            opacity: 0.55,
+                            child: PetSprite(
+                                emotion: t.emotion,
+                                stage:
+                                    controller.state.pets[t.emotion]?.stage ??
+                                        PetStage.clear,
+                                branch:
+                                    controller.state.pets[t.emotion]?.branch,
+                                size: 30),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(t.text,
+                                style: const TextStyle(
+                                    fontSize: 12.5,
+                                    decoration: TextDecoration.lineThrough,
+                                    color: MoodisleColors.ink2)),
+                          ),
+                          IconButton(
+                            onPressed: () => controller.deleteTask(t.id),
+                            icon: const Icon(Icons.delete_outline,
+                                size: 17, color: MoodisleColors.ink2),
+                          ),
+                        ]),
                       ),
-                      child: Row(children: [
-                        Opacity(
-                          opacity: 0.55,
-                          child: PetSprite(
-                              emotion: t.emotion,
-                              stage: controller.state.pets[t.emotion]?.stage ??
-                                  PetStage.clear,
-                              branch: controller.state.pets[t.emotion]?.branch,
-                              size: 30),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(t.text,
-                              style: const TextStyle(
-                                  fontSize: 12.5,
-                                  decoration: TextDecoration.lineThrough,
-                                  color: MoodisleColors.ink2)),
-                        ),
-                        IconButton(
-                          onPressed: () => controller.deleteTask(t.id),
-                          icon: const Icon(Icons.delete_outline,
-                              size: 17, color: MoodisleColors.ink2),
-                        ),
-                      ]),
-                    ),
+                  ],
               ],
             ]),
           );
         });
+  }
+}
+
+class _TaskDateHeading extends StatelessWidget {
+  final TaskDateGroup group;
+  final bool completed;
+  const _TaskDateHeading({required this.group, required this.completed});
+
+  @override
+  Widget build(BuildContext context) {
+    final day = group.day;
+    final today = LocalDate.today();
+    final relative = day == today
+        ? '今天 · '
+        : day == today.yesterday
+            ? '昨天 · '
+            : '';
+    final label = day == null
+        ? '历史完成 · 完成日期未记录'
+        : '$relative$day ${completed ? '完成' : '创建'}';
+    return Padding(
+      padding: const EdgeInsets.only(top: 12, bottom: 8),
+      child: Text('$label · ${group.tasks.length} 项',
+          style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: MoodisleColors.ink2)),
+    );
   }
 }
 

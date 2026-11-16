@@ -18,6 +18,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  # 小程序分支的编译实验工具；固定版本，避免上游更新改变构建结果。
+  flutter_miniprogram: 0.3.2
   # 测试替身直接引用其接口（app/test/helpers/fake_just_audio_platform.dart）
   just_audio_platform_interface: ^4.6.0
   drift_dev: 2.35.1

@@ -41,8 +41,15 @@ const musicAssets = <MoodisleMusic, String>{
 
 /// App-scoped audio playback. Missing files and platform playback failures are silent.
 class MoodisleAudioService {
-  final AudioPlayer _musicPlayer = AudioPlayer();
-  final AudioPlayer _effectsPlayer = AudioPlayer();
+  final bool _enabled;
+  late final AudioPlayer _musicPlayer;
+  late final AudioPlayer _effectsPlayer;
+  MoodisleAudioService({bool enabled = true}) : _enabled = enabled {
+    if (enabled) {
+      _musicPlayer = AudioPlayer();
+      _effectsPlayer = AudioPlayer();
+    }
+  }
   final Queue<MoodisleSound> _effectsQueue = Queue<MoodisleSound>();
   Set<String> _availableAssets = {};
   MoodisleMusic? _requestedMusic;
@@ -50,6 +57,7 @@ class MoodisleAudioService {
   bool _ready = false;
   bool _unlocked = false;
   bool _muted = false;
+  bool _musicSuppressed = false;
   bool _foreground = true;
   bool _musicBusy = false;
   bool _effectsBusy = false;
@@ -57,9 +65,22 @@ class MoodisleAudioService {
 
   bool get hasAudio => _availableAssets.isNotEmpty;
   bool get isMuted => _muted;
+  bool get isMusicSuppressed => _musicSuppressed;
+
+  /// 临时安静场景只暂停背景音乐，不覆盖用户的静音偏好。
+  void setMusicSuppressed(bool value) {
+    if (_disposed || _musicSuppressed == value) return;
+    _musicSuppressed = value;
+    if (!_enabled) return;
+    if (value) {
+      unawaited(_safely(_musicPlayer.pause()));
+    } else {
+      _syncMusic();
+    }
+  }
 
   Future<void> initialize() async {
-    if (_ready || _disposed) return;
+    if (_ready || _disposed || !_enabled) return;
     try {
       final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
       final bundled = manifest.listAssets().toSet();
@@ -76,7 +97,7 @@ class MoodisleAudioService {
   }
 
   void play(Iterable<MoodisleSound> sounds) {
-    if (_disposed) return;
+    if (_disposed || !_enabled) return;
     _unlocked = true;
     if (!_muted) _effectsQueue.addAll(sounds);
     _syncMusic();
@@ -84,7 +105,7 @@ class MoodisleAudioService {
   }
 
   void updateMusic({required bool mist, required DateTime now}) {
-    if (_disposed) return;
+    if (_disposed || !_enabled) return;
     _requestedMusic = now.hour >= 18 || now.hour < 6
         ? MoodisleMusic.night
         : mist
@@ -94,7 +115,7 @@ class MoodisleAudioService {
   }
 
   void toggleMuted() {
-    if (_disposed) return;
+    if (_disposed || !_enabled) return;
     _unlocked = true;
     _muted = !_muted;
     if (_muted) {
@@ -106,7 +127,7 @@ class MoodisleAudioService {
   }
 
   void onLifecycleChanged(AppLifecycleState state) {
-    if (_disposed) return;
+    if (_disposed || !_enabled) return;
     _foreground = state == AppLifecycleState.resumed;
     if (_foreground) {
       _syncMusic();
@@ -120,6 +141,7 @@ class MoodisleAudioService {
     if (_disposed) return;
     _disposed = true;
     _effectsQueue.clear();
+    if (!_enabled) return;
     await Future.wait([
       _safely(_musicPlayer.dispose()),
       _safely(_effectsPlayer.dispose()),
@@ -127,7 +149,14 @@ class MoodisleAudioService {
   }
 
   void _syncMusic() {
-    if (!_ready || !_unlocked || _muted || !_foreground || _disposed) return;
+    if (!_ready ||
+        !_unlocked ||
+        _muted ||
+        _musicSuppressed ||
+        !_foreground ||
+        _disposed) {
+      return;
+    }
     final track = _requestedMusic;
     if (track == null || _musicBusy) return;
     if (_loadedMusic == track && _musicPlayer.playing) return;
@@ -146,6 +175,7 @@ class MoodisleAudioService {
       }
       if (_requestedMusic == track &&
           !_muted &&
+          !_musicSuppressed &&
           _foreground &&
           !_disposed &&
           !_musicPlayer.playing) {

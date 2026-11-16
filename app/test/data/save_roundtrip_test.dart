@@ -1,3 +1,4 @@
+import 'dart:convert' show utf8;
 import 'dart:math' show Random;
 
 import 'package:flutter_test/flutter_test.dart';
@@ -98,5 +99,21 @@ void main() {
     expect(restored.pets[Emotion.sloth], isNotNull);
     // 雷→雨→雾 len3：共演 + 里程碑 = 虹晶再 +2
     expect(restored.items[ItemId.prismCrystal], 3);
+  });
+
+  // 小程序 localStorage 垫片（wx.*StorageSync）单键上限 1MB：
+  // JSON 存档在该环境下整体落一个键，必须留出安全余量（M4 证据）。
+  test('满状态存档 JSON 体积低于 900KB（小程序单键存储限）', () {
+    final (s, c) = _build();
+    final now = DateTime(2026, 9, 25, 9, 0);
+    for (var i = 0; i < 300; i++) {
+      c.addTask('心晴屿压力测试待办事项编号$i，标题长度对齐真实使用',
+          Emotion.values[i % Emotion.values.length], 2, now);
+    }
+    final json = encodeSave(s);
+    final byteLength = utf8.encode(json).length;
+    // ignore: avoid_print
+    print('满状态（300+ 条待办）存档 JSON：$byteLength bytes');
+    expect(byteLength, lessThan(900 * 1024));
   });
 }

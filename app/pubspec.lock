@@ -246,6 +246,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  flutter_miniprogram:
+    dependency: "direct dev"
+    description:
+      name: flutter_miniprogram
+      sha256: "6f08da2ac8cfa045cbc90c9f7e800bbe62ef8ecf406f672a1c91925e9088e542"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
