@@ -109,6 +109,7 @@ Map<String, dynamic> saveToJson(GameState s, {MazeRun? activeMazeRun}) {
             'phase': s.session!.phase,
             'accumSeconds': s.session!.accumSeconds,
             'startedAtMs': s.session!.startedAt.millisecondsSinceEpoch,
+            'endsAtMs': s.session!.endsAt.millisecondsSinceEpoch,
             'lastTickAtMs': s.session!.lastTickAt.millisecondsSinceEpoch,
             'pausedAtMs': s.session!.pausedAt?.millisecondsSinceEpoch,
           },
@@ -247,6 +248,10 @@ GameState saveFromJson(Map<String, dynamic> j) {
           ? null
           : DateTime.fromMillisecondsSinceEpoch(
               (session['pausedAtMs'] as num).toInt()),
+      endsAt: session['endsAtMs'] == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(
+              (session['endsAtMs'] as num).toInt()),
     );
   }
 

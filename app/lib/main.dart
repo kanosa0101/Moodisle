@@ -21,6 +21,7 @@ import 'shared/audio/moodisle_audio_scope.dart';
 import 'shared/audio/moodisle_audio_service.dart';
 import 'shared/build_flags.dart';
 import 'shared/theme/tokens.dart';
+import 'shared/widgets/coach_registry.dart';
 
 // 小程序构建（MOODISLE_MP=1）不注入 SQLite 仓库：drift 的 wasm/worker
 // 在微信运行时不可用，直接走 JSON SaveStore（localStorage 垫片 → wx 存储）。
@@ -117,6 +118,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    CoachRegistry.launch = _startCoach;
     _controller = GameController(repository: widget.repository);
     _audio = MoodisleAudioService();
     unawaited(FocusLifecycleChannel.listenForScreenState(
@@ -389,6 +391,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    if (CoachRegistry.launch == _startCoach) CoachRegistry.launch = null;
     FocusLifecycleChannel.clearHandler();
     WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();

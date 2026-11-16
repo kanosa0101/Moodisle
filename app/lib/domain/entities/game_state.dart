@@ -59,10 +59,11 @@ class FocusSessionState {
   final int planMin;
   final double tierMul; // 档位星屑系数（开始时按档位确定）
   String phase; // focusing / glancing / screenLocked
-  int accumSeconds;
+  int accumSeconds; // 根据截止时间派生的进度快照，不作为计时来源。
   final DateTime startedAt;
   DateTime lastTickAt;
   DateTime? pausedAt;
+  DateTime endsAt;
 
   FocusSessionState({
     required this.pet,
@@ -73,7 +74,29 @@ class FocusSessionState {
     this.accumSeconds = 0,
     DateTime? lastTickAt,
     this.pausedAt,
-  }) : lastTickAt = lastTickAt ?? startedAt;
+    DateTime? endsAt,
+  })  : lastTickAt = lastTickAt ?? startedAt,
+        // 兼容没有截止时间的旧 JSON/SQLite 会话。
+        endsAt = endsAt ??
+            (lastTickAt ?? startedAt)
+                .add(Duration(seconds: planMin * 60 - accumSeconds));
+
+  /// 暂停时固定在 pausedAt；活动时直接取截止时间与当前时间之差。
+  Duration remainingAt(DateTime now) {
+    var reference = phase == 'glancing' ? pausedAt ?? lastTickAt : now;
+    // 重复或乱序时间戳不能使已显示的进度倒退。
+    if (reference.isBefore(lastTickAt)) reference = lastTickAt;
+    final micros = endsAt.difference(reference).inMicroseconds;
+    return Duration(microseconds:
+        micros.clamp(0, Duration(minutes: planMin).inMicroseconds));
+  }
+
+  int remainingSecondsAt(DateTime now) {
+    final micros = remainingAt(now).inMicroseconds;
+    // 不提前显示 00:00；例如剩余 0.1 秒仍显示 00:01。
+    return (micros + Duration.microsecondsPerSecond - 1) ~/
+        Duration.microsecondsPerSecond;
+  }
 
   int get doneMin => accumSeconds ~/ 60;
 }

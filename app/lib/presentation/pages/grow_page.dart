@@ -13,6 +13,7 @@ import '../../domain/engine/weekly_engine.dart';
 import '../../domain/entities/emotion.dart';
 import '../../shared/theme/tokens.dart';
 import '../../shared/widgets/clipboard_fallback.dart';
+import '../../shared/widgets/coach_registry.dart';
 import '../../shared/widgets/page_frame.dart';
 import '../widgets/game_icons.dart';
 
@@ -246,6 +247,35 @@ class GrowPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     _SeasonCard(),
+                    const SizedBox(height: 10),
+                    _Panel(
+                      title: '新手引导',
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                                '太久没上岛、忘记玩法了？可以随时重看一遍 9 步上岛教学。',
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color: MoodisleColors.ink2,
+                                    height: 1.5)),
+                            const SizedBox(height: 8),
+                            FilledButton(
+                              key: const ValueKey('replay_coach'),
+                              onPressed: () {
+                                // 先退出成长页：引导遮罩渲染在主壳 Stack 上，
+                                // 被推入的成长页路由会盖住它。
+                                final launch = CoachRegistry.launch;
+                                Navigator.of(context).pop();
+                                launch?.call();
+                              },
+                              style: FilledButton.styleFrom(
+                                  backgroundColor: MoodisleColors.orange),
+                              child: const Text('重新查看新手引导',
+                                  style: TextStyle(fontSize: 12)),
+                            ),
+                          ]),
+                    ),
                     const SizedBox(height: 10),
                     _Panel(
                       title: '存档（本机 / 导出导入）',

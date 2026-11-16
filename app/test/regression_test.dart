@@ -22,6 +22,8 @@ import 'package:moodisle_app/domain/time/local_date.dart';
 import 'package:moodisle_app/main.dart';
 import 'package:moodisle_app/presentation/pages/coach_page.dart';
 import 'package:moodisle_app/presentation/pages/dex_page.dart';
+import 'package:moodisle_app/presentation/pages/focus_page.dart';
+import 'package:moodisle_app/presentation/pages/grow_page.dart';
 import 'package:moodisle_app/presentation/pages/island_page.dart';
 import 'package:moodisle_app/presentation/widgets/game_icons.dart';
 import 'package:moodisle_app/presentation/widgets/pet_sprite.dart';
@@ -288,6 +290,79 @@ void main() {
     }
   });
 
+  for (final width in [390.0, 800.0]) {
+    testWidgets('$width 宽度地图斜滑保留二维位移，区域外仍可滚动', (tester) async {
+      tester.view.physicalSize = Size(width, 700);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final controller = GameController();
+      try {
+        await tester.pumpWidget(MaterialApp(
+          home: Scaffold(body: IslandPage(controller: controller)),
+        ));
+        await tester.pump();
+        final map = find.byWidgetPredicate((w) {
+          if (w is! CustomPaint) return false;
+          try {
+            return (w.painter as dynamic).cam is Offset;
+          } on NoSuchMethodError {
+            return false;
+          }
+        });
+        Offset camera() =>
+            (tester.widget<CustomPaint>(map).painter as dynamic).cam as Offset;
+        final scroll = tester.state<ScrollableState>(
+          find.descendant(
+            of: find.byType(IslandPage),
+            matching: find.byType(Scrollable),
+          ).first,
+        ).position;
+        for (final delta in [
+          const Offset(-6, -10),
+          const Offset(10, 6),
+          const Offset(-10, 0),
+          const Offset(0, 10),
+        ]) {
+          final before = camera();
+          final gesture = await tester.startGesture(tester.getCenter(map));
+          for (var i = 0; i < 8; i++) {
+            await gesture.moveBy(delta);
+            await tester.pump(const Duration(milliseconds: 16));
+          }
+          await gesture.up();
+          await tester.pump();
+          final moved = camera() - before;
+          if (delta.dx != 0) expect(moved.dx * delta.dx, lessThan(0));
+          if (delta.dy != 0) expect(moved.dy * delta.dy, lessThan(0));
+          if (delta.dx != 0 && delta.dy != 0) {
+            expect(moved.dx / moved.dy, closeTo(delta.dx / delta.dy, 0.01));
+          }
+          expect(scroll.pixels, 0);
+        }
+        // 同一次拖动先竖滑再横滑，也应保留后半段的横向移动。
+        final turning = await tester.startGesture(tester.getCenter(map));
+        await turning.moveBy(const Offset(0, -40));
+        await tester.pump();
+        final beforeTurn = camera();
+        await turning.moveBy(const Offset(-50, 0));
+        await tester.pump();
+        expect(camera().dx - beforeTurn.dx, closeTo(50, 0.01));
+        await turning.up();
+        expect(scroll.pixels, 0);
+        final belowMap =
+            Offset(width / 2, tester.getBottomLeft(map).dy + 40);
+        await tester.dragFrom(belowMap, const Offset(0, -100));
+        await tester.pump();
+        expect(scroll.pixels, greaterThan(0));
+        expect(tester.takeException(), isNull);
+      } finally {
+        await tester.pumpWidget(const SizedBox.shrink());
+        controller.dispose();
+      }
+    });
+  }
+
   test('导入存档保留所有已编码状态', () {
     final source = GameState.fresh()
       ..onboarded = true
@@ -395,5 +470,141 @@ void main() {
     expect(restored.mazeRun!.pos, next);
     expect(restored.mazeRun!.undo(), isTrue);
     expect(restored.mazeRun!.pos, start);
+  });
+
+  testWidgets('专注 UI 直接按截止时间刷新，切应用暂停、息屏继续', (tester) async {
+    final state = GameState.fresh();
+    state.pets[Emotion.sloth] = PetRecord(
+      emotion: Emotion.sloth,
+      count: 1,
+      stage: PetStage.clear,
+      bond: Bond(minutes: 0),
+    );
+    var now = DateTime(2026, 11, 15, 10);
+    final controller = GameController(
+        state: state, rng: Random(1), focusNow: () => now);
+    controller.startFocus(Emotion.sloth, 25);
+    try {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(body: FocusPage(controller: controller)),
+      ));
+      await tester.pump();
+      expect(find.text('25:00'), findsOneWidget);
+      now = now.add(const Duration(milliseconds: 999));
+      controller.setCompanion(Emotion.sloth);
+      await tester.pump(const Duration(milliseconds: 999));
+      expect(find.text('25:00'), findsOneWidget);
+      now = now.add(const Duration(milliseconds: 1));
+      await tester.pump(const Duration(milliseconds: 1));
+      expect(find.text('24:59'), findsOneWidget);
+      // 没有心跳时，普通界面重建也必须根据当前时间显示正确倒计时。
+      now = now.add(const Duration(seconds: 24));
+      controller.setCompanion(Emotion.sloth);
+      await tester.pump();
+      expect(state.session!.accumSeconds, 1);
+      expect(find.text('24:35'), findsOneWidget,
+          reason: '显示不能依赖上一次心跳的累计秒数');
+      now = now.add(const Duration(seconds: 47));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('23:48'), findsOneWidget);
+      controller.focusBackgrounded();
+      now = now.add(const Duration(minutes: 5));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('23:48'), findsOneWidget);
+      controller.focusResumed();
+      now = now.add(const Duration(seconds: 1));
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('23:47'), findsOneWidget);
+      controller.focusScreenLocked();
+      now = now.add(const Duration(minutes: 24));
+      controller.focusResumed();
+      await tester.pump();
+      expect(find.text('专注完成！'), findsOneWidget);
+      expect(state.stats.totalFocusSessions, 1);
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+    }
+  });
+
+  testWidgets('成长页可重新开始新手引导', (tester) async {
+    tester.view.physicalSize = const Size(1280, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    try {
+      await tester.pumpWidget(const MoodisleApp());
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.tap(find.byKey(const ValueKey('intro_skip')));
+      await tester.pump(const Duration(milliseconds: 400));
+
+      await tester.tap(find.byIcon(Icons.local_florist_outlined));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      // 引导面板位于成长页列表深处（成就墙之后），先滚动到它被懒构建
+      final growScrollable = find
+          .descendant(
+            of: find.byType(GrowPage),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('replay_coach')),
+        300,
+        scrollable: growScrollable,
+      );
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('replay_coach')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text('第 1 / 9 步'), findsOneWidget,
+          reason: '重新引导应回到第 1 步并显示引导卡片');
+      expect(find.textContaining('先去「待办」录入第一件事'), findsOneWidget);
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
+  testWidgets('心屿地图竖向拖动平移地图而不是滚动整页', (tester) async {
+    tester.view.physicalSize = const Size(428, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final controller = GameController();
+    try {
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 428,
+            height: 900,
+            child: IslandPage(controller: controller),
+          ),
+        ),
+      ));
+      await tester.pump();
+
+      final scrollable = find
+          .descendant(
+            of: find.byType(IslandPage),
+            matching: find.byType(Scrollable),
+          )
+          .first;
+      final position = tester.state<ScrollableState>(scrollable).position;
+      expect(position.pixels, 0);
+
+      // 在地图面板中央竖向下拖：应由地图手势接管，整页不滚动
+      final mapCenter = tester.getCenter(find.byType(GestureDetector).first);
+      final gesture = await tester.startGesture(mapCenter);
+      await gesture.moveBy(const Offset(0, 120));
+      await gesture.up();
+      await tester.pump();
+
+      expect(position.pixels, 0,
+          reason: '地图上的竖向拖动不应触发整页 ListView 滚动');
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+    }
   });
 }

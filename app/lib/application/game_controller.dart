@@ -31,6 +31,10 @@ class GameController extends ChangeNotifier {
   final EcoSim eco;
   final SaveStore store;
   final GameRepository? repository;
+  final DateTime Function() _focusNow;
+
+  /// 专注计时与 UI 使用同一可注入时钟，定时器只负责刷新。
+  DateTime get focusNow => _focusNow();
   bool _useLegacyStore = false;
   late final Future<void> ready;
   Timer? _ticker;
@@ -46,7 +50,9 @@ class GameController extends ChangeNotifier {
     Random? rng,
     SaveStore? store,
     this.repository,
+    DateTime Function()? focusNow,
   })  : state = state ?? GameState.fresh(),
+        _focusNow = focusNow ?? DateTime.now,
         store = store ?? SaveStore(),
         eco = EcoSim() {
     core = GameCore(this.state, rng: rng);
@@ -138,8 +144,20 @@ class GameController extends ChangeNotifier {
 
   void _startTicker() {
     _ticker?.cancel();
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      final now = DateTime.now();
+    var delay = const Duration(seconds: 1);
+    final session = state.session;
+    if (session != null &&
+        (session.phase == 'focusing' || session.phase == 'screenLocked')) {
+      // 按下一整秒边界唤醒；开始时间和回调耗时不应改变倒计时节奏。
+      final remaining = session.remainingAt(focusNow).inMicroseconds;
+      final fraction = remaining % Duration.microsecondsPerSecond;
+      delay = remaining == 0
+          ? const Duration(milliseconds: 1)
+          : Duration(microseconds: fraction == 0
+              ? Duration.microsecondsPerSecond : fraction);
+    }
+    _ticker = Timer(delay, () {
+      final now = focusNow;
       if (state.session != null) {
         final events = core.focusTick(now);
         _consume(events);
@@ -150,6 +168,7 @@ class GameController extends ChangeNotifier {
           pendingFocusDone ??= _lastFocusCompleted;
         }
       }
+      _startTicker();
       super.notifyListeners();
     });
   }
@@ -219,12 +238,13 @@ class GameController extends ChangeNotifier {
 
   // ——— 专注 ———
   void startFocus(Emotion pet, int planMin) {
-    _consume(core.startFocus(pet, planMin, DateTime.now()));
+    _consume(core.startFocus(pet, planMin, focusNow));
+    _startTicker();
     notifyListeners();
   }
 
   void focusScreenLocked() {
-    _consume(core.focusOnScreenLocked(DateTime.now()));
+    _consume(core.focusOnScreenLocked(focusNow));
     if (state.session == null) {
       pendingFocusDone ??= _lastFocusCompleted;
     }
@@ -233,7 +253,7 @@ class GameController extends ChangeNotifier {
   }
 
   void focusScreenUnlocked() {
-    _consume(core.focusOnScreenUnlocked(DateTime.now()));
+    _consume(core.focusOnScreenUnlocked(focusNow));
     if (state.session == null) {
       pendingFocusDone ??= _lastFocusCompleted;
     }
@@ -242,13 +262,14 @@ class GameController extends ChangeNotifier {
   }
 
   void focusBackgrounded() {
-    _consume(core.focusOnBackgrounded(DateTime.now()));
+    _consume(core.focusOnBackgrounded(focusNow));
     _scheduleSave();
     notifyListeners();
   }
 
   void focusResumed() {
-    _consume(core.focusOnResumed(DateTime.now()));
+    _consume(core.focusOnResumed(focusNow));
+    _startTicker();
     if (state.session == null) {
       pendingFocusDone ??= _lastFocusCompleted;
     }
@@ -257,7 +278,7 @@ class GameController extends ChangeNotifier {
   }
 
   void cancelFocus() {
-    _consume(core.cancelFocus(DateTime.now()));
+    _consume(core.cancelFocus(focusNow));
     if (state.session == null) {
       pendingFocusDone ??= _lastFocusCompleted;
     }

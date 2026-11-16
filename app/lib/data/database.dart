@@ -183,6 +183,7 @@ class ActiveFocusSessions extends Table {
   late final startedAtMs = integer()();
   late final lastTickAtMs = integer()();
   late final pausedAtMs = integer().nullable()();
+  late final endsAtMs = integer().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -397,7 +398,7 @@ class MoodisleDatabase extends _$MoodisleDatabase {
         ));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -406,7 +407,15 @@ class MoodisleDatabase extends _$MoodisleDatabase {
           await _seedCatalogs();
         },
         onUpgrade: (migrator, from, to) async {
-          // Schema changes must be added here and increment schemaVersion.
+          if (from < 2) {
+            await migrator.addColumn(activeFocusSessions, activeFocusSessions.endsAtMs);
+            await customStatement('''
+              UPDATE active_focus_sessions
+              SET ends_at_ms = last_tick_at_ms +
+                  (plan_minutes * 60 - accumulated_seconds) * 1000
+              WHERE ends_at_ms IS NULL
+            ''');
+          }
         },
         beforeOpen: (_) async {
           await customStatement('PRAGMA foreign_keys = ON');

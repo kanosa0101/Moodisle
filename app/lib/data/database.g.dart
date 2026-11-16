@@ -4151,6 +4151,12 @@ class $ActiveFocusSessionsTable extends ActiveFocusSessions
   late final GeneratedColumn<int> pausedAtMs = GeneratedColumn<int>(
       'paused_at_ms', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _endsAtMsMeta =
+      const VerificationMeta('endsAtMs');
+  @override
+  late final GeneratedColumn<int> endsAtMs = GeneratedColumn<int>(
+      'ends_at_ms', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -4161,7 +4167,8 @@ class $ActiveFocusSessionsTable extends ActiveFocusSessions
         accumulatedSeconds,
         startedAtMs,
         lastTickAtMs,
-        pausedAtMs
+        pausedAtMs,
+        endsAtMs
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4234,6 +4241,10 @@ class $ActiveFocusSessionsTable extends ActiveFocusSessions
           pausedAtMs.isAcceptableOrUnknown(
               data['paused_at_ms']!, _pausedAtMsMeta));
     }
+    if (data.containsKey('ends_at_ms')) {
+      context.handle(_endsAtMsMeta,
+          endsAtMs.isAcceptableOrUnknown(data['ends_at_ms']!, _endsAtMsMeta));
+    }
     return context;
   }
 
@@ -4261,6 +4272,8 @@ class $ActiveFocusSessionsTable extends ActiveFocusSessions
           .read(DriftSqlType.int, data['${effectivePrefix}last_tick_at_ms'])!,
       pausedAtMs: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}paused_at_ms']),
+      endsAtMs: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}ends_at_ms']),
     );
   }
 
@@ -4281,6 +4294,7 @@ class ActiveFocusSession extends DataClass
   final int startedAtMs;
   final int lastTickAtMs;
   final int? pausedAtMs;
+  final int? endsAtMs;
   const ActiveFocusSession(
       {required this.id,
       required this.pet,
@@ -4290,7 +4304,8 @@ class ActiveFocusSession extends DataClass
       required this.accumulatedSeconds,
       required this.startedAtMs,
       required this.lastTickAtMs,
-      this.pausedAtMs});
+      this.pausedAtMs,
+      this.endsAtMs});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4304,6 +4319,9 @@ class ActiveFocusSession extends DataClass
     map['last_tick_at_ms'] = Variable<int>(lastTickAtMs);
     if (!nullToAbsent || pausedAtMs != null) {
       map['paused_at_ms'] = Variable<int>(pausedAtMs);
+    }
+    if (!nullToAbsent || endsAtMs != null) {
+      map['ends_at_ms'] = Variable<int>(endsAtMs);
     }
     return map;
   }
@@ -4321,6 +4339,9 @@ class ActiveFocusSession extends DataClass
       pausedAtMs: pausedAtMs == null && nullToAbsent
           ? const Value.absent()
           : Value(pausedAtMs),
+      endsAtMs: endsAtMs == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endsAtMs),
     );
   }
 
@@ -4337,6 +4358,7 @@ class ActiveFocusSession extends DataClass
       startedAtMs: serializer.fromJson<int>(json['startedAtMs']),
       lastTickAtMs: serializer.fromJson<int>(json['lastTickAtMs']),
       pausedAtMs: serializer.fromJson<int?>(json['pausedAtMs']),
+      endsAtMs: serializer.fromJson<int?>(json['endsAtMs']),
     );
   }
   @override
@@ -4352,6 +4374,7 @@ class ActiveFocusSession extends DataClass
       'startedAtMs': serializer.toJson<int>(startedAtMs),
       'lastTickAtMs': serializer.toJson<int>(lastTickAtMs),
       'pausedAtMs': serializer.toJson<int?>(pausedAtMs),
+      'endsAtMs': serializer.toJson<int?>(endsAtMs),
     };
   }
 
@@ -4364,7 +4387,8 @@ class ActiveFocusSession extends DataClass
           int? accumulatedSeconds,
           int? startedAtMs,
           int? lastTickAtMs,
-          Value<int?> pausedAtMs = const Value.absent()}) =>
+          Value<int?> pausedAtMs = const Value.absent(),
+          Value<int?> endsAtMs = const Value.absent()}) =>
       ActiveFocusSession(
         id: id ?? this.id,
         pet: pet ?? this.pet,
@@ -4375,6 +4399,7 @@ class ActiveFocusSession extends DataClass
         startedAtMs: startedAtMs ?? this.startedAtMs,
         lastTickAtMs: lastTickAtMs ?? this.lastTickAtMs,
         pausedAtMs: pausedAtMs.present ? pausedAtMs.value : this.pausedAtMs,
+        endsAtMs: endsAtMs.present ? endsAtMs.value : this.endsAtMs,
       );
   ActiveFocusSession copyWithCompanion(ActiveFocusSessionsCompanion data) {
     return ActiveFocusSession(
@@ -4396,6 +4421,7 @@ class ActiveFocusSession extends DataClass
           : this.lastTickAtMs,
       pausedAtMs:
           data.pausedAtMs.present ? data.pausedAtMs.value : this.pausedAtMs,
+      endsAtMs: data.endsAtMs.present ? data.endsAtMs.value : this.endsAtMs,
     );
   }
 
@@ -4410,14 +4436,15 @@ class ActiveFocusSession extends DataClass
           ..write('accumulatedSeconds: $accumulatedSeconds, ')
           ..write('startedAtMs: $startedAtMs, ')
           ..write('lastTickAtMs: $lastTickAtMs, ')
-          ..write('pausedAtMs: $pausedAtMs')
+          ..write('pausedAtMs: $pausedAtMs, ')
+          ..write('endsAtMs: $endsAtMs')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, pet, planMinutes, tierMultiplier, phase,
-      accumulatedSeconds, startedAtMs, lastTickAtMs, pausedAtMs);
+      accumulatedSeconds, startedAtMs, lastTickAtMs, pausedAtMs, endsAtMs);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4430,7 +4457,8 @@ class ActiveFocusSession extends DataClass
           other.accumulatedSeconds == this.accumulatedSeconds &&
           other.startedAtMs == this.startedAtMs &&
           other.lastTickAtMs == this.lastTickAtMs &&
-          other.pausedAtMs == this.pausedAtMs);
+          other.pausedAtMs == this.pausedAtMs &&
+          other.endsAtMs == this.endsAtMs);
 }
 
 class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
@@ -4443,6 +4471,7 @@ class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
   final Value<int> startedAtMs;
   final Value<int> lastTickAtMs;
   final Value<int?> pausedAtMs;
+  final Value<int?> endsAtMs;
   const ActiveFocusSessionsCompanion({
     this.id = const Value.absent(),
     this.pet = const Value.absent(),
@@ -4453,6 +4482,7 @@ class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
     this.startedAtMs = const Value.absent(),
     this.lastTickAtMs = const Value.absent(),
     this.pausedAtMs = const Value.absent(),
+    this.endsAtMs = const Value.absent(),
   });
   ActiveFocusSessionsCompanion.insert({
     this.id = const Value.absent(),
@@ -4464,6 +4494,7 @@ class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
     required int startedAtMs,
     required int lastTickAtMs,
     this.pausedAtMs = const Value.absent(),
+    this.endsAtMs = const Value.absent(),
   })  : pet = Value(pet),
         planMinutes = Value(planMinutes),
         tierMultiplier = Value(tierMultiplier),
@@ -4481,6 +4512,7 @@ class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
     Expression<int>? startedAtMs,
     Expression<int>? lastTickAtMs,
     Expression<int>? pausedAtMs,
+    Expression<int>? endsAtMs,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -4492,6 +4524,7 @@ class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
       if (startedAtMs != null) 'started_at_ms': startedAtMs,
       if (lastTickAtMs != null) 'last_tick_at_ms': lastTickAtMs,
       if (pausedAtMs != null) 'paused_at_ms': pausedAtMs,
+      if (endsAtMs != null) 'ends_at_ms': endsAtMs,
     });
   }
 
@@ -4504,7 +4537,8 @@ class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
       Value<int>? accumulatedSeconds,
       Value<int>? startedAtMs,
       Value<int>? lastTickAtMs,
-      Value<int?>? pausedAtMs}) {
+      Value<int?>? pausedAtMs,
+      Value<int?>? endsAtMs}) {
     return ActiveFocusSessionsCompanion(
       id: id ?? this.id,
       pet: pet ?? this.pet,
@@ -4515,6 +4549,7 @@ class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
       startedAtMs: startedAtMs ?? this.startedAtMs,
       lastTickAtMs: lastTickAtMs ?? this.lastTickAtMs,
       pausedAtMs: pausedAtMs ?? this.pausedAtMs,
+      endsAtMs: endsAtMs ?? this.endsAtMs,
     );
   }
 
@@ -4548,6 +4583,9 @@ class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
     if (pausedAtMs.present) {
       map['paused_at_ms'] = Variable<int>(pausedAtMs.value);
     }
+    if (endsAtMs.present) {
+      map['ends_at_ms'] = Variable<int>(endsAtMs.value);
+    }
     return map;
   }
 
@@ -4562,7 +4600,8 @@ class ActiveFocusSessionsCompanion extends UpdateCompanion<ActiveFocusSession> {
           ..write('accumulatedSeconds: $accumulatedSeconds, ')
           ..write('startedAtMs: $startedAtMs, ')
           ..write('lastTickAtMs: $lastTickAtMs, ')
-          ..write('pausedAtMs: $pausedAtMs')
+          ..write('pausedAtMs: $pausedAtMs, ')
+          ..write('endsAtMs: $endsAtMs')
           ..write(')'))
         .toString();
   }
@@ -12985,6 +13024,7 @@ typedef $$ActiveFocusSessionsTableCreateCompanionBuilder
   required int startedAtMs,
   required int lastTickAtMs,
   Value<int?> pausedAtMs,
+  Value<int?> endsAtMs,
 });
 typedef $$ActiveFocusSessionsTableUpdateCompanionBuilder
     = ActiveFocusSessionsCompanion Function({
@@ -12997,6 +13037,7 @@ typedef $$ActiveFocusSessionsTableUpdateCompanionBuilder
   Value<int> startedAtMs,
   Value<int> lastTickAtMs,
   Value<int?> pausedAtMs,
+  Value<int?> endsAtMs,
 });
 
 final class $$ActiveFocusSessionsTableReferences extends BaseReferences<
@@ -13055,6 +13096,9 @@ class $$ActiveFocusSessionsTableFilterComposer
   ColumnFilters<int> get pausedAtMs => $composableBuilder(
       column: $table.pausedAtMs, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<int> get endsAtMs => $composableBuilder(
+      column: $table.endsAtMs, builder: (column) => ColumnFilters(column));
+
   $$EmotionCatalogTableFilterComposer get pet {
     final $$EmotionCatalogTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -13112,6 +13156,9 @@ class $$ActiveFocusSessionsTableOrderingComposer
   ColumnOrderings<int> get pausedAtMs => $composableBuilder(
       column: $table.pausedAtMs, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get endsAtMs => $composableBuilder(
+      column: $table.endsAtMs, builder: (column) => ColumnOrderings(column));
+
   $$EmotionCatalogTableOrderingComposer get pet {
     final $$EmotionCatalogTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -13165,6 +13212,9 @@ class $$ActiveFocusSessionsTableAnnotationComposer
 
   GeneratedColumn<int> get pausedAtMs => $composableBuilder(
       column: $table.pausedAtMs, builder: (column) => column);
+
+  GeneratedColumn<int> get endsAtMs =>
+      $composableBuilder(column: $table.endsAtMs, builder: (column) => column);
 
   $$EmotionCatalogTableAnnotationComposer get pet {
     final $$EmotionCatalogTableAnnotationComposer composer = $composerBuilder(
@@ -13222,6 +13272,7 @@ class $$ActiveFocusSessionsTableTableManager extends RootTableManager<
             Value<int> startedAtMs = const Value.absent(),
             Value<int> lastTickAtMs = const Value.absent(),
             Value<int?> pausedAtMs = const Value.absent(),
+            Value<int?> endsAtMs = const Value.absent(),
           }) =>
               ActiveFocusSessionsCompanion(
             id: id,
@@ -13233,6 +13284,7 @@ class $$ActiveFocusSessionsTableTableManager extends RootTableManager<
             startedAtMs: startedAtMs,
             lastTickAtMs: lastTickAtMs,
             pausedAtMs: pausedAtMs,
+            endsAtMs: endsAtMs,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -13244,6 +13296,7 @@ class $$ActiveFocusSessionsTableTableManager extends RootTableManager<
             required int startedAtMs,
             required int lastTickAtMs,
             Value<int?> pausedAtMs = const Value.absent(),
+            Value<int?> endsAtMs = const Value.absent(),
           }) =>
               ActiveFocusSessionsCompanion.insert(
             id: id,
@@ -13255,6 +13308,7 @@ class $$ActiveFocusSessionsTableTableManager extends RootTableManager<
             startedAtMs: startedAtMs,
             lastTickAtMs: lastTickAtMs,
             pausedAtMs: pausedAtMs,
+            endsAtMs: endsAtMs,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (

@@ -58,7 +58,11 @@ void main() {
     await File('${documents.path}/${SaveStore.fileName}')
         .writeAsString('{invalid');
     final controller = GameController();
-    addTearDown(controller.dispose);
+    addTearDown(() async {
+      controller.dispose();
+      // dispose 发起最后一次保存，等存储链完成后才能删除 Windows 临时目录。
+      await controller.flushSave();
+    });
 
     await controller.ready;
 
@@ -72,7 +76,10 @@ void main() {
     await File('${documents.path}/${SaveStore.backupFileName}')
         .writeAsString('[]');
     final controller = GameController();
-    addTearDown(controller.dispose);
+    addTearDown(() async {
+      controller.dispose();
+      await controller.flushSave();
+    });
 
     await controller.ready;
 
@@ -82,7 +89,10 @@ void main() {
 
   test('心跳刷新期间自动保存防抖仍会落盘', () async {
     final controller = GameController();
-    addTearDown(controller.dispose);
+    addTearDown(() async {
+      controller.dispose();
+      await controller.flushSave();
+    });
     await controller.restoreFromDisk();
     controller.finishOnboarding();
 

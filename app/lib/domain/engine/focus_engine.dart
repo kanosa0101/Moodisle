@@ -36,14 +36,14 @@ class FocusEngine {
     return [GameNotice('${pet.petCn} 陪你开始专注')];
   }
 
-  /// 心跳：累计聚焦时长；达标即结算。App 侧由定时器驱动。
+  /// 心跳只校验截止时间和更新进度快照，不累加定时回调的间隔。
   static List<GameEvent> tick(GameState s, DateTime now) {
     final sess = s.session;
     if (sess == null) return <GameEvent>[];
     if (sess.phase == 'focusing' || sess.phase == 'screenLocked') {
-      sess.accumSeconds += now.difference(sess.lastTickAt).inSeconds;
-      sess.lastTickAt = now;
-      if (sess.doneMin >= sess.planMin) return _complete(s, now);
+      sess.accumSeconds = sess.planMin * 60 - sess.remainingSecondsAt(now);
+      if (now.isAfter(sess.lastTickAt)) sess.lastTickAt = now;
+      if (sess.remainingAt(now) == Duration.zero) return _complete(s, now);
     }
     return <GameEvent>[];
   }
@@ -79,7 +79,7 @@ class FocusEngine {
     final events = tick(s, now);
     if (s.session == null) return events;
     sess.phase = 'glancing';
-    sess.pausedAt = now;
+    sess.pausedAt = sess.lastTickAt;
     return [...events, FocusInterrupted(pet: sess.pet)];
   }
 
@@ -92,7 +92,7 @@ class FocusEngine {
     final unlocked = s.session;
     if (unlocked == null) return events;
     unlocked.phase = 'glancing';
-    unlocked.pausedAt = now;
+    unlocked.pausedAt = unlocked.lastTickAt;
     return [...events, FocusInterrupted(pet: unlocked.pet)];
   }
 
@@ -113,11 +113,18 @@ class FocusEngine {
     if (sess.phase == 'glancing') {
       s.focusMeta.glancesToday++;
       sess.phase = 'focusing';
-      sess.lastTickAt = now;
+      // 顺延整个暂停时段（含小数秒），使恢复后的剩余时间保持不变。
+      final pauseStart = sess.pausedAt ?? sess.lastTickAt;
+      final pauseDuration = now.difference(pauseStart);
+      if (!pauseDuration.isNegative) {
+        sess.endsAt = sess.endsAt.add(pauseDuration);
+        sess.lastTickAt = now;
+      }
       sess.pausedAt = null;
       return [const GameNotice('欢迎回来，继续专注')];
     }
-    return <GameEvent>[];
+    // 恢复持久化的前台会话时也立即校验截止时间，不等待下一次心跳。
+    return sess.phase == 'focusing' ? tick(s, now) : <GameEvent>[];
   }
 
   /// 用户主动放弃（零惩罚，不计张望）。
