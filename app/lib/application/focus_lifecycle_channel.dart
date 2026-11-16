@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import '../shared/platform_capabilities.dart';
 
 class FocusLifecycleChannel {
   FocusLifecycleChannel._();
@@ -10,6 +11,7 @@ class FocusLifecycleChannel {
     required void Function() onScreenLocked,
     required void Function() onScreenUnlocked,
   }) async {
+    if (!PlatformCapabilities.nativeScreenLock) return;
     _channel.setMethodCallHandler((call) async {
       if (call.method == 'screenLocked') onScreenLocked();
       if (call.method == 'screenUnlocked') onScreenUnlocked();

@@ -19,14 +19,14 @@ import 'presentation/pages/maze_page.dart';
 import 'presentation/pages/tasks_page.dart';
 import 'shared/audio/moodisle_audio_scope.dart';
 import 'shared/audio/moodisle_audio_service.dart';
-import 'shared/build_flags.dart';
+import 'shared/platform_capabilities.dart';
 import 'shared/theme/tokens.dart';
 import 'shared/widgets/coach_registry.dart';
 
 // 小程序构建（MOODISLE_MP=1）不注入 SQLite 仓库：drift 的 wasm/worker
 // 在微信运行时不可用，直接走 JSON SaveStore（localStorage 垫片 → wx 存储）。
 void main() => runApp(MoodisleApp(
-    repository: kMoodisleMp ? null : SqliteGameRepository()));
+    repository: PlatformCapabilities.sqlite ? SqliteGameRepository() : null));
 
 /// 心晴屿 Moodisle 主应用。
 /// 页面骨架对齐原版：460px 居中栏 + 顶栏 + 可滚动视图 + 底部导航。
@@ -120,7 +120,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     CoachRegistry.launch = _startCoach;
     _controller = GameController(repository: widget.repository);
-    _audio = MoodisleAudioService();
+    _audio = MoodisleAudioService(enabled: PlatformCapabilities.audioPlayback);
     unawaited(FocusLifecycleChannel.listenForScreenState(
       onScreenLocked: _onScreenLocked,
       onScreenUnlocked: _onScreenUnlocked,
@@ -299,9 +299,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     return Rect.fromPoints(topLeft, bottomRight);
   }
 
+  void _syncFocusMusic() {
+    _audio.setMusicSuppressed(_tab == 4 || _controller.state.session != null);
+  }
+
   /// 引导等待：召唤/收服后自动放行。
   void _onControllerChanged() {
     if (!mounted) return;
+    _syncFocusMusic();
     _audio.updateMusic(
       mist: _controller.state.climate.tier != ClimateTier.sunny,
       now: DateTime.now(),
@@ -408,6 +413,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       'focus': 4,
     };
     setState(() => _tab = map[name] ?? 0);
+    _syncFocusMusic();
   }
 
   @override
@@ -465,7 +471,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
             ),
             IconButton(
               tooltip: !_audio.hasAudio
-                  ? '音频素材待接入'
+                  ? (PlatformCapabilities.audioPlayback
+                      ? '音频素材待接入'
+                      : '小程序音频适配尚未接入')
                   : _audio.isMuted
                       ? '开启音频'
                       : '关闭音频',
@@ -513,6 +521,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           onDestinationSelected: (i) {
             if (i != _tab) _audio.play([MoodisleSound.tap]);
             setState(() => _tab = i);
+            _syncFocusMusic();
           },
           destinations: [
             _tabDest([_tabIslandKey, _tabIslandSelKey], 'island',

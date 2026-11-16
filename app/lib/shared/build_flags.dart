@@ -4,4 +4,5 @@
 /// - 不注入 SQLite 仓库：drift 的 wasm/worker 在微信运行时不可用，
 ///   JSON 存档走 localStorage 垫片（wx.*StorageSync 承载）；
 /// - 专注文案采用"切后台暂停"语义：小程序无锁屏信号，与 web 同边界。
-const kMoodisleMp = bool.fromEnvironment('MOODISLE_MP');
+const _mpFlag = String.fromEnvironment('MOODISLE_MP');
+const kMoodisleMp = _mpFlag == 'true' || _mpFlag == '1';

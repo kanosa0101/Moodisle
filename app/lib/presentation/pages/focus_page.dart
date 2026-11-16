@@ -2,15 +2,15 @@
 /// 切换应用会暂停；原生端可识别的设备锁屏会继续计时。
 library;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../../application/game_controller.dart';
 import '../../domain/config/game_config.dart';
 import '../../domain/entities/emotion.dart';
-import '../../shared/build_flags.dart';
+import '../../shared/platform_capabilities.dart';
 import '../../shared/theme/tokens.dart';
 import '../widgets/pet_sprite.dart';
+import '../widgets/focus_sanctuary.dart';
 import '../widgets/roam_card.dart';
 
 class FocusPage extends StatelessWidget {
@@ -48,12 +48,7 @@ class FocusPage extends StatelessWidget {
                                   color: MoodisleColors.ink)),
                         ]),
                         const SizedBox(height: 4),
-                        const Text(
-                            kMoodisleMp
-                                ? '选一位伙伴陪你专注。切换到其他应用或切后台时会暂停；回来后可以继续。'
-                                : kIsWeb
-                                    ? '选一位伙伴陪你专注。切换标签页、应用或熄屏隐藏网页时会暂停；回来后可以继续。'
-                                    : '选一位伙伴陪你专注。切换到其他应用会暂停，不会自动结束；设备锁屏期间继续计时。',
+                        const Text(PlatformCapabilities.focusDescription,
                             style: TextStyle(
                                 fontSize: 11.5,
                                 color: MoodisleColors.ink2,
@@ -293,17 +288,22 @@ class _FocusingView extends StatelessWidget {
           final remainMin = remainSec ~/ 60;
           final remainPart = remainSec % 60;
           final glancing = session.phase == 'glancing';
-          return Center(
-            child: Container(
-              width: 280,
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+                child: Container(
+              width: 360,
               padding: const EdgeInsets.all(22),
               decoration: PaperPanel.decoration(),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                PetSprite(
-                    emotion: session.pet,
-                    stage: s.pets[session.pet]!.stage,
-                    branch: s.pets[session.pet]!.branch,
-                    size: 88),
+                FocusSanctuary(
+                    progress: 1 - remainSec / (session.planMin * 60),
+                    paused: glancing,
+                    companion: PetSprite(
+                        emotion: session.pet,
+                        stage: s.pets[session.pet]!.stage,
+                        branch: s.pets[session.pet]!.branch,
+                        size: 100)),
                 const SizedBox(height: 8),
                 Text(
                     glancing
@@ -322,6 +322,17 @@ class _FocusingView extends StatelessWidget {
                 Text('已专注 $doneMin / ${session.planMin} 分钟',
                     style: const TextStyle(
                         fontSize: 11.5, color: MoodisleColors.ink2)),
+                const SizedBox(height: 10),
+                const Text('留一小片安静，给眼前这一件事。',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12, color: MoodisleColors.ink2)),
+                if (PlatformCapabilities.audioPlayback)
+                  const Padding(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Text('背景音乐已自动暂停',
+                        style: TextStyle(
+                            fontSize: 10, color: MoodisleColors.ink2)),
+                  ),
                 const SizedBox(height: 14),
                 OutlinedButton(
                   onPressed: () => controller.cancelFocus(),
@@ -329,7 +340,7 @@ class _FocusingView extends StatelessWidget {
                       const Text('放弃本次（零惩罚）', style: TextStyle(fontSize: 12)),
                 ),
               ]),
-            ),
+            )),
           );
         });
   }

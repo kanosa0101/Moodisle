@@ -7,13 +7,6 @@ on:
         description: "小程序 AppID（留空则用 WECHAT_APPID Secret，再退回 touristappid 游客模式）"
         required: false
         default: ""
-  # Run once when this workflow first reaches the development branch.
-  # Later app changes require an intentional manual run to limit build usage.
-  push:
-    branches:
-      - feat/wechat-miniprogram
-    paths:
-      - .github/workflows/wechat-miniprogram-spike.yml
 
 permissions:
   # prerelease 用于免认证分发 weapp 产物（本地微信开发者工具验收用）。
@@ -25,6 +18,11 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Require current main baseline
+        run: git merge-base --is-ancestor origin/main HEAD
 
       - uses: actions/setup-node@v4
         with:
@@ -86,6 +84,10 @@ jobs:
         working-directory: app
         run: dart run flutter_miniprogram doctor
 
+      - name: Verify Mini Program capabilities
+        working-directory: app
+        run: flutter test --dart-define=MOODISLE_MP=true --dart-define=EXPECTED_MP=true test/shared/platform_capabilities_test.dart
+
       # 构建失败时把日志尾部经 workflow annotation 外显（免认证可读）。
       - name: Build WeChat Mini Program
         working-directory: app
@@ -95,7 +97,7 @@ jobs:
           WEAPP_APPID: ${{ inputs.appid || secrets.WECHAT_APPID || 'touristappid' }}
         run: |
           set +e
-          dart run flutter_miniprogram --appid "$WEAPP_APPID" --dart-define=MOODISLE_MP=1 > ../weapp_build.log 2>&1
+          dart run flutter_miniprogram --appid "$WEAPP_APPID" --dart-define=MOODISLE_MP=true > ../weapp_build.log 2>&1
           code=$?
           set -e
           if [ "$code" -ne 0 ]; then
@@ -120,7 +122,7 @@ jobs:
           gh release delete weapp-spike-latest --yes --cleanup-tag || true
           gh release create weapp-spike-latest app/build/weapp-spike.zip \
             --prerelease --title "weapp spike (auto)" \
-            --notes "自动构建：${{ github.sha }}（appid $WEAPP_APPID，MOODISLE_MP=1）"
+            --notes "手动构建：${{ github.sha }}（appid $WEAPP_APPID，MOODISLE_MP=true）"
 
       - uses: actions/upload-artifact@v4
         with:

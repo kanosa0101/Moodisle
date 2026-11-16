@@ -25,6 +25,8 @@ import 'package:moodisle_app/presentation/pages/dex_page.dart';
 import 'package:moodisle_app/presentation/pages/focus_page.dart';
 import 'package:moodisle_app/presentation/pages/grow_page.dart';
 import 'package:moodisle_app/presentation/pages/island_page.dart';
+import 'package:moodisle_app/presentation/pages/tasks_page.dart';
+import 'package:moodisle_app/shared/audio/moodisle_audio_scope.dart';
 import 'package:moodisle_app/presentation/widgets/game_icons.dart';
 import 'package:moodisle_app/presentation/widgets/pet_sprite.dart';
 
@@ -91,6 +93,55 @@ void main() {
     } finally {
       await tester.pumpWidget(const SizedBox.shrink());
     }
+  });
+
+  testWidgets('专注页临时停 BGM，离页不覆盖用户静音偏好', (tester) async {
+    await tester.pumpWidget(const MoodisleApp());
+    await tester.pump(const Duration(milliseconds: 600));
+    await tester.tap(find.byKey(const ValueKey('intro_skip')));
+    await tester.pump(const Duration(milliseconds: 400));
+    final audio = tester
+        .widget<MoodisleAudioScope>(find.byType(MoodisleAudioScope))
+        .service;
+    expect(audio.isMusicSuppressed, isFalse);
+    await tester.tap(find.text('专注'));
+    await tester.pump();
+    expect(audio.isMusicSuppressed, isTrue);
+    expect(audio.isMuted, isFalse);
+    audio.toggleMuted();
+    await tester.tap(find.text('心屿'));
+    await tester.pump();
+    expect(audio.isMusicSuppressed, isFalse);
+    expect(audio.isMuted, isTrue);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('待办界面展开完成列表后按日期显示历史任务', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final state = GameState.fresh();
+    final core = GameCore(state);
+    core.addTask('昨天的事', Emotion.sloth, 1, DateTime(2026, 11, 15));
+    core.completeTask(1, now: DateTime(2026, 11, 16));
+    core.addTask('历史的事', Emotion.sloth, 1, DateTime(2026, 10, 1));
+    core.completeTask(2, now: DateTime(2026, 10, 2));
+    final json = saveToJson(state);
+    ((json['tasks'] as List).singleWhere((task) => task['id'] == 2) as Map)
+        .remove('completedOn');
+    final controller = GameController(state: decodeSave(jsonEncode(json)));
+    await tester.pumpWidget(
+        MaterialApp(home: Scaffold(body: TasksPage(controller: controller))));
+    final expand = find.textContaining('已安抚 2 只');
+    await tester.ensureVisible(expand);
+    await tester.tap(expand);
+    await tester.pump();
+    expect(find.textContaining('2026-11-16'), findsOneWidget);
+    expect(find.textContaining('历史完成 · 完成日期未记录'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    controller.dispose();
   });
 
   testWidgets('开始上岛后第一步和下一步引导卡片都可见', (tester) async {

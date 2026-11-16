@@ -72,7 +72,7 @@ class GameCore {
     }
     final task = state.tasks[idx];
     // ① 标记完成
-    state.tasks[idx] = task.markDone();
+    state.tasks[idx] = task.markDone(LocalDate.today(now));
     state.stats.totalDone++;
 
     // ② 精灵计数与形态（两段进化：晴 <5 ≤ 虹 <10 ≤ 觉醒）

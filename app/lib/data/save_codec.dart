@@ -137,6 +137,7 @@ Map<String, dynamic> saveToJson(GameState s, {MazeRun? activeMazeRun}) {
           'difficulty': t.difficulty,
           'status': t.status.name,
           'createdOn': _d(t.createdOn),
+          'completedOn': t.completedOn == null ? null : _d(t.completedOn!),
           'pinned': t.pinned,
         },
     ],
@@ -291,6 +292,8 @@ GameState saveFromJson(Map<String, dynamic> j) {
       emotion: Emotion.values.byName(m['emotion'] as String),
       difficulty: (m['difficulty'] as num?)?.toInt() ?? 2,
       createdOn: _pd(m['createdOn'] as String),
+      completedOn:
+          m['completedOn'] == null ? null : _pd(m['completedOn'] as String),
       status: m['status'] == null
           ? TaskStatus.pending
           : TaskStatus.values.byName(m['status'] as String),

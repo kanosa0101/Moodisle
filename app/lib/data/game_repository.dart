@@ -168,6 +168,8 @@ class SqliteGameRepository implements GameRepository {
             difficulty: task.difficulty,
             status: TaskStatus.values.byName(task.status),
             createdOn: _parseDate(task.createdOn),
+            completedOn:
+                task.completedOn == null ? null : _parseDate(task.completedOn!),
             pinned: task.pinned,
           )));
 
@@ -383,6 +385,7 @@ class SqliteGameRepository implements GameRepository {
                       difficulty: entry.$2.difficulty,
                       status: entry.$2.status.name,
                       createdOn: entry.$2.createdOn.toString(),
+                      completedOn: Value(entry.$2.completedOn?.toString()),
                       pinned: entry.$2.pinned,
                     ))
                 .toList(),

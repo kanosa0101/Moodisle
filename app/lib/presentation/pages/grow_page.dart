@@ -481,7 +481,7 @@ void _showWeekly(BuildContext context) {
       actions: [
         TextButton(
           onPressed: () {
-            copyTextWithFallback(ctx,
+            copyTextWithFallback(context,
                 text: _weeklyShareText(report),
                 successMessage: '周报分享文本已复制');
             Navigator.pop(ctx);

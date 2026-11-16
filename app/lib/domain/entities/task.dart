@@ -1,5 +1,6 @@
 /// 待办实体（docs/02 §1.2）。
 library;
+
 import 'emotion.dart';
 import '../time/local_date.dart';
 
@@ -14,6 +15,7 @@ class Task {
   final int difficulty;
   final TaskStatus status;
   final LocalDate createdOn;
+  final LocalDate? completedOn;
   bool pinned;
 
   Task({
@@ -22,11 +24,13 @@ class Task {
     required this.emotion,
     required this.difficulty,
     required this.createdOn,
+    this.completedOn,
     this.status = TaskStatus.pending,
     this.pinned = false,
   });
 
-  Task markDone() => copyWith(status: TaskStatus.done);
+  Task markDone(LocalDate day) =>
+      copyWith(status: TaskStatus.done, completedOn: day);
 
   Task copyWith({
     int? id,
@@ -35,6 +39,7 @@ class Task {
     int? difficulty,
     TaskStatus? status,
     LocalDate? createdOn,
+    LocalDate? completedOn,
     bool? pinned,
   }) =>
       Task(
@@ -44,6 +49,9 @@ class Task {
         difficulty: difficulty ?? this.difficulty,
         status: status ?? this.status,
         createdOn: createdOn ?? this.createdOn,
+        completedOn: (status ?? this.status) == TaskStatus.done
+            ? completedOn ?? this.completedOn
+            : null,
         pinned: pinned ?? this.pinned,
       );
 }

@@ -1288,6 +1288,12 @@ class $TaskRowsTable extends TaskRows with TableInfo<$TaskRowsTable, TaskRow> {
   late final GeneratedColumn<String> createdOn = GeneratedColumn<String>(
       'created_on', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _completedOnMeta =
+      const VerificationMeta('completedOn');
+  @override
+  late final GeneratedColumn<String> completedOn = GeneratedColumn<String>(
+      'completed_on', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _pinnedMeta = const VerificationMeta('pinned');
   @override
   late final GeneratedColumn<bool> pinned = GeneratedColumn<bool>(
@@ -1297,8 +1303,17 @@ class $TaskRowsTable extends TaskRows with TableInfo<$TaskRowsTable, TaskRow> {
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("pinned" IN (0, 1))'));
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, position, taskText, emotion, difficulty, status, createdOn, pinned];
+  List<GeneratedColumn> get $columns => [
+        id,
+        position,
+        taskText,
+        emotion,
+        difficulty,
+        status,
+        createdOn,
+        completedOn,
+        pinned
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1350,6 +1365,12 @@ class $TaskRowsTable extends TaskRows with TableInfo<$TaskRowsTable, TaskRow> {
     } else if (isInserting) {
       context.missing(_createdOnMeta);
     }
+    if (data.containsKey('completed_on')) {
+      context.handle(
+          _completedOnMeta,
+          completedOn.isAcceptableOrUnknown(
+              data['completed_on']!, _completedOnMeta));
+    }
     if (data.containsKey('pinned')) {
       context.handle(_pinnedMeta,
           pinned.isAcceptableOrUnknown(data['pinned']!, _pinnedMeta));
@@ -1379,6 +1400,8 @@ class $TaskRowsTable extends TaskRows with TableInfo<$TaskRowsTable, TaskRow> {
           .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
       createdOn: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}created_on'])!,
+      completedOn: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}completed_on']),
       pinned: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}pinned'])!,
     );
@@ -1398,6 +1421,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
   final int difficulty;
   final String status;
   final String createdOn;
+  final String? completedOn;
   final bool pinned;
   const TaskRow(
       {required this.id,
@@ -1407,6 +1431,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
       required this.difficulty,
       required this.status,
       required this.createdOn,
+      this.completedOn,
       required this.pinned});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1418,6 +1443,9 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
     map['difficulty'] = Variable<int>(difficulty);
     map['status'] = Variable<String>(status);
     map['created_on'] = Variable<String>(createdOn);
+    if (!nullToAbsent || completedOn != null) {
+      map['completed_on'] = Variable<String>(completedOn);
+    }
     map['pinned'] = Variable<bool>(pinned);
     return map;
   }
@@ -1431,6 +1459,9 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
       difficulty: Value(difficulty),
       status: Value(status),
       createdOn: Value(createdOn),
+      completedOn: completedOn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedOn),
       pinned: Value(pinned),
     );
   }
@@ -1446,6 +1477,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
       difficulty: serializer.fromJson<int>(json['difficulty']),
       status: serializer.fromJson<String>(json['status']),
       createdOn: serializer.fromJson<String>(json['createdOn']),
+      completedOn: serializer.fromJson<String?>(json['completedOn']),
       pinned: serializer.fromJson<bool>(json['pinned']),
     );
   }
@@ -1460,6 +1492,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
       'difficulty': serializer.toJson<int>(difficulty),
       'status': serializer.toJson<String>(status),
       'createdOn': serializer.toJson<String>(createdOn),
+      'completedOn': serializer.toJson<String?>(completedOn),
       'pinned': serializer.toJson<bool>(pinned),
     };
   }
@@ -1472,6 +1505,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
           int? difficulty,
           String? status,
           String? createdOn,
+          Value<String?> completedOn = const Value.absent(),
           bool? pinned}) =>
       TaskRow(
         id: id ?? this.id,
@@ -1481,6 +1515,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
         difficulty: difficulty ?? this.difficulty,
         status: status ?? this.status,
         createdOn: createdOn ?? this.createdOn,
+        completedOn: completedOn.present ? completedOn.value : this.completedOn,
         pinned: pinned ?? this.pinned,
       );
   TaskRow copyWithCompanion(TaskRowsCompanion data) {
@@ -1493,6 +1528,8 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
           data.difficulty.present ? data.difficulty.value : this.difficulty,
       status: data.status.present ? data.status.value : this.status,
       createdOn: data.createdOn.present ? data.createdOn.value : this.createdOn,
+      completedOn:
+          data.completedOn.present ? data.completedOn.value : this.completedOn,
       pinned: data.pinned.present ? data.pinned.value : this.pinned,
     );
   }
@@ -1507,14 +1544,15 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
           ..write('difficulty: $difficulty, ')
           ..write('status: $status, ')
           ..write('createdOn: $createdOn, ')
+          ..write('completedOn: $completedOn, ')
           ..write('pinned: $pinned')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, position, taskText, emotion, difficulty, status, createdOn, pinned);
+  int get hashCode => Object.hash(id, position, taskText, emotion, difficulty,
+      status, createdOn, completedOn, pinned);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1526,6 +1564,7 @@ class TaskRow extends DataClass implements Insertable<TaskRow> {
           other.difficulty == this.difficulty &&
           other.status == this.status &&
           other.createdOn == this.createdOn &&
+          other.completedOn == this.completedOn &&
           other.pinned == this.pinned);
 }
 
@@ -1537,6 +1576,7 @@ class TaskRowsCompanion extends UpdateCompanion<TaskRow> {
   final Value<int> difficulty;
   final Value<String> status;
   final Value<String> createdOn;
+  final Value<String?> completedOn;
   final Value<bool> pinned;
   const TaskRowsCompanion({
     this.id = const Value.absent(),
@@ -1546,6 +1586,7 @@ class TaskRowsCompanion extends UpdateCompanion<TaskRow> {
     this.difficulty = const Value.absent(),
     this.status = const Value.absent(),
     this.createdOn = const Value.absent(),
+    this.completedOn = const Value.absent(),
     this.pinned = const Value.absent(),
   });
   TaskRowsCompanion.insert({
@@ -1556,6 +1597,7 @@ class TaskRowsCompanion extends UpdateCompanion<TaskRow> {
     required int difficulty,
     required String status,
     required String createdOn,
+    this.completedOn = const Value.absent(),
     required bool pinned,
   })  : position = Value(position),
         taskText = Value(taskText),
@@ -1572,6 +1614,7 @@ class TaskRowsCompanion extends UpdateCompanion<TaskRow> {
     Expression<int>? difficulty,
     Expression<String>? status,
     Expression<String>? createdOn,
+    Expression<String>? completedOn,
     Expression<bool>? pinned,
   }) {
     return RawValuesInsertable({
@@ -1582,6 +1625,7 @@ class TaskRowsCompanion extends UpdateCompanion<TaskRow> {
       if (difficulty != null) 'difficulty': difficulty,
       if (status != null) 'status': status,
       if (createdOn != null) 'created_on': createdOn,
+      if (completedOn != null) 'completed_on': completedOn,
       if (pinned != null) 'pinned': pinned,
     });
   }
@@ -1594,6 +1638,7 @@ class TaskRowsCompanion extends UpdateCompanion<TaskRow> {
       Value<int>? difficulty,
       Value<String>? status,
       Value<String>? createdOn,
+      Value<String?>? completedOn,
       Value<bool>? pinned}) {
     return TaskRowsCompanion(
       id: id ?? this.id,
@@ -1603,6 +1648,7 @@ class TaskRowsCompanion extends UpdateCompanion<TaskRow> {
       difficulty: difficulty ?? this.difficulty,
       status: status ?? this.status,
       createdOn: createdOn ?? this.createdOn,
+      completedOn: completedOn ?? this.completedOn,
       pinned: pinned ?? this.pinned,
     );
   }
@@ -1631,6 +1677,9 @@ class TaskRowsCompanion extends UpdateCompanion<TaskRow> {
     if (createdOn.present) {
       map['created_on'] = Variable<String>(createdOn.value);
     }
+    if (completedOn.present) {
+      map['completed_on'] = Variable<String>(completedOn.value);
+    }
     if (pinned.present) {
       map['pinned'] = Variable<bool>(pinned.value);
     }
@@ -1647,6 +1696,7 @@ class TaskRowsCompanion extends UpdateCompanion<TaskRow> {
           ..write('difficulty: $difficulty, ')
           ..write('status: $status, ')
           ..write('createdOn: $createdOn, ')
+          ..write('completedOn: $completedOn, ')
           ..write('pinned: $pinned')
           ..write(')'))
         .toString();
@@ -10960,6 +11010,7 @@ typedef $$TaskRowsTableCreateCompanionBuilder = TaskRowsCompanion Function({
   required int difficulty,
   required String status,
   required String createdOn,
+  Value<String?> completedOn,
   required bool pinned,
 });
 typedef $$TaskRowsTableUpdateCompanionBuilder = TaskRowsCompanion Function({
@@ -10970,6 +11021,7 @@ typedef $$TaskRowsTableUpdateCompanionBuilder = TaskRowsCompanion Function({
   Value<int> difficulty,
   Value<String> status,
   Value<String> createdOn,
+  Value<String?> completedOn,
   Value<bool> pinned,
 });
 
@@ -11018,6 +11070,9 @@ class $$TaskRowsTableFilterComposer
 
   ColumnFilters<String> get createdOn => $composableBuilder(
       column: $table.createdOn, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get completedOn => $composableBuilder(
+      column: $table.completedOn, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get pinned => $composableBuilder(
       column: $table.pinned, builder: (column) => ColumnFilters(column));
@@ -11070,6 +11125,9 @@ class $$TaskRowsTableOrderingComposer
   ColumnOrderings<String> get createdOn => $composableBuilder(
       column: $table.createdOn, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get completedOn => $composableBuilder(
+      column: $table.completedOn, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get pinned => $composableBuilder(
       column: $table.pinned, builder: (column) => ColumnOrderings(column));
 
@@ -11120,6 +11178,9 @@ class $$TaskRowsTableAnnotationComposer
 
   GeneratedColumn<String> get createdOn =>
       $composableBuilder(column: $table.createdOn, builder: (column) => column);
+
+  GeneratedColumn<String> get completedOn => $composableBuilder(
+      column: $table.completedOn, builder: (column) => column);
 
   GeneratedColumn<bool> get pinned =>
       $composableBuilder(column: $table.pinned, builder: (column) => column);
@@ -11175,6 +11236,7 @@ class $$TaskRowsTableTableManager extends RootTableManager<
             Value<int> difficulty = const Value.absent(),
             Value<String> status = const Value.absent(),
             Value<String> createdOn = const Value.absent(),
+            Value<String?> completedOn = const Value.absent(),
             Value<bool> pinned = const Value.absent(),
           }) =>
               TaskRowsCompanion(
@@ -11185,6 +11247,7 @@ class $$TaskRowsTableTableManager extends RootTableManager<
             difficulty: difficulty,
             status: status,
             createdOn: createdOn,
+            completedOn: completedOn,
             pinned: pinned,
           ),
           createCompanionCallback: ({
@@ -11195,6 +11258,7 @@ class $$TaskRowsTableTableManager extends RootTableManager<
             required int difficulty,
             required String status,
             required String createdOn,
+            Value<String?> completedOn = const Value.absent(),
             required bool pinned,
           }) =>
               TaskRowsCompanion.insert(
@@ -11205,6 +11269,7 @@ class $$TaskRowsTableTableManager extends RootTableManager<
             difficulty: difficulty,
             status: status,
             createdOn: createdOn,
+            completedOn: completedOn,
             pinned: pinned,
           ),
           withReferenceMapper: (p0) => p0
