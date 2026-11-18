@@ -144,11 +144,24 @@ class _FocusPlanPanel extends StatefulWidget {
 }
 
 class _FocusPlanPanelState extends State<_FocusPlanPanel> {
-  int _plan = 25;
+  int? _preset = 25;
+  final _customMinutes = TextEditingController();
+  static const _rangeHint =
+      '请输入 ${GameConfig.focusMinMinutes}–${GameConfig.focusMaxMinutes} 之间的整数';
+
+  @override
+  void dispose() {
+    _customMinutes.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final canStart = widget.emotion != null;
+    final custom = _preset == null;
+    final minutes =
+        _preset ?? int.tryParse(_customMinutes.text.trim(), radix: 10);
+    final valid = GameConfig.validFocusMinutes(minutes);
+    final pet = widget.emotion;
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: PaperPanel.decoration(),
@@ -162,20 +175,20 @@ class _FocusPlanPanelState extends State<_FocusPlanPanel> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3),
                 child: InkWell(
-                  onTap: () => setState(() => _plan = minutes),
+                  onTap: () => setState(() => _preset = minutes),
                   borderRadius: BorderRadius.circular(10),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
-                      color: _plan == minutes
+                      color: _preset == minutes
                           ? const Color(0xFFFFE5BA)
                           : const Color(0xFFFFFDF7),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: _plan == minutes
+                        color: _preset == minutes
                             ? MoodisleColors.orange
                             : MoodisleColors.line,
-                        width: _plan == minutes ? 1.5 : 1,
+                        width: _preset == minutes ? 1.5 : 1,
                       ),
                     ),
                     child: Column(children: [
@@ -183,7 +196,7 @@ class _FocusPlanPanelState extends State<_FocusPlanPanel> {
                           style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w900,
-                              color: _plan == minutes
+                              color: _preset == minutes
                                   ? MoodisleColors.orange
                                   : MoodisleColors.ink)),
                       const Text('分钟',
@@ -195,6 +208,26 @@ class _FocusPlanPanelState extends State<_FocusPlanPanel> {
               ),
             ),
         ]),
+        TextButton.icon(
+          onPressed: () => setState(() => _preset = null),
+          icon: const Icon(Icons.edit_outlined, size: 16),
+          label: const Text('自定义时长'),
+        ),
+        if (custom)
+          TextField(
+            controller: _customMinutes,
+            autofocus: true,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+            onChanged: (_) => setState(() {}),
+            decoration: InputDecoration(
+              labelText: '专注分钟数',
+              suffixText: '分钟',
+              errorText: valid ? null : _rangeHint,
+              helperText: '自定义时长按普通倍率结算星屑',
+              border: const OutlineInputBorder(),
+            ),
+          ),
         const SizedBox(height: 8),
         SizedBox(
           width: double.infinity,
@@ -209,12 +242,17 @@ class _FocusPlanPanelState extends State<_FocusPlanPanel> {
               ],
             ),
             child: FilledButton.icon(
-              onPressed: !canStart
-                  ? null
-                  : () => widget.controller.startFocus(widget.emotion!, _plan),
+              onPressed: pet != null && minutes != null && valid
+                  ? () =>
+                      widget.controller.startFocus(pet, minutes, custom: custom)
+                  : null,
               icon: Image.asset('assets/ui/actions/start.png',
                   width: 22, height: 22),
-              label: Text(canStart ? '开始 $_plan 分钟专注' : '先选择一位伙伴'),
+              label: Text(pet == null
+                  ? '先选择一位伙伴'
+                  : valid
+                      ? '开始 $minutes 分钟专注'
+                      : '请输入专注时长'),
               style: FilledButton.styleFrom(
                 backgroundColor: MoodisleColors.orange,
                 foregroundColor: MoodisleColors.paper,

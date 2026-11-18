@@ -31,6 +31,36 @@ GameState _stateWith(Emotion pet, Bond bond) {
 }
 
 void main() {
+  group('自定义专注', () {
+    final start = DateTime(2026, 11, 18, 10);
+    for (final minutes in [4, 121]) {
+      test('$minutes 分钟不能建立会话', () {
+        final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+        GameCore(s).startFocus(Emotion.emo, minutes, start, custom: true);
+        expect(s.session, isNull);
+      });
+    }
+    for (final (minutes, custom, dust, dives) in [
+      (5, true, 1, 0),
+      (120, true, 24, 0),
+      (50, true, 10, 0),
+      (60, true, 12, 0),
+      (50, false, 15, 1),
+    ]) {
+      test('$minutes 分钟 custom=$custom 存档恢复后按所选档位结算', () {
+        final s = _stateWith(Emotion.emo, Bond(minutes: 0));
+        GameCore(s).startFocus(Emotion.emo, minutes, start, custom: custom);
+        final restored = decodeSave(encodeSave(s));
+        final end = start.add(Duration(minutes: minutes));
+        expect(restored.session!.endsAt, end);
+        final events = GameCore(restored).focusTick(end);
+        expect(events.whereType<FocusCompleted>().single.stardust, dust);
+        expect(restored.stats.deepDives, dives);
+        expect(restored.stats.totalFocusMinutes, minutes);
+      });
+    }
+  });
+
   group('截止时间计时', () {
     test('无心跳也能计算剩余时间，截止前不提前完成，重复回调只结算一次', () {
       final s = _stateWith(Emotion.emo, Bond(minutes: 0));

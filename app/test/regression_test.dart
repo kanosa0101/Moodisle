@@ -503,7 +503,7 @@ void main() {
       ..energy = 3;
     final controller = GameController(state: state, rng: Random(1));
     addTearDown(controller.dispose);
-    controller.startMaze(0);
+    controller.core.startMaze(0, now: DateTime(2026, 11, 15));
     final run = controller.mazeRun!;
     final start = run.pos;
     final next = neighbors(start.x, start.y, run.floor.w, run.floor.h)
@@ -521,6 +521,62 @@ void main() {
     expect(restored.mazeRun!.pos, next);
     expect(restored.mazeRun!.undo(), isTrue);
     expect(restored.mazeRun!.pos, start);
+  });
+
+  testWidgets('自定义时长校验、切回快捷档、以自定义 50 分钟开始', (tester) async {
+    tester.view.physicalSize = const Size(390, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final state = GameState.fresh()..companion = Emotion.sloth;
+    state.pets[Emotion.sloth] = PetRecord(
+        emotion: Emotion.sloth,
+        count: 1,
+        stage: PetStage.clear,
+        bond: Bond(minutes: 0));
+    final controller =
+        GameController(state: state, focusNow: () => DateTime(2026, 11, 18));
+    try {
+      await tester.pumpWidget(
+          MaterialApp(home: Scaffold(body: FocusPage(controller: controller))));
+      Future<void> tap(String label) async {
+        final target = find.text(label);
+        await tester.pumpAndSettle();
+        await Scrollable.ensureVisible(tester.element(target), alignment: 0.5);
+        await tester.pump();
+        await tester.tap(target);
+        await tester.pump();
+      }
+
+      await tap('自定义时长');
+      for (final invalid in ['4', '121', '2.5', 'abc', '']) {
+        await tester.enterText(find.byType(TextField), invalid);
+        await tester.pump();
+        expect(find.textContaining('之间的整数'), findsOneWidget);
+        expect(
+            tester
+                .widget<FilledButton>(
+                    find.widgetWithText(FilledButton, '请输入专注时长'))
+                .onPressed,
+            isNull);
+      }
+      await tester.enterText(find.byType(TextField), '40');
+      await tester.pump();
+      expect(find.text('开始 40 分钟专注'), findsOneWidget);
+      await tap('25');
+      expect(find.byType(TextField), findsNothing);
+      expect(find.text('开始 25 分钟专注'), findsOneWidget);
+      await tap('自定义时长');
+      await tester.enterText(find.byType(TextField), '50');
+      await tester.pump();
+      await tap('开始 50 分钟专注');
+      expect(state.session!.planMin, 50);
+      expect(state.session!.tierMul, 1.0);
+      expect(find.text('50:00'), findsOneWidget);
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+      controller.dispose();
+    }
   });
 
   testWidgets('专注 UI 直接按截止时间刷新，切应用暂停、息屏继续', (tester) async {

@@ -18,19 +18,26 @@ import 'daily_engine.dart';
 class FocusEngine {
   FocusEngine._();
 
-  static double tierMulFor(int planMin) =>
-      planMin == GameConfig.focusDeepDiveMinutes
+  static double tierMulFor(int planMin, {bool custom = false}) =>
+      !custom && planMin == GameConfig.focusDeepDiveMinutes
           ? GameConfig.focusDeepDiveMul
           : 1.0;
 
   static List<GameEvent> start(
-      GameState s, Emotion pet, int planMin, DateTime now) {
+      GameState s, Emotion pet, int planMin, DateTime now,
+      {bool custom = false}) {
     if (s.session != null) return [const GameNotice('已有专注进行中')];
     if (s.pets[pet] == null) return [const GameNotice('这只精灵还未收服')];
+    if (!GameConfig.validFocusMinutes(planMin)) {
+      return [
+        const GameNotice(
+            '请输入 ${GameConfig.focusMinMinutes}–${GameConfig.focusMaxMinutes} 分钟')
+      ];
+    }
     s.session = FocusSessionState(
       pet: pet,
       planMin: planMin,
-      tierMul: tierMulFor(planMin),
+      tierMul: tierMulFor(planMin, custom: custom),
       startedAt: now,
     );
     return [GameNotice('${pet.petCn} 陪你开始专注')];
@@ -160,7 +167,10 @@ class FocusEngine {
     s.focusMeta.weekMin += doneMin;
     s.stats.totalFocusSessions++;
     s.stats.totalFocusMinutes += doneMin;
-    if (sess.planMin >= 50) s.stats.deepDives++;
+    if (sess.planMin == GameConfig.focusDeepDiveMinutes &&
+        sess.tierMul == GameConfig.focusDeepDiveMul) {
+      s.stats.deepDives++;
+    }
     final day = sess.startedAt;
     final todayBucket =
         ClimateEngine.bucketFor(s, LocalDate(day.year, day.month, day.day));

@@ -11,18 +11,40 @@ import 'package:moodisle_app/domain/events/game_events.dart';
 import 'package:moodisle_app/domain/game_core.dart';
 import 'package:moodisle_app/domain/time/local_date.dart';
 
-GameState focusedState(DateTime start) {
+GameState focusedState(DateTime start,
+    {int minutes = 25, bool custom = false}) {
   final state = GameState.fresh();
   state.pets[Emotion.emo] = PetRecord(
       emotion: Emotion.emo,
       count: 1,
       stage: PetStage.clear,
       bond: Bond(minutes: 0));
-  GameCore(state).startFocus(Emotion.emo, 25, start);
+  GameCore(state).startFocus(Emotion.emo, minutes, start, custom: custom);
   return state;
 }
 
 void main() {
+  test('40 分钟自定义会话切后台暂停，SQLite 恢复后锁屏继续', () async {
+    final db = MoodisleDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    final repo = SqliteGameRepository(database: db);
+    final start = DateTime(2026, 11, 18, 10);
+    final state = focusedState(start, minutes: 40, custom: true);
+    final core = GameCore(state);
+    core.focusOnBackgrounded(start.add(const Duration(minutes: 10)));
+    await repo.save(state);
+    final restored = (await repo.load())!.state;
+    final resumed = GameCore(restored);
+    final back = start.add(const Duration(minutes: 25));
+    resumed.focusOnResumed(back);
+    expect(restored.session!.remainingSecondsAt(back), 30 * 60);
+    resumed.focusOnScreenLocked(back);
+    final events =
+        resumed.focusOnResumed(back.add(const Duration(minutes: 30)));
+    expect(events.whereType<FocusCompleted>().single.minutes, 40);
+    expect(restored.stats.deepDives, 0);
+  });
+
   test('SQLite v2 升级保留旧任务，新增完成日期可持久化', () async {
     final directory =
         await Directory.systemTemp.createTemp('moodisle-task-schema-');

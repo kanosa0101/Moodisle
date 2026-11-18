@@ -314,8 +314,9 @@ class GameCore {
 
   // ————————————————— 专注（转调 FocusEngine） —————————————————
 
-  List<GameEvent> startFocus(Emotion pet, int planMin, DateTime now) =>
-      FocusEngine.start(state, pet, planMin, now);
+  List<GameEvent> startFocus(Emotion pet, int planMin, DateTime now,
+          {bool custom = false}) =>
+      FocusEngine.start(state, pet, planMin, now, custom: custom);
 
   List<GameEvent> focusTick(DateTime now) => FocusEngine.tick(state, now);
 

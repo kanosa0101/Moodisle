@@ -237,8 +237,8 @@ class GameController extends ChangeNotifier {
   }
 
   // ——— 专注 ———
-  void startFocus(Emotion pet, int planMin) {
-    _consume(core.startFocus(pet, planMin, focusNow));
+  void startFocus(Emotion pet, int planMin, {bool custom = false}) {
+    _consume(core.startFocus(pet, planMin, focusNow, custom: custom));
     _startTicker();
     notifyListeners();
   }

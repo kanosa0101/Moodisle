@@ -52,6 +52,10 @@ class GameConfig {
   static const int resonanceWindowMs = 24 * 3600 * 1000;
 
   // —— 专注（docs/03 §8）——
+  static const int focusMinMinutes = 5;
+  static const int focusMaxMinutes = 120;
+  static bool validFocusMinutes(int? value) =>
+      value != null && value >= focusMinMinutes && value <= focusMaxMinutes;
   static const List<int> focusPlans = [15, 25, 50];
   static const int focusDeepDiveMinutes = 50;
   static const double focusDeepDiveMul = 1.5;
